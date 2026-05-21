@@ -136,9 +136,7 @@ export default function Sobre() {
             className="text-[clamp(2.5rem,8vw,6.5rem)] font-black tracking-tighter leading-[0.98] mb-10"
           >
             CONHECIMENTO<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-400 tracking-normal" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.1)' }}>
-              LIVRE E EM
-            </span><br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-400 tracking-normal" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.1)' }}>LIVRE </span><span className="text-[#2563eb]">E</span><span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-400 tracking-normal" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.1)' }}> EM</span><br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff5f1f] via-orange-400 to-[#2563eb] animate-gradient-x">MOVIMENTO.</span>
           </motion.h1>
 
