@@ -3,7 +3,6 @@ import '../styles/global.css';
 import '../styles/home.css';
 import Header from '../components/Header.astro';
 import { OrbitalCarousel } from '../components/OrbitalCarousel';
-import { BookshelfScene } from '../components/BookshelfScene';
 
 ---
 
@@ -52,12 +51,7 @@ import { BookshelfScene } from '../components/BookshelfScene';
             </svg>
 
             <!-- PAINEL 01 -->
-            <section class="panel" style="position:relative; overflow:hidden;">
-
-                <!-- Nuvem 3D de livros — fundo do hero -->
-                <div style="position:absolute; inset:0; z-index:0; pointer-events:none;">
-                    <BookshelfScene client:only="react" />
-                </div>
+            <section class="panel">
 
                 <div class="w-full relative z-10">
                     <h1 class="text-5xl md:text-[10vw] serif-extra leading-none mb-4 mt-[10vh] md:mt-[14vh]" id="premium-title">
