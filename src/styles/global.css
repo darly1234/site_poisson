@@ -56,6 +56,15 @@ body {
     z-index: 100;
 }
 
+/* Nuvem 3D — fade-in sem re-render React */
+@keyframes fadeInCloud {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.cloud-fadein {
+  animation: fadeInCloud 1.4s ease 0.12s both;
+}
+
 /* Stat Card (usado em home e impacto) */
 .stat-card {
     border-bottom: 1px solid var(--gray);
