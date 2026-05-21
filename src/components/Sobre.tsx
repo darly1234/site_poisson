@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { BookOpen, Share2, Award, Zap, Compass, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
 import BookshelfSceneR3F from './BookshelfSceneR3F';
@@ -83,6 +83,18 @@ export default function Sobre() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const lineH = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const cloudRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = cloudRef.current;
+    if (!el) return;
+    el.style.opacity = '0';
+    const t = setTimeout(() => {
+      el.style.transition = 'opacity 1.4s ease';
+      el.style.opacity = '1';
+    }, 120);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div ref={containerRef} className="bg-[#050505] text-white min-h-screen font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#ff5f1f] selection:text-white overflow-x-hidden">
@@ -91,7 +103,7 @@ export default function Sobre() {
       <section className="relative h-screen flex flex-col px-6 pt-32 pb-24 overflow-hidden">
 
         {/* Nuvem 3D de livros */}
-        <div className="absolute inset-0 cloud-fadein" style={{ zIndex: 0, height: '100%', width: '100%' }}>
+        <div ref={cloudRef} className="absolute inset-0" style={{ zIndex: 0, height: '100%', width: '100%' }}>
           <BookshelfSceneR3F />
         </div>
 
