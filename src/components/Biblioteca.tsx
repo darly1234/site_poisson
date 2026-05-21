@@ -1,4 +1,5 @@
 import { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { BookshelfScene } from "./BookshelfScene";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useI18n, I18nProvider } from "@/lib/i18n/I18nProvider";
 import { type LibraryBook } from "@/lib/library/data";
@@ -158,6 +159,9 @@ function BibliotecaPage() {
     <>
       {/* HERO */}
       <section ref={heroRef} className="relative pt-16 pb-8 px-6 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <BookshelfScene />
+        </div>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 transition-[background] duration-300"

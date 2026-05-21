@@ -85,8 +85,12 @@
     overflow: hidden;
     display: inline-flex;
     vertical-align: top;
-    padding-bottom: 0.2em;
-    margin-bottom: -0.2em;
+    padding-top: 0.25em;
+    margin-top: -0.25em;
+    padding-bottom: 0.3em;
+    margin-bottom: -0.3em;
+    padding-right: 0.06em;
+    margin-right: -0.06em;
 }
 
 .char {
