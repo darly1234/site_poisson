@@ -7,9 +7,16 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
 ---
 
 <!DOCTYPE html>
-<html lang="pt-BR" data-fixed-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <script is:inline>
+      localStorage.removeItem('theme');
+      document.documentElement.setAttribute('data-theme','dark');
+    </script>
+    <style>
+      #theme-toggle-btn, #theme-toggle-btn-mobile { display: none !important; }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editora Poisson | O Fio do Conhecimento</title>
     <meta name="description" content="Editora Poisson — mais de 1.200 títulos científicos em acesso aberto, com ISBN, DOI e ficha catalográfica. Publique sua pesquisa com a gente.">
@@ -125,7 +132,7 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
                     
                     <!-- Coluna 1: Ttulo -->
                     <div class="w-full md:w-[35vw] flex flex-col justify-center shrink-0">
-                        <h2 class="text-4xl md:text-5xl lg:text-[4.5vw] serif-extra leading-[1.1] tracking-tight">
+                        <h2 class="text-4xl md:text-5xl lg:text-[4.5vw] serif-extra leading-[1.1] tracking-tight text-white">
                             <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">Publicamos</div></div>
                             <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">das exatas às</div></div>
                             <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">humanas,</div></div>
