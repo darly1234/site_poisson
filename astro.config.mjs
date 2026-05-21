@@ -14,7 +14,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     ssr: {
-      noExternal: ['lucide-react']
+      noExternal: ['lucide-react', 'three', '@react-three/fiber', '@react-three/drei']
     }
   }
 });

@@ -91,7 +91,7 @@ export default function Sobre() {
       <section className="relative h-screen flex flex-col px-6 pt-32 pb-24 overflow-hidden">
 
         {/* Nuvem 3D de livros */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+        <div className="absolute inset-0" style={{ zIndex: 0, height: '100%', width: '100%' }}>
           <BookshelfScene />
         </div>
 
