@@ -272,7 +272,7 @@ function isActive(href: string): boolean {
       const btns = [document.getElementById('theme-toggle-btn'), document.getElementById('theme-toggle-btn-mobile')];
       const fixed = document.documentElement.getAttribute('data-fixed-theme');
 
-      if (fixed) {
+      if (fixed === 'light') {
         btns.forEach(btn => { if (btn) btn.style.display = 'none'; });
         return;
       }
