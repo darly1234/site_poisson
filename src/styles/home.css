@@ -1,0 +1,319 @@
+/* =========================================
+   HOME PAGE STYLES
+   Scroll horizontal, painéis, orbital, áreas
+   ========================================= */
+
+/* SVG Path Styling - O FIO */
+#horizontal-vine-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 480vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 110; 
+}
+
+.thread-path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 15px rgba(255, 60, 0, 0.9));
+    transition: stroke 0.4s ease, filter 0.4s ease;
+}
+
+.node {
+    fill: var(--accent);
+    filter: drop-shadow(0 0 8px rgba(255, 60, 0, 0.8));
+    transition: fill 0.4s ease, filter 0.4s ease;
+}
+
+.horizontal-wrapper {
+    overflow: hidden;
+}
+
+.horizontal-container {
+    width: 480vw;
+    height: 100vh;
+    display: flex;
+    flex-wrap: nowrap;
+    position: relative;
+}
+
+.panel {
+    width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 10vh 5vw;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .panel {
+        height: 100vh;
+        padding: 5vw;
+    }
+    .panel-wide {
+        width: 140vw;
+    }
+}
+
+.vertical-content {
+    position: relative;
+    z-index: 60;
+    background: var(--bg);
+    overflow: visible;
+}
+
+.section-number {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--gray);
+}
+
+/* Máscaras para a Tipografia */
+.line-wrap {
+    overflow: hidden;
+    display: inline-flex;
+    vertical-align: top;
+    padding-bottom: 0.2em;
+    margin-bottom: -0.2em;
+}
+
+.char {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+}
+
+/* Efeito Pulse */
+@keyframes heartbeat-pulse {
+    0%, 100% { transform: scale(1); letter-spacing: 0; }
+    50% { transform: scale(1.02); letter-spacing: 0.05em; }
+}
+.heartbeat-pulse {
+    display: inline-block;
+    transform-origin: center center;
+    animation: heartbeat-pulse 4s infinite ease-in-out;
+    will-change: transform, letter-spacing;
+}
+
+/* Orbital Carousel */
+.orbital-stage {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    perspective: 900px;
+    overflow: visible;
+}
+@media (min-width: 768px) {
+    .orbital-stage {
+        height: 440px;
+    }
+}
+.orbital-book {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 120px; height: 180px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    transform-origin: center center;
+    transition: filter 0.3s, opacity 0.3s;
+    cursor: default;
+}
+@media (min-width: 768px) {
+    .orbital-book {
+        width: 180px; height: 260px;
+    }
+}
+.orbital-book.is-front { cursor: pointer; }
+.orbital-book .ob-cover {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 8px;
+    background-size: cover; background-position: center;
+    position: relative;
+}
+.orbital-book .ob-cover::before {
+    content:''; position: absolute; inset:0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.75) 100%);
+}
+.orbital-book .ob-title {
+    position: relative; z-index:1;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; font-style: italic;
+    color: #fff; line-height: 1.2;
+}
+.orbital-book .ob-tag {
+    position: relative; z-index:1;
+    font-size: 7px; text-transform: uppercase;
+    letter-spacing: 0.15em; color: #ff3c00;
+    font-weight: 700; margin-bottom: 2px;
+}
+
+/* --- EFEITO BLUR UNVEIL PARA AS ÁREAS --- */
+.areas-blur-container {
+    display: block; 
+    position: relative;
+}
+
+.areas-blur-container .item {
+    font-weight: 300;
+    color: rgba(255,255,255,0.9);
+    display: inline-block; 
+    opacity: 0;
+    filter: blur(16px);
+    transition: opacity 0.8s ease, filter 0.8s ease;
+    transition-delay: calc(var(--i) * 130ms);
+}
+
+.areas-blur-container.visible .item {
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.areas-blur-container .separator {
+    margin: 0 10px;
+    color: rgba(255, 60, 0, 0.5); 
+    font-weight: 400;
+    display: inline-block; 
+    opacity: 0;
+    filter: blur(16px);
+    transition: opacity 0.8s ease, filter 0.8s ease;
+    transition-delay: calc(var(--i) * 130ms);
+}
+
+.areas-blur-container.visible .separator {
+    opacity: 1;
+    filter: blur(0px);
+}
+
+/* =========================================
+   LIGHTBULB TECHNICAL CONTOUR (DNA/IA Section)
+   ========================================= */
+:root {
+  --o12: rgba(255,60,0,0.12);
+  --o08: rgba(255,60,0,0.08);
+  --o25: rgba(255,60,0,0.25);
+  --o04: rgba(255,60,0,0.04);
+}
+
+#bulb-container .grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--o04) 1px, transparent 1px),
+    linear-gradient(90deg, var(--o04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0;
+}
+
+#bulb-container.start-draw .grid-bg {
+  animation: fadeUp 2s ease-out 0.2s forwards;
+}
+
+#bulb-container .grid-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at center, transparent 28%, var(--bg) 72%);
+}
+
+#bulb-container .s {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#bulb-container .at {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5px;
+  font-weight: 400;
+  fill: rgba(255,60,0,0.5);
+  letter-spacing: 0.06em;
+  opacity: 0;
+}
+
+#bulb-container .nd {
+  fill: var(--accent);
+  opacity: 0;
+}
+
+#bulb-container .core-glow {
+  position: absolute;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--o25) 0%, transparent 70%);
+  top: 38%; left: 50%;
+  transform: translate(-50%,-50%) scale(0.4);
+  opacity: 0;
+  z-index: 5;
+}
+
+#bulb-container .label-bottom {
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255,60,0,0.3);
+  opacity: 0;
+  white-space: nowrap;
+}
+
+/* ANIMATION SEQUENCE (Triggered by .start-draw) */
+
+#bulb-container.start-draw .base-outer  { stroke-width: 2; stroke-dasharray: 300; stroke-dashoffset: 300; animation: draw 2s cubic-bezier(0.4,0,0.15,1) 0.5s forwards; }
+#bulb-container.start-draw .base-lines  { stroke-width: 1.5; stroke-dasharray: 200; stroke-dashoffset: 200; animation: draw 1.6s ease-out 1.2s forwards; }
+#bulb-container.start-draw .neck        { stroke-width: 2; stroke-dasharray: 150; stroke-dashoffset: 150; animation: draw 1.2s cubic-bezier(0.4,0,0.2,1) 2.0s forwards; }
+#bulb-container.start-draw .bulb-left   { stroke-width: 2; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 2.5s cubic-bezier(0.22,1,0.36,1) 2.6s forwards; }
+#bulb-container.start-draw .bulb-right  { stroke-width: 2; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 2.5s cubic-bezier(0.22,1,0.36,1) 2.8s forwards; }
+#bulb-container.start-draw .inner-arc   { stroke-width: 1; stroke-dasharray: 120; stroke-dashoffset: 120; opacity: 0; animation: drawSoft 2s ease-out 5.0s forwards; }
+
+#bulb-container.start-draw .ray { stroke-width: 1.5; stroke-dasharray: 30; stroke-dashoffset: 30; opacity: 0; }
+#bulb-container.start-draw .ry1 { animation: rayPop 0.6s ease-out 5.5s forwards; }
+#bulb-container.start-draw .ry2 { animation: rayPop 0.6s ease-out 5.6s forwards; }
+#bulb-container.start-draw .ry3 { animation: rayPop 0.6s ease-out 5.7s forwards; }
+#bulb-container.start-draw .ry4 { animation: rayPop 0.6s ease-out 5.8s forwards; }
+#bulb-container.start-draw .ry5 { animation: rayPop 0.6s ease-out 5.9s forwards; }
+#bulb-container.start-draw .ry6 { animation: rayPop 0.6s ease-out 6.0s forwards; }
+#bulb-container.start-draw .ry7 { animation: rayPop 0.6s ease-out 6.1s forwards; }
+#bulb-container.start-draw .ry8 { animation: rayPop 0.6s ease-out 6.2s forwards; }
+
+#bulb-container.start-draw .dim { stroke-width: 0.5; stroke-dasharray: 300; stroke-dashoffset: 300; stroke: rgba(255,60,0,0.2); animation: draw 1.5s ease-out 6.5s forwards; }
+#bulb-container.start-draw .an1 { animation: fadeUp 0.8s ease-out 7.0s forwards; }
+#bulb-container.start-draw .an2 { animation: fadeUp 0.8s ease-out 7.2s forwards; }
+#bulb-container.start-draw .an3 { animation: fadeUp 0.8s ease-out 7.4s forwards; }
+#bulb-container.start-draw .an4 { animation: fadeUp 0.8s ease-out 7.6s forwards; }
+#bulb-container.start-draw .an5 { animation: fadeUp 0.8s ease-out 7.8s forwards; }
+
+#bulb-container.start-draw .n1 { animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 2.0s forwards; }
+#bulb-container.start-draw .n2 { animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards; }
+#bulb-container.start-draw .n3 { animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 2.7s forwards; }
+#bulb-container.start-draw .n4 { animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 5.2s forwards; }
+
+#bulb-container.start-draw .core-glow  { animation: glowIn 2.5s ease-out 5.5s forwards, glowPulse 4s ease-in-out 8.0s infinite; }
+#bulb-container.start-draw .label-bottom { animation: fadeUp 1.5s ease-out 7.5s forwards; }
+
+@keyframes draw    { to { stroke-dashoffset: 0; } }
+@keyframes drawSoft { 0% { opacity: 0; } 12% { opacity: 0.35; } 100% { opacity: 0.35; stroke-dashoffset: 0; } }
+@keyframes fadeUp  { to { opacity: 1; } }
+@keyframes rayPop  { 0% { opacity: 0; stroke-dashoffset: 30; } 35% { opacity: 1; } 100% { opacity: 1; stroke-dashoffset: 0; } }
+@keyframes pop     { 0% { opacity: 0; r: 0; } 100% { opacity: 1; r: 2.5; } }
+@keyframes glowIn  { 0% { opacity: 0; transform: translate(-50%,-50%) scale(0.4); } 100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); } }
+@keyframes glowPulse {
+  0%,100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
+  50%     { opacity: 0.7; transform: translate(-50%,-50%) scale(1.08); }
+}

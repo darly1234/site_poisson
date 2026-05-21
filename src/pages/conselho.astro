@@ -1,0 +1,118 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import EditorialBoard from '../components/EditorialBoard';
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conselho Editorial de Pareceristas | Editora Poisson</title>
+    <meta name="description" content="Colegiado de pesquisadores doutores que compõem o comitê científico ad-hoc internacional da Editora Poisson.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+    <style is:global>
+        :root {
+            --bg-color: #0b0f19;
+            --text-color: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --scroll-track: #0b0f19;
+            --scroll-thumb: rgba(255, 255, 255, 0.08);
+        }
+
+        html[data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --glass-bg: rgba(11, 15, 25, 0.94); /* Dark card background in light theme */
+            --glass-border: rgba(255, 255, 255, 0.08); /* Light border for dark card */
+            --text-muted: rgba(0, 0, 0, 0.6);
+            --scroll-track: #f1f5f9;
+            --scroll-thumb: rgba(0, 0, 0, 0.15);
+        }
+
+        body, html {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .glass {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            border: 1px solid var(--glass-border) !important;
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+        
+        .text-muted-foreground {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+        
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Light mode text colors: only page-level headings and texts turn dark */
+        html[data-theme="light"] h1:not(.glass *),
+        html[data-theme="light"] h2:not(.glass *) {
+            color: #000000 !important;
+        }
+
+        html[data-theme="light"] .text-muted-foreground:not(.glass *) {
+            color: rgba(0, 0, 0, 0.6) !important;
+        }
+
+        html[data-theme="light"] .text-foreground:not(.glass *) {
+            color: #000000 !important;
+        }
+
+        html[data-theme="light"] .border-white\/5:not(.glass *) {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html[data-theme="light"] .border-t:not(.glass *) {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        /* Inside the dark glass cards, keep text light */
+        html[data-theme="light"] .glass h3 {
+            color: #f8fafc !important;
+        }
+        html[data-theme="light"] .glass .text-muted-foreground,
+        html[data-theme="light"] .glass span {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--scroll-track);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--scroll-thumb);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+    </style>
+</head>
+<body>
+    <Header />
+
+    <main class="pt-36 min-h-screen">
+        <EditorialBoard client:load />
+    </main>
+</body>
+</html>

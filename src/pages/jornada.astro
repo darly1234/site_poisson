@@ -1,0 +1,172 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import ManuscriptJourney from '../components/ManuscriptJourney';
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornada do Manuscrito | Editora Poisson</title>
+    <meta name="description" content="Acompanhe o caminho detalhado do seu artigo acadêmico desde a submissão inicial até a publicação oficial em Acesso Aberto pela Editora Poisson.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+    <style is:global>
+        :root {
+            --bg-color: #0b0f19;
+            --text-color: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --scroll-track: #0b0f19;
+            --scroll-thumb: rgba(255, 255, 255, 0.08);
+            
+            /* Journey Specific Variables */
+            --inactive-stage-bg: rgba(255, 255, 255, 0.02);
+            --inactive-stage-border: rgba(255, 255, 255, 0.06);
+            --inactive-stage-text: rgba(255, 255, 255, 0.5);
+            --inactive-stage-icon: rgba(255, 255, 255, 0.3);
+            --stepper-node-inactive: rgba(255, 255, 255, 0.1);
+            --stepper-line: rgba(255, 255, 255, 0.08);
+            --stepper-node: rgba(255, 255, 255, 0.15);
+        }
+
+        html[data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --glass-bg: rgba(11, 15, 25, 0.94);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: rgba(0, 0, 0, 0.6);
+            --scroll-track: #f1f5f9;
+            --scroll-thumb: rgba(0, 0, 0, 0.15);
+            
+            /* Journey Light Theme Variables - keep these dark compatible */
+            --inactive-stage-bg: rgba(11, 15, 25, 0.92);
+            --inactive-stage-border: rgba(255, 255, 255, 0.08);
+            --inactive-stage-text: rgba(255, 255, 255, 0.5);
+            --inactive-stage-icon: rgba(255, 255, 255, 0.3);
+            --stepper-node-inactive: rgba(255, 255, 255, 0.15);
+            --stepper-line: rgba(0, 0, 0, 0.15);
+            --stepper-node: rgba(0, 0, 0, 0.2);
+        }
+
+        body, html {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .glass {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            border: 1px solid var(--glass-border) !important;
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+        
+        .text-muted-foreground {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+        
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Light Mode Specific Overrides: Only top page headers and description turn dark */
+        html[data-theme="light"] h1:not(.journey-stage-btn *):not(.journey-details-panel *):not(.journey-indexation-section *),
+        html[data-theme="light"] p.text-muted-foreground:not(.journey-stage-btn *):not(.journey-details-panel *):not(.journey-indexation-section *) {
+            color: #000000 !important;
+        }
+
+
+        /* 1. Base/Inactive Stage Buttons in light theme */
+        html[data-theme="light"] .journey-stage-btn-inactive {
+            background-color: rgba(11, 15, 25, 0.92) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        
+        /* Keep inactive texts and icons light inside cards */
+        html[data-theme="light"] .journey-stage-btn-inactive p {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        html[data-theme="light"] .journey-stage-btn-inactive svg {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        /* 2. Active Stage Button in light theme */
+        html[data-theme="light"] .journey-stage-btn-active {
+            background-color: rgba(30, 41, 59, 0.95) !important;
+        }
+
+        /* 3. Detail Panel in light theme */
+        html[data-theme="light"] .journey-details-panel {
+            background-color: rgba(11, 15, 25, 0.94) !important;
+        }
+        
+        /* Keep details text, headings, and lists light inside the panel */
+        html[data-theme="light"] .journey-details-panel h2,
+        html[data-theme="light"] .journey-details-panel .text-foreground,
+        html[data-theme="light"] .journey-details-panel [class*="text-foreground"] {
+            color: #ffffff !important;
+        }
+        
+        html[data-theme="light"] .journey-details-panel .text-muted-foreground {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* 4. Indexation Section in light theme (keep it dark) */
+        html[data-theme="light"] .journey-indexation-section {
+            background-color: #0b0f19 !important;
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        @media (min-width: 768px) {
+            html[data-theme="light"] .journey-indexation-section {
+                padding: 4rem 3rem;
+            }
+        }
+        
+        html[data-theme="light"] .journey-indexation-section h2,
+        html[data-theme="light"] .journey-indexation-section h3,
+        html[data-theme="light"] .journey-indexation-section h4,
+        html[data-theme="light"] .journey-indexation-section .text-foreground,
+        html[data-theme="light"] .journey-indexation-section [class*="text-foreground"] {
+            color: #ffffff !important;
+        }
+        
+        html[data-theme="light"] .journey-indexation-section .text-muted-foreground,
+        html[data-theme="light"] .journey-indexation-section p.text-muted-foreground {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--scroll-track);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--scroll-thumb);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+    </style>
+</head>
+<body>
+    <Header />
+
+    <main class="pt-36 min-h-screen">
+        <ManuscriptJourney client:load />
+    </main>
+</body>
+</html>

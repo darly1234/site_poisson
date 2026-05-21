@@ -1,0 +1,11 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Blog from '../components/Blog';
+---
+
+<Layout title="Blog - Poisson">
+  <main>
+    <Blog client:load />
+  </main>
+</Layout>

@@ -1,0 +1,12 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Sobre from '../components/Sobre';
+---
+
+<Layout
+  title="Sobre a Editora | Editora Poisson"
+  description="Conheça a Editora Poisson — fundada em 2017, com mais de 1.200 títulos científicos publicados, 30.000 autores e presença em 15 países."
+>
+  <Sobre client:load />
+</Layout>

@@ -1,0 +1,443 @@
+---
+import versionData from '../data/version.json';
+const version = versionData.version;
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '' || pathname === '/index.html';
+const navBgClass = 'bg-black border-b border-zinc-800';
+
+// Helper to determine if a nav link is active
+function isActive(href: string): boolean {
+  if (href === '/') return isHome;
+  return pathname.startsWith(href);
+}
+---
+<script is:inline>
+  (function() {
+    const theme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+
+<!-- Elementos de UI Premium Globais -->
+<div id="custom-cursor"></div>
+<div class="grain"></div>
+
+<!-- Scripts Legados e de Interatividade Global -->
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script is:inline src="/js/global.js"></script>
+
+<nav class={`fixed top-0 w-full z-[200] p-6 lg:p-10 flex justify-between items-baseline hero-ui transition-colors duration-300 ${navBgClass}`}>
+    <div class="flex items-center gap-3 group">
+        <a href="/" class="flex-shrink-0">
+            <div id="logo-container" class="relative w-9 h-9" style="transform-origin: center;">
+                <svg id="logo-svg" viewBox="0 0 600 600" class="w-9 h-9" style="overflow: visible;" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ripple (Green stroke) -->
+                    <polygon id="logo-ripple" points="300,130.29 469.71,300 300,469.71 130.29,300" fill="none" stroke="#159A41" stroke-width="6" style="opacity: 0; transform-origin: 300px 300px;" />
+                    <!-- Left Green Diamond -->
+                    <polygon id="logo-left-green" points="175,208.08 266.92,300 175,391.92 83.08,300" fill="#159A41" style="transform-origin: 175px 300px;" />
+                    <!-- Right Green Diamond -->
+                    <polygon id="logo-right-green" points="425,208.08 516.92,300 425,391.92 333.08,300" fill="#159A41" style="transform-origin: 425px 300px;" />
+                    <!-- Blue Diamond -->
+                    <polygon id="logo-center-blue" points="300,130.29 469.71,300 300,469.71 130.29,300" fill="#1F3D7E" style="transform-origin: 300px 300px;" />
+                </svg>
+            </div>
+        </a>
+        <a href="/" class="flex flex-col select-none relative text-white decoration-none" id="logo-text-wrapper">
+            <span class="text-base md:text-lg font-bold tracking-tight leading-none flex text-white" id="logo-title" style="font-family: 'DM Serif Display', Georgia, serif; white-space: nowrap;">
+                Editora Poisson
+            </span>
+            <span class="text-[8px] md:text-[9px] font-light tracking-[0.22em] uppercase leading-none mt-1 text-white opacity-60" id="logo-subtitle" style="white-space: nowrap;">
+                O conhecimento em movimento
+            </span>
+        </a>
+    </div>
+    
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex space-x-6 text-[10px] uppercase tracking-[0.3em] font-bold text-white items-baseline desktop-links">
+        <a href="/" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/') ? 'nav-active' : ''}`}>Início</a>
+        <a href="/sobre" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/sobre') ? 'nav-active' : ''}`}>Sobre</a>
+        <a href="/biblioteca" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/biblioteca') ? 'nav-active' : ''}`}>Biblioteca</a>
+        <a href="/blog" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/blog') ? 'nav-active' : ''}`}>Blog</a>
+        <a href="/chamadas-abertas" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/chamadas-abertas') ? 'nav-active' : ''}`}>Chamadas</a>
+        <a href="/jornada" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/jornada') ? 'nav-active' : ''}`}>Jornada</a>
+        <a href="/conselho" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/conselho') ? 'nav-active' : ''}`}>Conselho</a>
+        
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle-btn" class="p-2 rounded-full border border-white/10 glass text-white/70 hover:text-white hover:border-white/20 transition-all duration-300 flex items-center justify-center self-center" aria-label="Alternar tema" style="margin-top: -2px;">
+            <!-- Sun Icon (shows in dark theme) -->
+            <svg id="theme-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <!-- Moon Icon (shows in light theme) -->
+            <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+
+        <a href="https://individual.poisson.com.br" class="bg-white text-black px-6 py-2 rounded-full hover:bg-orange-600 hover:text-white transition-colors login-btn">Login / Submissão</a>
+        <span class="text-[8px] font-mono opacity-30 tracking-widest">v{version}</span>
+    </div>
+
+    <!-- Mobile Menu Toggle & Theme Toggle Wrapper -->
+    <div class="flex items-center gap-3 md:hidden z-[210]">
+        <!-- Login Button (Mobile) -->
+        <a href="https://individual.poisson.com.br" class="bg-white text-black px-4 py-1.5 rounded-full text-[9px] uppercase font-bold tracking-wider hover:bg-orange-600 hover:text-white transition-colors login-btn">Login</a>
+        
+        <!-- Theme Toggle Button (Mobile) -->
+        <button id="theme-toggle-btn-mobile" class="p-2 rounded-full border border-white/10 glass text-white/70 hover:text-white hover:border-white/20 transition-all duration-300 flex items-center justify-center" aria-label="Alternar tema">
+            <!-- Sun Icon (shows in dark theme) -->
+            <svg id="theme-sun-mobile" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <!-- Moon Icon (shows in light theme) -->
+            <svg id="theme-moon-mobile" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+
+        <button id="menu-toggle" class="flex flex-col justify-center items-end space-y-1.5 z-[210]">
+            <span class="w-8 h-[2px] bg-white transition-all duration-300"></span>
+            <span class="w-5 h-[2px] bg-white transition-all duration-300"></span>
+            <span class="w-8 h-[2px] bg-white transition-all duration-300"></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 bg-black z-[190] flex flex-col justify-center items-center space-y-6 text-3xl serif-extra italic opacity-0 pointer-events-none transition-all duration-500">
+    <a href="/" class={`mobile-link opacity-0 translate-y-4 ${isActive('/') ? 'mobile-active' : ''}`}>Início</a>
+    <a href="/sobre" class={`mobile-link opacity-0 translate-y-4 ${isActive('/sobre') ? 'mobile-active' : ''}`}>Sobre</a>
+    <a href="/biblioteca" class={`mobile-link opacity-0 translate-y-4 ${isActive('/biblioteca') ? 'mobile-active' : ''}`}>Biblioteca</a>
+    <a href="/blog" class={`mobile-link opacity-0 translate-y-4 ${isActive('/blog') ? 'mobile-active' : ''}`}>Blog</a>
+    <a href="/chamadas-abertas" class={`mobile-link opacity-0 translate-y-4 ${isActive('/chamadas-abertas') ? 'mobile-active' : ''}`}>Chamadas</a>
+    <a href="/jornada" class={`mobile-link opacity-0 translate-y-4 ${isActive('/jornada') ? 'mobile-active' : ''}`}>Jornada</a>
+    <a href="/conselho" class={`mobile-link opacity-0 translate-y-4 ${isActive('/conselho') ? 'mobile-active' : ''}`}>Conselho</a>
+    <a href="https://individual.poisson.com.br" class="mobile-link opacity-0 translate-y-4 text-orange-500">Login / Submissão</a>
+</div>
+
+<script is:inline>
+(function() {
+    function initLogoAnimation() {
+        if (typeof gsap === "undefined") {
+            setTimeout(initLogoAnimation, 50);
+            return;
+        }
+
+        const DURATION = 6;
+        const tl = gsap.timeline({ repeat: -1 });
+
+        // Reset state before each iteration
+        tl.set("#logo-left-green, #logo-right-green, #logo-center-blue, #logo-ripple, #logo-container", {
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            opacity: 1
+        });
+
+        // 1. Left Green Diamond
+        tl.fromTo("#logo-left-green", 
+            { x: -700, y: -500, rotation: 220, opacity: 0 },
+            { x: 0, y: 0, rotation: 0, opacity: 1, duration: 1.2, ease: "back.out(1.70158)" },
+            0.05
+        );
+
+        // 2. Right Green Diamond
+        tl.fromTo("#logo-right-green", 
+            { x: 700, y: -500, rotation: -220, opacity: 0 },
+            { x: 0, y: 0, rotation: 0, opacity: 1, duration: 1.2, ease: "back.out(1.70158)" },
+            0.20
+        );
+
+        // 3. Center Blue Diamond
+        tl.fromTo("#logo-center-blue", 
+            { y: -800, rotation: -180, opacity: 0 },
+            { y: 0, rotation: 0, opacity: 1, duration: 1.2, ease: "back.out(1.70158)" },
+            0.35
+        );
+
+        // 4. Ripple
+        tl.fromTo("#logo-ripple", 
+            { scale: 1, opacity: 0.6 },
+            { scale: 1.45, opacity: 0, duration: 0.7, ease: "none" },
+            1.55
+        );
+
+        // 5. Breathing on logo container
+        tl.to("#logo-container", { scale: 1.012, duration: 0.96, ease: "sine.out" }, 1.55)
+          .to("#logo-container", { scale: 0.988, duration: 1.92, ease: "sine.inOut" })
+          .to("#logo-container", { scale: 1, duration: 0.96, ease: "sine.in" });
+
+        // 8. Outro fade out for symbol only
+        tl.to("#logo-container", {
+            opacity: 0,
+            duration: 0.55,
+            ease: "power2.in"
+        }, 5.45);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+            initLogoAnimation();
+        });
+    } else {
+        initLogoAnimation();
+    }
+    // --- Active Nav Link Animation ---
+    function initActiveNavIndicator() {
+        if (typeof gsap === 'undefined') {
+            setTimeout(initActiveNavIndicator, 50);
+            return;
+        }
+
+        // Botão login dá zoom depois que a seta toca o centro do alvo e espera um pouco no início.
+        // Fora da página inicial, ele deve ficar visível imediatamente.
+        const isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html' || window.location.pathname === '';
+        if (isHomePage) {
+            gsap.fromTo('.login-btn',
+                { scale: 0, opacity: 0 },
+                {
+                    scale: 1,
+                    opacity: 1,
+                    duration: 0.5,
+                    ease: 'back.out(1.8)',
+                    delay: 1.6,
+                    clearProps: 'transform' // Clear inline transform to avoid conflicting with CSS hover transitions
+                }
+            );
+        } else {
+            gsap.set('.login-btn', {
+                scale: 1,
+                opacity: 1,
+                clearProps: 'transform'
+            });
+        }
+
+        const activeLink = document.querySelector('.desktop-links .nav-active');
+        if (!activeLink) return;
+
+        // Barra deslizante abaixo do link ativo
+        const bar = document.createElement('span');
+        bar.className = 'nav-active-bar';
+        activeLink.appendChild(bar);
+
+        // Bolinha no final da barra
+        const dot = document.createElement('span');
+        dot.className = 'nav-active-dot';
+        activeLink.appendChild(dot);
+
+        // Barra desliza da esquerda para a direita
+        gsap.fromTo(bar,
+            { scaleX: 0, transformOrigin: 'left center' },
+            { scaleX: 1, duration: 0.6, ease: 'power3.out', delay: 0.4 }
+        );
+
+        // Bolinha aparece com spring quando a barra chega (0.4 + 0.6 = 1.0s)
+        gsap.fromTo(dot,
+            { scale: 0, opacity: 0 },
+            {
+                scale: 1, opacity: 1,
+                duration: 0.45, ease: 'back.out(3)', delay: 1.0,
+                onComplete: () => {
+                    // Pulso suave infinito
+                    gsap.to(dot, {
+                        scale: 1.5,
+                        opacity: 0.6,
+                        repeat: -1,
+                        yoyo: true,
+                        duration: 1.0,
+                        ease: 'sine.inOut'
+                    });
+                }
+            }
+        );
+
+        // Brilho suave no texto ativo
+        gsap.to(activeLink, {
+            textShadow: '0 0 18px rgba(249,115,22,0.5)',
+            repeat: -1,
+            yoyo: true,
+            duration: 1.8,
+            ease: 'sine.inOut',
+            delay: 1.0
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initActiveNavIndicator);
+    } else {
+        initActiveNavIndicator();
+    }
+
+})();
+</script>
+
+<!-- Script para controle do Theme Toggle -->
+<script is:inline>
+  (function() {
+    function initThemeToggle() {
+      const btns = [document.getElementById('theme-toggle-btn'), document.getElementById('theme-toggle-btn-mobile')];
+
+      // Get current theme from localStorage or default to dark
+      let theme = localStorage.getItem('theme') || 'dark';
+      updateTheme(theme);
+
+      function updateTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        // Dispatch a global event for React components (like EditorialBoard.tsx or others) to react to theme change
+        window.dispatchEvent(new CustomEvent('theme-change', { detail: t }));
+      }
+
+      btns.forEach(btn => {
+        if (!btn) return;
+        btn.onclick = () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          localStorage.setItem('theme', newTheme);
+          updateTheme(newTheme);
+        };
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initThemeToggle);
+    } else {
+      initThemeToggle();
+    }
+  })();
+</script>
+
+<style is:global>
+    /* Theme transitions */
+    nav #logo-text-wrapper, nav .desktop-links a, nav .desktop-links span, nav #menu-toggle span, nav .login-btn, nav #theme-toggle-btn, nav #theme-toggle-btn-mobile {
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* ── Active Nav Link ── */
+    .desktop-links .nav-link {
+        padding-bottom: 4px;
+    }
+
+    .desktop-links .nav-active {
+        color: #f97316 !important; /* orange-500 */
+    }
+
+    /* Barra deslizante abaixo do link ativo */
+    .nav-active-bar {
+        display: block;
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: calc(100% - 5px); /* para a ponta alinhar com o centro da bolinha */
+        height: 2px;
+        background: linear-gradient(90deg, #f97316, #fb923c, #fdba74);
+        border-radius: 999px;
+        box-shadow: 0 0 8px 1px rgba(249, 115, 22, 0.6);
+        transform-origin: left center;
+    }
+
+    /* Forçar a barra de navegação a ser preta com links brancos independente de temas */
+    nav.hero-ui {
+        background-color: #000000 !important;
+        border-color: #27272a !important; /* zinc-800 */
+    }
+    nav.hero-ui a,
+    nav.hero-ui span,
+    nav.hero-ui button,
+    nav.hero-ui #logo-title,
+    nav.hero-ui #logo-subtitle {
+        color: #ffffff !important;
+    }
+    nav.hero-ui .desktop-links a.nav-active {
+        color: #f97316 !important; /* Laranja ativo */
+    }
+    nav.hero-ui #menu-toggle span {
+        background-color: #ffffff !important;
+    }
+    nav.hero-ui .login-btn {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        opacity: 1; /* Visível por padrão para evitar sumir em navegações rápidas */
+        transform: scale(1);
+    }
+    nav.hero-ui .login-btn:hover {
+        background-color: #ea580c !important; /* orange-600 */
+        color: #ffffff !important;
+    }
+
+    /* Controle de visibilidade dos ícones de tema via CSS puro */
+    #theme-sun, #theme-sun-mobile, #theme-moon, #theme-moon-mobile {
+        display: none !important;
+    }
+    [data-theme="dark"] #theme-sun,
+    [data-theme="dark"] #theme-sun-mobile {
+        display: block !important;
+    }
+    [data-theme="light"] #theme-moon,
+    [data-theme="light"] #theme-moon-mobile {
+        display: block !important;
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+    nav.hero-ui #theme-toggle-btn,
+    nav.hero-ui #theme-toggle-btn-mobile {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    nav.hero-ui #theme-toggle-btn:hover,
+    nav.hero-ui #theme-toggle-btn-mobile:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.25) !important;
+        color: #ffffff !important;
+    }
+
+    /* Bolinha no final da barra (alvo) */
+    .nav-active-dot {
+        display: block;
+        position: absolute;
+        bottom: -7px;   /* centro vertical: bar center = -3px; dot radius = 4px; -3-4 = -7 */
+        right: -4px;    /* centro horizontal na ponta da barra */
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #000000 !important; /* Centro preto */
+        border: 2px solid #f97316 !important; /* Borda laranja */
+        box-shadow: 0 0 6px 1px rgba(249, 115, 22, 0.8) !important;
+    }
+
+    /* ── Mobile Active Link ── */
+    .mobile-link {
+        position: relative;
+        color: white;
+        transition: color 0.2s ease;
+    }
+
+    .mobile-active {
+        color: #f97316 !important;
+    }
+
+    .mobile-active::before {
+        content: '◆';
+        position: absolute;
+        left: -1.6rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.55rem;
+        color: #f97316;
+        animation: mobile-dot-pulse 1.5s ease-in-out infinite;
+    }
+
+    .mobile-active::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #f97316, transparent);
+        border-radius: 999px;
+    }
+
+    @keyframes mobile-dot-pulse {
+        0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+        50% { opacity: 0.4; transform: translateY(-50%) scale(0.6); }
+    }
+
+</style>

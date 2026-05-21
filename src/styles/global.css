@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* =========================================
+   GLOBAL STYLES — Nova Sophia
+   Compartilhado por todas as páginas
+   ========================================= */
+
+:root {
+    --bg: #0d0d0d;
+    --primary: #ffffff;
+    --accent: #ff3c00;
+    --gray: #262626;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+:root[data-theme="light"] {
+    --bg: #fafafc;
+    --primary: #0a0a0d;
+    --gray: #e4e4e9;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+}
+
+.serif-extra {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: -0.05em;
+}
+
+/* Custom Cursor */
+#custom-cursor {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999999;
+    mix-blend-mode: difference;
+    transition: transform 0.1s ease;
+}
+
+/* Grain Overlay */
+.grain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Stat Card (usado em home e impacto) */
+.stat-card {
+    border-bottom: 1px solid var(--gray);
+    padding: 2rem 0;
+}
+@media (min-width: 768px) {
+    .stat-card {
+        padding: 4rem 0;
+    }
+}
+
+.impact-gradient {
+    background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
+}
+
+/* Mobile Menu Classes */
+#mobile-menu.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#mobile-menu.active .mobile-link {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#mobile-menu .mobile-link:nth-child(1) { transition-delay: 0.1s; }
+#mobile-menu .mobile-link:nth-child(2) { transition-delay: 0.2s; }
+#mobile-menu .mobile-link:nth-child(3) { transition-delay: 0.3s; }
+
+/* Hide cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    #custom-cursor {
+        display: none;
+    }
+    body {
+        cursor: auto;
+    }
+}

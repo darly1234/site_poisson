@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  try {
+    const res = await fetch('https://individual.poisson.com.br/api/public/blog');
+    if (!res.ok) return [];
+    const posts = await res.json();
+    return posts.map((post: any) => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+  } catch {
+    return [];
+  }
+}
+
+const { post } = Astro.props;
+
+const COLORS = ['#ff5f1f', '#2563eb', '#10b981', '#8b5cf6', '#f59e0b'];
+const color = COLORS[post.id % COLORS.length] || '#ff3c00';
+
+const formattedDate = post.published_at
+  ? new Date(post.published_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+  : '';
+---
+
+<Layout
+  title={`${post.title} | Blog Poisson`}
+  description={post.excerpt || post.title}
+>
+  <div class="bg-[#050505] min-h-screen text-white font-['Plus_Jakarta_Sans',sans-serif]">
+
+    <!-- Hero com capa -->
+    <div class="relative w-full pt-24" style={`min-height: 60vh`}>
+      {post.cover_image ? (
+        <div class="absolute inset-0 overflow-hidden">
+          <img
+            src={post.cover_image}
+            alt={post.title}
+            class="w-full h-full object-cover opacity-30"
+          />
+          <div class="absolute inset-0 bg-gradient-to-b from-[#050505]/60 via-[#050505]/40 to-[#050505]"></div>
+        </div>
+      ) : (
+        <div class="absolute inset-0" style={`background: radial-gradient(ellipse at 60% 40%, ${color}15, transparent 70%)`}></div>
+      )}
+
+      <div class="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-20">
+        <a href="/blog" class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors mb-12">
+          ← Voltar ao Blog
+        </a>
+
+        <div class="flex items-center gap-3 mb-8">
+          <span class="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-full text-white" style={`background:${color}`}>
+            {post.category}
+          </span>
+          {formattedDate && (
+            <span class="text-neutral-500 text-xs font-bold uppercase tracking-widest">{formattedDate}</span>
+          )}
+        </div>
+
+        <h1 class="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] mb-8">
+          {post.title}
+        </h1>
+
+        {post.excerpt && (
+          <p class="text-xl text-neutral-400 leading-relaxed max-w-2xl border-l-4 pl-6" style={`border-color:${color}`}>
+            {post.excerpt}
+          </p>
+        )}
+      </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="bg-white text-[#050505] rounded-t-[60px] md:rounded-t-[100px] -mt-10 relative z-10">
+      <div class="max-w-3xl mx-auto px-6 py-20 md:py-32">
+        <div
+          class="prose prose-neutral prose-lg max-w-none
+            prose-headings:font-black prose-headings:tracking-tight
+            prose-h2:text-3xl prose-h3:text-2xl
+            prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline
+            prose-img:rounded-2xl prose-img:shadow-lg
+            prose-blockquote:border-l-[#ff3c00] prose-blockquote:not-italic
+            prose-strong:text-[#050505]"
+          set:html={post.content}
+        />
+
+        <div class="mt-24 pt-12 border-t border-neutral-100 flex items-center justify-between flex-wrap gap-6">
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1">Publicado em</span>
+            <span class="font-bold text-neutral-700">{formattedDate}</span>
+          </div>
+          <a href="/blog" class="px-8 py-3 bg-[#050505] text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-full hover:bg-[#ff3c00] transition-colors">
+            ← Ver todos os posts
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
