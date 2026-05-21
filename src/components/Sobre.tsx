@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { BookOpen, Share2, Award, Zap, Compass, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
 import { BookshelfScene } from './BookshelfScene';
@@ -83,8 +83,6 @@ export default function Sobre() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const lineH = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
   return (
     <div ref={containerRef} className="bg-[#050505] text-white min-h-screen font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#ff5f1f] selection:text-white overflow-x-hidden">
@@ -92,11 +90,9 @@ export default function Sobre() {
       {/* Hero Section */}
       <section className="relative min-h-[75vh] flex flex-col px-6 pt-32 pb-24 overflow-hidden">
         {/* Nuvem 3D de livros */}
-        {mounted && (
-          <div className="absolute inset-0 pointer-events-none z-0">
-            <BookshelfScene />
-          </div>
-        )}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <BookshelfScene />
+        </div>
 
         {/* Breathing animated meshes */}
         <div className="absolute inset-0 pointer-events-none opacity-40">
