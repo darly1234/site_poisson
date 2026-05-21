@@ -13,7 +13,8 @@ function isActive(href: string): boolean {
 ---
 <script is:inline>
   (function() {
-    const theme = localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme') || 'dark';
+    const pageDefault = document.documentElement.getAttribute('data-default-theme') || 'dark';
+    const theme = localStorage.getItem('theme') || pageDefault;
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>

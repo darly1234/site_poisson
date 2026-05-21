@@ -16,8 +16,8 @@
 
     if (!btn || !sun || !moon) return;
 
-    // localStorage tem prioridade; se não houver, usa o data-theme do HTML (padrão da página)
-    let theme = localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme') || 'dark';
+    const pageDefault = document.documentElement.getAttribute('data-default-theme') || 'dark';
+    let theme = localStorage.getItem('theme') || pageDefault;
     document.documentElement.setAttribute('data-theme', theme);
     updateTheme(theme);
 
