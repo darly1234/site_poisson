@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { BookOpen, Share2, Award, Zap, Compass, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
-import { BookshelfSceneCSS } from './BookshelfSceneCSS';
+import BookshelfSceneR3F from './BookshelfSceneR3F';
 
 const VALORES = [
   {
@@ -92,7 +92,7 @@ export default function Sobre() {
 
         {/* Nuvem 3D de livros */}
         <div className="absolute inset-0" style={{ zIndex: 0, height: '100%', width: '100%' }}>
-          <BookshelfSceneCSS />
+          <BookshelfSceneR3F />
         </div>
 
         {/* Breathing animated meshes */}
