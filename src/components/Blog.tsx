@@ -178,7 +178,7 @@ function PostModal({ post, onClose }: { post: Post; onClose: () => void }) {
           )}
 
           <div
-            className="prose prose-neutral max-w-none text-neutral-700 leading-relaxed [&_h2]:font-black [&_h2]:tracking-tighter [&_h3]:font-bold [&_a]:text-orange-500 [&_img]:rounded-xl [&_img]:my-6"
+            className="prose prose-neutral max-w-none text-neutral-700 leading-relaxed text-justify [&_h2]:font-black [&_h2]:tracking-tighter [&_h2]:text-left [&_h3]:font-bold [&_h3]:text-left [&_a]:text-orange-500 [&_img]:rounded-xl [&_img]:my-6"
             dangerouslySetInnerHTML={{ __html: post.content || '' }}
           />
         </div>
