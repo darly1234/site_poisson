@@ -96,8 +96,3 @@ body {
         cursor: auto;
     }
 }
-
-@keyframes bookshelf-fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}

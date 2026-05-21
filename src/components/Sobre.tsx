@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { BookOpen, Share2, Award, Zap, Compass, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
-import { BookshelfScene } from './BookshelfScene';
 
 const VALORES = [
   {
@@ -89,10 +88,6 @@ export default function Sobre() {
       
       {/* Hero Section */}
       <section className="relative min-h-[75vh] flex flex-col px-6 pt-32 pb-24 overflow-hidden">
-        {/* Nuvem 3D de livros */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', pointerEvents: 'none', zIndex: 0 }}>
-          <BookshelfScene />
-        </div>
 
         {/* Breathing animated meshes */}
         <div className="absolute inset-0 pointer-events-none opacity-40">
