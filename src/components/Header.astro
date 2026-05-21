@@ -13,8 +13,8 @@ function isActive(href: string): boolean {
 ---
 <script is:inline>
   (function() {
-    const pageDefault = document.documentElement.getAttribute('data-default-theme') || 'dark';
-    const theme = localStorage.getItem('theme') || pageDefault;
+    const fixed = document.documentElement.getAttribute('data-fixed-theme');
+    const theme = fixed || localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
@@ -270,8 +270,13 @@ function isActive(href: string): boolean {
   (function() {
     function initThemeToggle() {
       const btns = [document.getElementById('theme-toggle-btn'), document.getElementById('theme-toggle-btn-mobile')];
+      const fixed = document.documentElement.getAttribute('data-fixed-theme');
 
-      // Get current theme from localStorage or default to dark
+      if (fixed) {
+        btns.forEach(btn => { if (btn) btn.style.display = 'none'; });
+        return;
+      }
+
       let theme = localStorage.getItem('theme') || 'dark';
       updateTheme(theme);
 
