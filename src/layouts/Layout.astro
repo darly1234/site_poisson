@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title?: string;
@@ -29,6 +30,7 @@ const {
   <body>
     <Header />
     <slot />
+    <SiteFooter />
 
     <!-- WhatsApp Floating Button -->
     <a

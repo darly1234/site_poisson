@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/home.css';
 import Header from '../components/Header.astro';
 import { OrbitalCarousel } from '../components/OrbitalCarousel';
+import SiteFooter from '../components/SiteFooter.astro';
 
 ---
 
@@ -82,7 +83,7 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
                         <div class="absolute left-0 top-1 bottom-0 w-[1px] bg-gradient-to-b from-[#ff3c00] to-transparent opacity-50 hero-text opacity-0 scale-y-0 origin-top line-anim"></div>
                         
                         <p class="text-[#ff3c00] uppercase text-[10px] md:text-xs tracking-widest font-bold mb-5 hero-text opacity-0">
-                            O fio do conhecimento começa aqui e guia a sua jornada.
+                            A linha do conhecimento começa aqui e guia a sua jornada.
                         </p>
                         <p class="text-zinc-400 text-[1rem] md:text-[1.1rem] leading-relaxed font-light hero-text opacity-0">
                             Fundada em 2017, a <strong class="text-white font-normal">Editora Poisson</strong> publica livros acadêmicos e coletâneas multidisciplinares, distribuídos integralmente em acesso aberto. Cada título passa por curadoria editorial rigorosa, registro de <strong class="text-white font-normal">ISBN</strong>, <strong class="text-white font-normal">DOI</strong> e <strong class="text-white font-normal">ficha catalográfica</strong> — e fica disponível, sem barreiras, para qualquer leitor em qualquer lugar.
@@ -767,45 +768,90 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
             modal.appendChild(closeBtn);
           }
 
-          // Imagem
-          if (content.imageUrl) {
-            const imgContainer = document.createElement('div');
-            imgContainer.id = 'poisson-popup-image-container';
+          // Condicional de Render de Acordo com a Configuração de Fundo
+          if (styling.useImageAsBackground) {
+            const bgContainer = document.createElement('div');
+            bgContainer.id = 'poisson-popup-bg-container';
+            bgContainer.style.position = 'relative';
+            bgContainer.style.width = '100%';
+            bgContainer.style.overflow = 'hidden';
+            bgContainer.style.borderRadius = `${styling.borderRadius || 16}px`;
+
             const img = document.createElement('img');
-            img.id = 'poisson-popup-image';
-            img.src = content.imageUrl;
-            img.alt = content.title || 'Popup Banner';
-            imgContainer.appendChild(img);
-            modal.appendChild(imgContainer);
+            img.src = content.imageUrl || '';
+            img.alt = content.title || 'Popup Background';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            img.style.userSelect = 'none';
+            img.style.pointerEvents = 'none';
+            bgContainer.appendChild(img);
+
+            if (content.buttonText) {
+              const cta = document.createElement('a');
+              cta.id = 'poisson-popup-cta';
+              cta.href = content.buttonUrl || '#';
+              cta.innerText = content.buttonText;
+              cta.addEventListener('click', closePopup);
+              
+              // Absolute positioning styling for CTA on top of background image
+              cta.style.position = 'absolute';
+              cta.style.left = `${styling.buttonLeft !== undefined ? styling.buttonLeft : 50}%`;
+              cta.style.top = `${styling.buttonTop !== undefined ? styling.buttonTop : 80}%`;
+              cta.style.transform = 'translate(-50%, -50%)';
+              cta.style.margin = '0';
+              cta.style.width = 'auto';
+              cta.style.paddingLeft = '1.5rem';
+              cta.style.paddingRight = '1.5rem';
+              cta.style.whiteSpace = 'nowrap';
+              cta.style.zIndex = '20';
+              
+              bgContainer.appendChild(cta);
+            }
+
+            modal.appendChild(bgContainer);
+          } else {
+            // Layout Clássico
+            // Imagem
+            if (content.imageUrl) {
+              const imgContainer = document.createElement('div');
+              imgContainer.id = 'poisson-popup-image-container';
+              const img = document.createElement('img');
+              img.id = 'poisson-popup-image';
+              img.src = content.imageUrl;
+              img.alt = content.title || 'Popup Banner';
+              imgContainer.appendChild(img);
+              modal.appendChild(imgContainer);
+            }
+
+            // Conteúdo
+            const contentDiv = document.createElement('div');
+            contentDiv.id = 'poisson-popup-content';
+
+            // Título
+            const title = document.createElement('h3');
+            title.id = 'poisson-popup-title';
+            title.innerText = content.title || '';
+            contentDiv.appendChild(title);
+
+            // Corpo
+            const body = document.createElement('div');
+            body.id = 'poisson-popup-body';
+            body.innerHTML = content.body || '';
+            contentDiv.appendChild(body);
+
+            // CTA
+            if (content.buttonText) {
+              const cta = document.createElement('a');
+              cta.id = 'poisson-popup-cta';
+              cta.href = content.buttonUrl || '#';
+              cta.innerText = content.buttonText;
+              cta.addEventListener('click', closePopup);
+              contentDiv.appendChild(cta);
+            }
+
+            modal.appendChild(contentDiv);
           }
-
-          // Conteúdo
-          const contentDiv = document.createElement('div');
-          contentDiv.id = 'poisson-popup-content';
-
-          // Título
-          const title = document.createElement('h3');
-          title.id = 'poisson-popup-title';
-          title.innerText = content.title || '';
-          contentDiv.appendChild(title);
-
-          // Corpo
-          const body = document.createElement('div');
-          body.id = 'poisson-popup-body';
-          body.innerHTML = content.body || '';
-          contentDiv.appendChild(body);
-
-          // CTA
-          if (content.buttonText) {
-            const cta = document.createElement('a');
-            cta.id = 'poisson-popup-cta';
-            cta.href = content.buttonUrl || '#';
-            cta.innerText = content.buttonText;
-            cta.addEventListener('click', closePopup);
-            contentDiv.appendChild(cta);
-          }
-
-          modal.appendChild(contentDiv);
           backdrop.appendChild(modal);
           document.body.appendChild(backdrop);
 
@@ -825,5 +871,6 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
         }
       })();
     </script>
+    <SiteFooter />
 </body>
 </html>

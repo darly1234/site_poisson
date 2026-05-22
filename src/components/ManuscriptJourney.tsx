@@ -1294,7 +1294,7 @@ export default function ManuscriptJourney() {
             Qualidade & Rastreabilidade Global
           </span>
           <h2 className="mt-3 font-display text-4xl md:text-5xl font-bold tracking-tight">
-            Padrões de <span className="serif text-orange-500 italic">Indexação & Impacto</span>
+            Identificadores da <span className="serif text-orange-500 italic">Publicação</span>
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             Adotamos as melhores práticas internacionais para assegurar que suas pesquisas possuam máxima visibilidade,

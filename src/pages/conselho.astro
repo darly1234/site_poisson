@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import EditorialBoard from '../components/EditorialBoard';
+import SiteFooter from '../components/SiteFooter.astro';
 ---
 
 <!DOCTYPE html>
@@ -117,5 +118,6 @@ import EditorialBoard from '../components/EditorialBoard';
     <main class="pt-36 min-h-screen">
         <EditorialBoard client:load />
     </main>
+    <SiteFooter />
 </body>
 </html>
