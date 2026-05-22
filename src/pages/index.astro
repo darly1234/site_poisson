@@ -14,7 +14,7 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
       localStorage.removeItem('theme');
       document.documentElement.setAttribute('data-theme','dark');
     </script>
-    <style>
+    <style is:global>
       #theme-toggle-btn, #theme-toggle-btn-mobile { display: none !important; }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
