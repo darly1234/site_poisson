@@ -155,6 +155,7 @@ export default function ChamadasAbertasPage() {
   const [calls, setCalls] = useState<any[]>([]);
   const [selectedId, setSelectedId] = useState<string | number>("");
   const [isHovered, setIsHovered] = useState<any>(null);
+  const [mobileModalOpen, setMobileModalOpen] = useState(false);
 
   useEffect(() => {
     fetchChamadas().then(data => {
@@ -373,7 +374,10 @@ export default function ChamadasAbertasPage() {
             {calls.map((call) => (
               <motion.div
                 key={call.id}
-                onClick={() => setSelectedId(call.id)}
+                onClick={() => {
+                  setSelectedId(call.id);
+                  if (window.innerWidth < 1024) setMobileModalOpen(true);
+                }}
                 onMouseEnter={() => setIsHovered(call.id)}
                 onMouseLeave={() => setIsHovered(null)}
                 whileHover={{ scale: 1.015, x: 2 }}
@@ -538,6 +542,99 @@ export default function ChamadasAbertasPage() {
           
         </main>
       </div>
+
+      {/* Mobile Modal */}
+      <AnimatePresence>
+        {mobileModalOpen && activeCall && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9000] bg-black/60 backdrop-blur-sm flex items-end lg:hidden"
+            onClick={(e) => { if (e.target === e.currentTarget) setMobileModalOpen(false); }}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="relative bg-white w-full max-h-[90vh] rounded-t-3xl overflow-y-auto custom-scrollbar"
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setMobileModalOpen(false)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg hover:bg-neutral-800 transition-colors"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="p-6 pt-8">
+                {/* Status + title */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="px-3 py-1 rounded-full bg-black text-white text-[9px] font-black uppercase tracking-widest">
+                      {activeCall.status}
+                    </span>
+                    <div className="h-px flex-1 bg-neutral-200" />
+                  </div>
+                  <h2 className="text-xl font-black tracking-tight leading-snug mb-1">{activeCall.title}</h2>
+                  <p className="text-sm font-semibold text-neutral-500">{activeCall.subtitle}</p>
+                </div>
+
+                {/* Cover image */}
+                <div className="relative aspect-[3/4] w-2/3 mx-auto mb-6 shadow-xl rounded-md overflow-hidden border border-neutral-200/50">
+                  <img src={activeCall.image} alt={activeCall.title} className="w-full h-full object-cover" />
+                </div>
+
+                {/* Details block */}
+                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-200/50 space-y-3 mb-6">
+                  <div className="border-b border-neutral-100 pb-3">
+                    <span className="text-[10px] font-bold uppercase text-neutral-400 tracking-wider block mb-1">Organização</span>
+                    <p className="text-sm font-semibold text-black">{activeCall.organizers}</p>
+                  </div>
+                  <div className="border-b border-neutral-100 pb-3">
+                    <span className="text-[10px] font-bold uppercase text-neutral-400 tracking-wider block mb-1">Submissão até</span>
+                    <p className="text-base font-black text-[#ff5f1f]">{activeCall.deadline}</p>
+                  </div>
+                  {activeCall.data_publicacao && (
+                    <div className="border-b border-neutral-100 pb-3">
+                      <span className="text-[10px] font-bold uppercase text-neutral-400 tracking-wider block mb-1">Data de Publicação</span>
+                      <p className="text-sm font-semibold text-black">{activeCall.data_publicacao}</p>
+                    </div>
+                  )}
+                  {activeCall.taxa_publicacao && (
+                    <div>
+                      <span className="text-[10px] font-bold uppercase text-neutral-400 tracking-wider block mb-1">Taxa de Publicação</span>
+                      <p className="text-base font-black text-[#ff5f1f]">{activeCall.taxa_publicacao}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Description */}
+                <div className="mb-8">
+                  <span className="text-[10px] font-black uppercase text-neutral-400 tracking-widest block mb-3">Sobre esta obra</span>
+                  <div
+                    className="call-description text-neutral-600 leading-relaxed text-sm"
+                    dangerouslySetInnerHTML={{ __html: activeCall.description }}
+                  />
+                </div>
+
+                {/* Submit button */}
+                <a
+                  href={activeCall.link_submissao || 'https://individual.poisson.com.br/submissions'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative overflow-hidden w-full bg-gradient-to-r from-neutral-950 to-neutral-900 text-white py-4 px-6 rounded-xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 shadow-lg mb-2 group"
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#ff5f1f] to-[#2563eb] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+                  <span className="relative z-10">Submeter Manuscrito</span>
+                  <Send size={14} className="relative z-10" />
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
