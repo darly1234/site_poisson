@@ -249,7 +249,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white text-7xl md:text-[clamp(3rem,10vw,6.5rem)] font-black tracking-tighter leading-[0.8] mb-8"
+            className="text-white text-[clamp(1.8rem,9vw,6.5rem)] font-black tracking-tighter leading-[0.8] mb-8"
           >
             PENSAMENTO<br />
             <span className="text-transparent stroke-text" style={{ WebkitTextStroke: '2px white' } as React.CSSProperties}>EM</span><br />
