@@ -1,6 +1,6 @@
 import { useState, useId, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileUp, Eye, Layers, Search, Globe, Clock, CheckCircle2, AlertCircle, Users, ChevronRight, Award, FileText, Barcode, Link2, RefreshCw } from "lucide-react";
+import { FileUp, Eye, Layers, Search, Globe, Clock, CheckCircle2, AlertCircle, Users, ChevronRight, Award, FileText, Barcode, Link2, RefreshCw, X } from "lucide-react";
 import * as THREE from "three";
 
 interface JourneyStage {
@@ -855,6 +855,7 @@ const CopperPulseFlow = ({ setActiveStage }: { setActiveStage: (stage: JourneySt
 
 export default function ManuscriptJourney() {
   const [activeStage, setActiveStage] = useState<JourneyStage>(STAGES[0]);
+  const [mobileModalOpen, setMobileModalOpen] = useState(false);
 
   return (
     <div className="mx-auto max-w-6xl px-6 pb-24">
@@ -883,7 +884,10 @@ export default function ManuscriptJourney() {
           return (
             <motion.button
               key={stage.id}
-              onClick={() => setActiveStage(stage)}
+              onClick={() => {
+                setActiveStage(stage);
+                if (window.innerWidth < 1024) setMobileModalOpen(true);
+              }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.15 }}
@@ -1173,6 +1177,114 @@ export default function ManuscriptJourney() {
             </div>
           </div>
         </motion.div>
+      </AnimatePresence>
+
+      {/* MOBILE MODAL */}
+      <AnimatePresence>
+        {mobileModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9000] bg-black/60 backdrop-blur-sm flex items-end lg:hidden"
+            onClick={(e) => { if (e.target === e.currentTarget) setMobileModalOpen(false); }}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="journey-details-panel w-full max-h-[90vh] rounded-t-3xl flex flex-col border border-white/10"
+              style={{ background: 'rgba(11,15,25,0.97)' }}
+            >
+              {/* Non-scrolling header with X */}
+              <div className="flex-shrink-0 flex items-center justify-between p-4 pb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ background: activeStage.color }} />
+                  <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: activeStage.color }}>
+                    Etapa {activeStage.id} · {activeStage.label}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMobileModalOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg hover:bg-neutral-800 transition-colors border border-white/10"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="overflow-y-auto flex-1 px-5 pb-8 pt-2">
+                <h2 className="font-display text-2xl font-bold tracking-tight text-white mb-3">
+                  {activeStage.title}
+                </h2>
+                <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                  {activeStage.longDesc}
+                </p>
+
+                {/* SLA box */}
+                <div
+                  className="rounded-2xl p-5 border space-y-4 mb-6"
+                  style={{
+                    background: `rgba(${activeStage.colorRgb},0.08)`,
+                    borderColor: `rgba(${activeStage.colorRgb},0.18)`,
+                  }}
+                >
+                  <div>
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      <Clock className="size-3.5" style={{ color: activeStage.color }} />
+                      <span>Prazo Estimado (SLA)</span>
+                    </div>
+                    <p className="font-bold text-lg text-white">{activeStage.sla}</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      <Users className="size-3.5" style={{ color: activeStage.color }} />
+                      <span>Quem Atua</span>
+                    </div>
+                    <p className="text-xs font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.8)' }}>{activeStage.participants}</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      <AlertCircle className="size-3.5" style={{ color: activeStage.color }} />
+                      <span>Entregável Final</span>
+                    </div>
+                    <p className="text-xs font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.8)' }}>{activeStage.deliverable}</p>
+                  </div>
+                </div>
+
+                {/* Action button */}
+                {activeStage.id < 5 ? (
+                  <button
+                    onClick={() => { setActiveStage(STAGES[activeStage.id]); setMobileModalOpen(false); }}
+                    className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[12px] font-mono tracking-widest uppercase font-semibold"
+                    style={{
+                      background: `rgba(${activeStage.colorRgb},0.1)`,
+                      color: activeStage.color,
+                      border: `1px solid rgba(${activeStage.colorRgb},0.25)`,
+                    }}
+                  >
+                    <span>Avançar Etapa</span>
+                    <ChevronRight className="size-3.5" />
+                  </button>
+                ) : (
+                  <motion.a
+                    href="/chamadas-abertas"
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[12px] font-mono tracking-widest uppercase text-white font-bold"
+                    style={{
+                      background: activeStage.color,
+                      boxShadow: `0 4px 14px rgba(${activeStage.colorRgb}, 0.4)`,
+                    }}
+                  >
+                    <span>Quero Publicar</span>
+                    <Globe className="size-3.5" />
+                  </motion.a>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* SEÇÃO DE INDEXAÇÃO E PADRÕES ACADÊMICOS */}
