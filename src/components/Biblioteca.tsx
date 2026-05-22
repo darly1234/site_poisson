@@ -6,6 +6,7 @@ import { fetchLibrary } from "@/lib/library/api";
 import { BookCover } from "@/components/library/BookCover";
 import { BookModal } from "@/components/library/BookModal";
 import { ScrambleHeading } from "@/components/library/ScrambleHeading";
+import LibraryHeroStack from "@/components/library/LibraryHeroStack";
 
 const PAGE_SIZE = 15;
 
@@ -173,7 +174,9 @@ function BibliotecaPage() {
           }}
         />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative mx-auto max-w-6xl">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative mx-auto max-w-6xl flex flex-row items-center gap-12">
+          {/* LEFT: title + description + search */}
+          <div className="flex-1 min-w-0">
           <ScrambleHeading
             words={["Biblioteca Virtual"]}
             className="mt-3 font-display text-[clamp(2rem,6vw,4.5rem)] leading-[1.1] tracking-tight text-balance"
@@ -245,6 +248,12 @@ function BibliotecaPage() {
               </div>
             </div>
           </motion.div>
+          </div>{/* end LEFT */}
+
+          {/* RIGHT: animated book stack — hidden on mobile */}
+          <div className="hidden lg:flex shrink-0">
+            <LibraryHeroStack />
+          </div>
         </motion.div>
       </section>
 

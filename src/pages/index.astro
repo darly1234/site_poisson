@@ -468,13 +468,362 @@ import { OrbitalCarousel } from '../components/OrbitalCarousel';
                     Login / Submissão
                 </a>
             </div>
-            
-            <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
+                            <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
         </footer>
     </div>
 
-    <!-- Scripts legados carregados de forma assncrona aps o carregamento da pgina -->
+    <!-- Scripts legados carregados de forma assncrona após o carregamento da página -->
     <script is:inline src="/js/home.js?v=1.0.41"></script>
 
+    <!-- Script do PopUp do Site -->
+    <script is:inline>
+      (function() {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? 'http://localhost:3001/api/public' : 'https://individual.poisson.com.br/api/public';
+
+        async function initPopup() {
+          try {
+            const res = await fetch(`${API_BASE}/popup`);
+            if (!res.ok) return;
+            const config = await res.json();
+            
+            if (!config || !config.enabled) return;
+
+            // Validar agendamento
+            const now = new Date();
+            if (config.scheduling) {
+              if (config.scheduling.startDateTime) {
+                const start = new Date(config.scheduling.startDateTime);
+                if (now < start) return;
+              }
+              if (config.scheduling.endDateTime) {
+                const end = new Date(config.scheduling.endDateTime);
+                if (now > end) return;
+              }
+            }
+
+            // Validar regras de capping (sessão e frequência temporal)
+            const triggers = config.triggers || {};
+            const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+            if (sessionCount >= (triggers.maxDisplayCount || 1)) {
+              return;
+            }
+
+            const dismissedUntil = localStorage.getItem('poisson_popup_dismissed_until');
+            if (dismissedUntil && now.getTime() < parseInt(dismissedUntil, 10)) {
+              return;
+            }
+
+            setupTriggers(config);
+          } catch (err) {
+            console.warn('[Popup init failed]', err);
+          }
+        }
+
+        let popupTriggered = false;
+        let timerId = null;
+
+        function setupTriggers(config) {
+          const triggers = config.triggers || {};
+
+          // Handler para scroll depth
+          function handleScroll() {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (docHeight <= 0) return;
+            const scrollPct = (window.scrollY / docHeight) * 100;
+            if (scrollPct >= (triggers.scrollDepth || 30)) {
+              triggerPopup(config);
+            }
+          }
+
+          // Handler para exit intent
+          function handleMouseLeave(e) {
+            if (e.clientY <= 0) {
+              triggerPopup(config);
+            }
+          }
+
+          // 1. Temporizador (Delay)
+          const delaySec = typeof triggers.delay === 'number' ? triggers.delay : 5;
+          timerId = setTimeout(() => {
+            triggerPopup(config);
+          }, delaySec * 1000);
+
+          // 2. Rolagem da Página
+          if (typeof triggers.scrollDepth === 'number') {
+            window.addEventListener('scroll', handleScroll, { passive: true });
+          }
+
+          // 3. Intenção de Saída (Exit Intent)
+          if (triggers.exitIntent) {
+            document.addEventListener('mouseleave', handleMouseLeave);
+          }
+
+          // Função de limpeza dos listeners
+          window._poissonPopupCleanup = function() {
+            window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('mouseleave', handleMouseLeave);
+            if (timerId) clearTimeout(timerId);
+          };
+        }
+
+        function triggerPopup(config) {
+          if (popupTriggered) return;
+          popupTriggered = true;
+
+          if (window._poissonPopupCleanup) {
+            window._poissonPopupCleanup();
+          }
+
+          renderPopup(config);
+        }
+
+        function renderPopup(config) {
+          const styling = config.styling || {};
+          const content = config.content || {};
+
+          const overlayBg = `rgba(0, 0, 0, ${styling.overlayOpacity || 0.65})`;
+          const modalBg = styling.backgroundColor || '#1e293b';
+          const textColor = styling.textColor || '#ffffff';
+          const btnBg = styling.buttonBgColor || '#ff3c00';
+          const btnTextColor = styling.buttonTextColor || '#ffffff';
+          const borderRadius = `${styling.borderRadius || 16}px`;
+          const maxWidth = `${styling.width || 520}px`;
+
+          const styleTag = document.createElement('style');
+          styleTag.innerHTML = `
+            #poisson-popup-backdrop {
+              position: fixed;
+              inset: 0;
+              z-index: 99999;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 1rem;
+              background-color: ${overlayBg};
+              backdrop-filter: blur(4px);
+              transition: opacity 0.3s ease;
+              opacity: 0;
+            }
+            #poisson-popup-modal {
+              background-color: ${modalBg};
+              color: ${textColor};
+              border-radius: ${borderRadius};
+              max-width: ${maxWidth};
+              width: 100%;
+              max-height: 90vh;
+              overflow-y: auto;
+              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+              display: flex;
+              flex-direction: column;
+              position: relative;
+              transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+              transform: scale(0.95);
+              opacity: 0;
+            }
+            #poisson-popup-close {
+              position: absolute;
+              top: 0.75rem;
+              right: 0.75rem;
+              z-index: 10;
+              border: none;
+              background: rgba(0, 0, 0, 0.2);
+              color: ${textColor};
+              width: 1.75rem;
+              height: 1.75rem;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              font-size: 1.1rem;
+              line-height: 1;
+              transition: background 0.2s;
+            }
+            #poisson-popup-close:hover {
+              background: rgba(0, 0, 0, 0.45);
+            }
+            #poisson-popup-image-container {
+              width: 100%;
+              aspect-ratio: 2/1;
+              overflow: hidden;
+              background-color: #0f172a;
+              flex-shrink: 0;
+            }
+            #poisson-popup-image {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            #poisson-popup-content {
+              padding: 1.5rem;
+              display: flex;
+              flex-direction: column;
+              flex-grow: 1;
+            }
+            #poisson-popup-title {
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              font-size: 1.25rem;
+              font-weight: 800;
+              margin: 0 0 0.75rem 0;
+              line-height: 1.25;
+            }
+            #poisson-popup-body {
+              font-size: 0.875rem;
+              line-height: 1.5;
+              opacity: 0.9;
+              margin-bottom: 1.5rem;
+              font-weight: 300;
+            }
+            #poisson-popup-body p {
+              margin-bottom: 0.75rem;
+            }
+            #poisson-popup-body p:last-child {
+              margin-bottom: 0;
+            }
+            #poisson-popup-cta {
+              display: block;
+              width: 100%;
+              padding: 0.875rem 1rem;
+              background-color: ${btnBg};
+              color: ${btnTextColor};
+              text-align: center;
+              text-transform: uppercase;
+              font-weight: 800;
+              font-size: 0.75rem;
+              letter-spacing: 0.1em;
+              border-radius: ${Math.min(styling.borderRadius || 16, 12)}px;
+              text-decoration: none;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+              transition: filter 0.2s, transform 0.1s;
+            }
+            #poisson-popup-cta:hover {
+              filter: brightness(1.1);
+            }
+            #poisson-popup-cta:active {
+              transform: scale(0.98);
+            }
+            @media (max-width: 640px) {
+              #poisson-popup-modal {
+                max-width: 100%;
+                max-height: 85vh;
+              }
+            }
+          `;
+          document.head.appendChild(styleTag);
+
+          const backdrop = document.createElement('div');
+          backdrop.id = 'poisson-popup-backdrop';
+
+          const modal = document.createElement('div');
+          modal.id = 'poisson-popup-modal';
+
+          // Fechar popup
+          function closePopup() {
+            // Incrementar exibições por sessão
+            const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+            sessionStorage.setItem('poisson_popup_session_count', (sessionCount + 1).toString());
+
+            // Definir tempo de expiração temporal de capping
+            const freqDays = config.triggers.frequencyCapDays;
+            if (typeof freqDays === 'number' && freqDays > 0) {
+              const until = new Date().getTime() + (freqDays * 24 * 60 * 60 * 1000);
+              localStorage.setItem('poisson_popup_dismissed_until', until.toString());
+            }
+
+            backdrop.style.opacity = '0';
+            modal.style.transform = 'scale(0.95)';
+            modal.style.opacity = '0';
+            setTimeout(() => {
+              backdrop.remove();
+              styleTag.remove();
+            }, 300);
+          }
+
+          // Esc para fechar
+          if (styling.closeOnEsc) {
+            const handleEsc = (e) => {
+              if (e.key === 'Escape') {
+                document.removeEventListener('keydown', handleEsc);
+                closePopup();
+              }
+            };
+            document.addEventListener('keydown', handleEsc);
+          }
+
+          // Click na máscara fecha
+          backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) {
+              closePopup();
+            }
+          });
+
+          // Botão fechar (X)
+          if (styling.showCloseButton) {
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'poisson-popup-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.addEventListener('click', closePopup);
+            modal.appendChild(closeBtn);
+          }
+
+          // Imagem
+          if (content.imageUrl) {
+            const imgContainer = document.createElement('div');
+            imgContainer.id = 'poisson-popup-image-container';
+            const img = document.createElement('img');
+            img.id = 'poisson-popup-image';
+            img.src = content.imageUrl;
+            img.alt = content.title || 'Popup Banner';
+            imgContainer.appendChild(img);
+            modal.appendChild(imgContainer);
+          }
+
+          // Conteúdo
+          const contentDiv = document.createElement('div');
+          contentDiv.id = 'poisson-popup-content';
+
+          // Título
+          const title = document.createElement('h3');
+          title.id = 'poisson-popup-title';
+          title.innerText = content.title || '';
+          contentDiv.appendChild(title);
+
+          // Corpo
+          const body = document.createElement('div');
+          body.id = 'poisson-popup-body';
+          body.innerHTML = content.body || '';
+          contentDiv.appendChild(body);
+
+          // CTA
+          if (content.buttonText) {
+            const cta = document.createElement('a');
+            cta.id = 'poisson-popup-cta';
+            cta.href = content.buttonUrl || '#';
+            cta.innerText = content.buttonText;
+            cta.addEventListener('click', closePopup);
+            contentDiv.appendChild(cta);
+          }
+
+          modal.appendChild(contentDiv);
+          backdrop.appendChild(modal);
+          document.body.appendChild(backdrop);
+
+          // Transição suave de entrada
+          requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+            modal.style.transform = 'scale(1)';
+            modal.style.opacity = '1';
+          });
+        }
+
+        // Executar inicialização quando o DOM estiver pronto
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initPopup);
+        } else {
+          initPopup();
+        }
+      })();
+    </script>
 </body>
 </html>
