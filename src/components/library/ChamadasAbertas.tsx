@@ -116,7 +116,10 @@ export default function ChamadasAbertas() {
                   href="https://individual.poisson.com.br"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full mt-8 bg-[var(--foreground)] text-[var(--background)] py-3 rounded-lg font-bold hover:opacity-90 transition-opacity text-sm text-center"
+                  className="block w-full mt-8 py-3 rounded-lg font-bold text-sm text-center transition-all duration-200"
+                  style={{ background: "transparent", color: "#f97316", border: "1px solid rgba(249,115,22,0.5)" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(249,115,22,0.12)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "#f97316"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(249,115,22,0.5)"; }}
                 >
                   Ir para Submissão
                 </a>
