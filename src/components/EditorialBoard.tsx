@@ -240,7 +240,7 @@ export default function EditorialBoard() {
       {/* HEADER */}
       <div className="text-center max-w-3xl mx-auto mb-16">
         <h1 className="mt-3 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.05] tracking-tight text-balance">
-          Colegiado de <span className="serif text-orange-500 italic">Mestres e Doutores</span>
+          Colegiado de <span className="serif text-orange-500 italic">Mestres</span> <span className="serif text-black italic">e</span> <span className="serif text-orange-500 italic">Doutores</span>
         </h1>
         <p className="mt-4 text-base text-muted-foreground text-pretty">
           Nossa comissão científica é constituída por mestres e doutores vinculados às mais renomadas instituições de ensino superior do país.
