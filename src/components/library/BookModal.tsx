@@ -347,7 +347,7 @@ export function BookModal({ book, onClose, onSelectBook, allBooks = [] }: BookMo
                   {activeTab === "descricao" && (
                     <div className="animate-in fade-in duration-200">
                       {data.description ? (
-                        <p className="text-base md:text-lg leading-relaxed text-muted-foreground text-pretty">
+                        <p className="text-base md:text-lg leading-relaxed text-muted-foreground" style={{ textAlign: "justify" }}>
                           {data.description}
                         </p>
                       ) : (

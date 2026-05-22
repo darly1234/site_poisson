@@ -150,12 +150,17 @@ export async function fetchLibrary(options?: FetchLibraryOptions): Promise<Fetch
   } else if (sort === "popular") {
     filtered = filtered.sort((a, b) => (hashId(b.id) % 30) - (hashId(a.id) % 30));
   } else {
-    // "recent" — ano decrescente; empate desfeito por ID decrescente (mais recente no banco)
+    // "recent" — ano decrescente; anos futuros (erros de dados) vão para o fim;
+    // empate desfeito pela parte numérica do ID (ex: "I-0444" → 444)
+    const currentYear = new Date().getFullYear();
+    const numId = (id: string) => parseInt(id.replace(/\D/g, "")) || 0;
     filtered = filtered.sort((a, b) => {
       const ya = parseInt(a.ano ?? "0") || 0;
       const yb = parseInt(b.ano ?? "0") || 0;
-      if (yb !== ya) return yb - ya;
-      return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
+      const ea = ya > currentYear ? -1 : ya;
+      const eb = yb > currentYear ? -1 : yb;
+      if (eb !== ea) return eb - ea;
+      return numId(b.id) - numId(a.id);
     });
   }
 
