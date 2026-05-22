@@ -63,14 +63,6 @@ function isActive(href: string): boolean {
         <a href="/jornada" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/jornada') ? 'nav-active' : ''}`}>Jornada</a>
         <a href="/conselho" class={`nav-link hover:text-orange-500 transition-colors relative ${isActive('/conselho') ? 'nav-active' : ''}`}>Conselho</a>
         
-        <!-- Theme Toggle Button -->
-        <button id="theme-toggle-btn" class="p-2 rounded-full border border-white/10 glass text-white/70 hover:text-white hover:border-white/20 transition-all duration-300 flex items-center justify-center self-center" aria-label="Alternar tema" style="margin-top: -2px;">
-            <!-- Sun Icon (shows in dark theme) -->
-            <svg id="theme-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-            <!-- Moon Icon (shows in light theme) -->
-            <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </button>
-
         <a href="https://individual.poisson.com.br" class="bg-white text-black px-6 py-2 rounded-full hover:bg-orange-600 hover:text-white transition-colors login-btn">Login / Submissão</a>
         <span class="text-[8px] font-mono opacity-30 tracking-widest">v{version}</span>
     </div>
@@ -80,14 +72,6 @@ function isActive(href: string): boolean {
         <!-- Login Button (Mobile) -->
         <a href="https://individual.poisson.com.br" class="bg-white text-black px-4 py-1.5 rounded-full text-[9px] uppercase font-bold tracking-wider hover:bg-orange-600 hover:text-white transition-colors login-btn">Login</a>
         
-        <!-- Theme Toggle Button (Mobile) -->
-        <button id="theme-toggle-btn-mobile" class="p-2 rounded-full border border-white/10 glass text-white/70 hover:text-white hover:border-white/20 transition-all duration-300 flex items-center justify-center" aria-label="Alternar tema">
-            <!-- Sun Icon (shows in dark theme) -->
-            <svg id="theme-sun-mobile" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-            <!-- Moon Icon (shows in light theme) -->
-            <svg id="theme-moon-mobile" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </button>
-
         <button id="menu-toggle" class="flex flex-col justify-center items-end space-y-1.5 z-[210]">
             <span class="w-8 h-[2px] bg-white transition-all duration-300"></span>
             <span class="w-5 h-[2px] bg-white transition-all duration-300"></span>
