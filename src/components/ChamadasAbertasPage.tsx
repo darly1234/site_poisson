@@ -558,17 +558,19 @@ export default function ChamadasAbertasPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="relative bg-white w-full max-h-[90vh] rounded-t-3xl overflow-y-auto custom-scrollbar"
+              className="relative bg-white w-full max-h-[90vh] rounded-t-3xl flex flex-col"
             >
-              {/* Close button */}
-              <button
-                onClick={() => setMobileModalOpen(false)}
-                className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg hover:bg-neutral-800 transition-colors"
-              >
-                <X size={18} />
-              </button>
+              {/* Sticky header with close button */}
+              <div className="flex-shrink-0 flex justify-end p-4 pb-0">
+                <button
+                  onClick={() => setMobileModalOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg hover:bg-neutral-800 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-              <div className="p-6 pt-8">
+              <div className="overflow-y-auto flex-1 custom-scrollbar p-6 pt-2">
                 {/* Status + title */}
                 <div className="mb-6">
                   <div className="flex items-center gap-3 mb-3">

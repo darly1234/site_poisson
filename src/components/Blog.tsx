@@ -146,7 +146,7 @@ function PostModal({ post, onClose }: { post: Post; onClose: () => void }) {
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-neutral-800 transition-colors text-white shadow-lg"
+          className="fixed top-4 right-4 z-[9100] w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-neutral-800 transition-colors text-white shadow-lg"
         >
           <X size={18} />
         </button>
