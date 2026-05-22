@@ -482,12 +482,17 @@ import SiteFooter from '../components/SiteFooter.astro';
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? 'http://localhost:3001/api/public' : 'https://individual.poisson.com.br/api/public';
 
+        // Disparar o fetch imediatamente em paralelo com o carregamento do restante do HTML
+        const popupPromise = fetch(`${API_BASE}/popup`)
+          .then(res => res.ok ? res.json() : null)
+          .catch(err => {
+            console.warn('[Popup fetch failed]', err);
+            return null;
+          });
+
         async function initPopup() {
           try {
-            const res = await fetch(`${API_BASE}/popup`);
-            if (!res.ok) return;
-            const config = await res.json();
-            
+            const config = await popupPromise;
             if (!config || !config.enabled) return;
 
             // Validar agendamento
@@ -505,17 +510,24 @@ import SiteFooter from '../components/SiteFooter.astro';
 
             // Validar regras de capping (sessão e frequência temporal)
             const triggers = config.triggers || {};
-            const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
-            if (sessionCount >= (triggers.maxDisplayCount || 1)) {
-              return;
+            if (!triggers.alwaysShow) {
+              const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+              if (sessionCount >= (triggers.maxDisplayCount || 1)) {
+                return;
+              }
+
+              const dismissedUntil = localStorage.getItem('poisson_popup_dismissed_until');
+              if (dismissedUntil && now.getTime() < parseInt(dismissedUntil, 10)) {
+                return;
+              }
             }
 
-            const dismissedUntil = localStorage.getItem('poisson_popup_dismissed_until');
-            if (dismissedUntil && now.getTime() < parseInt(dismissedUntil, 10)) {
-              return;
+            // Executar triggers
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', () => setupTriggers(config));
+            } else {
+              setupTriggers(config);
             }
-
-            setupTriggers(config);
           } catch (err) {
             console.warn('[Popup init failed]', err);
           }
@@ -722,15 +734,18 @@ import SiteFooter from '../components/SiteFooter.astro';
 
           // Fechar popup
           function closePopup() {
-            // Incrementar exibições por sessão
-            const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
-            sessionStorage.setItem('poisson_popup_session_count', (sessionCount + 1).toString());
+            const triggers = config.triggers || {};
+            if (!triggers.alwaysShow) {
+              // Incrementar exibições por sessão
+              const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+              sessionStorage.setItem('poisson_popup_session_count', (sessionCount + 1).toString());
 
-            // Definir tempo de expiração temporal de capping
-            const freqDays = config.triggers.frequencyCapDays;
-            if (typeof freqDays === 'number' && freqDays > 0) {
-              const until = new Date().getTime() + (freqDays * 24 * 60 * 60 * 1000);
-              localStorage.setItem('poisson_popup_dismissed_until', until.toString());
+              // Definir tempo de expiração temporal de capping
+              const freqDays = config.triggers.frequencyCapDays;
+              if (typeof freqDays === 'number' && freqDays > 0) {
+                const until = new Date().getTime() + (freqDays * 24 * 60 * 60 * 1000);
+                localStorage.setItem('poisson_popup_dismissed_until', until.toString());
+              }
             }
 
             backdrop.style.opacity = '0';
@@ -867,12 +882,7 @@ import SiteFooter from '../components/SiteFooter.astro';
           });
         }
 
-        // Executar inicialização quando o DOM estiver pronto
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initPopup);
-        } else {
-          initPopup();
-        }
+        initPopup();
       })();
     </script>
     <SiteFooter />
