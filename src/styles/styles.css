@@ -210,26 +210,6 @@
     overflow-x: hidden;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    html.has-custom-cursor {
-      cursor: default;
-    }
-
-    html.has-custom-cursor a,
-    html.has-custom-cursor button,
-    html.has-custom-cursor [role="button"],
-    html.has-custom-cursor select,
-    html.has-custom-cursor label[for],
-    html.has-custom-cursor summary,
-    html.has-custom-cursor [data-cursor="hover"] {
-      cursor: pointer;
-    }
-
-    html.has-custom-cursor input,
-    html.has-custom-cursor textarea {
-      cursor: text;
-    }
-  }
 
   ::selection {
     background-color: oklch(0.85 0.18 200 / 30%);

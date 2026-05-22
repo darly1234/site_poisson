@@ -4,20 +4,6 @@
    ========================================= */
 
 function initGlobalInteractions() {
-    const cursor = document.getElementById('custom-cursor');
-
-    // Cursor customizado segue o mouse
-    document.addEventListener('mousemove', (e) => {
-        if (cursor && typeof gsap !== 'undefined') {
-            gsap.to(cursor, { 
-                x: e.clientX, 
-                y: e.clientY, 
-                duration: 0.08,
-                overwrite: "auto"
-            });
-        }
-    });
-
     // Mobile Menu Toggle
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -52,25 +38,6 @@ function initGlobalInteractions() {
         });
     }
 
-    // Hover scale em links e botões usando Delegação de Eventos (suporta elementos dinâmicos do React!)
-    if (window.matchMedia("(hover: hover)").matches) {
-        document.addEventListener('mouseover', (e) => {
-            const interactive = e.target.closest('a, button, .group, [role="button"], select, label[for], [data-cursor="hover"]');
-            if (interactive && cursor && typeof gsap !== 'undefined') {
-                gsap.to(cursor, { scale: 3, opacity: 0.4, duration: 0.2 });
-            }
-        });
-
-        document.addEventListener('mouseout', (e) => {
-            const interactive = e.target.closest('a, button, .group, [role="button"], select, label[for], [data-cursor="hover"]');
-            if (interactive && cursor && typeof gsap !== 'undefined') {
-                const related = e.relatedTarget ? e.relatedTarget.closest('a, button, .group, [role="button"], select, label[for], [data-cursor="hover"]') : null;
-                if (related !== interactive) {
-                    gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
-                }
-            }
-        });
-    }
 }
 
 // Inicialização segura

@@ -684,14 +684,15 @@ import SiteFooter from '../components/SiteFooter.astro';
             }
             #poisson-popup-cta {
               display: block;
-              width: 100%;
-              padding: 0.875rem 1rem;
+              width: ${styling.buttonWidth && styling.buttonWidth !== 'auto' ? `${styling.buttonWidth}px` : '100%'};
+              margin: ${styling.buttonWidth && styling.buttonWidth !== 'auto' ? '0 auto' : '0'};
+              padding: ${styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem'} ${styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1rem'};
               background-color: ${btnBg};
               color: ${btnTextColor};
               text-align: center;
               text-transform: uppercase;
               font-weight: 800;
-              font-size: 0.75rem;
+              font-size: ${styling.buttonFontSize !== undefined ? `${styling.buttonFontSize}px` : '0.75rem'};
               letter-spacing: 0.1em;
               border-radius: ${Math.min(styling.borderRadius || 16, 12)}px;
               text-decoration: none;
@@ -800,9 +801,12 @@ import SiteFooter from '../components/SiteFooter.astro';
               cta.style.top = `${styling.buttonTop !== undefined ? styling.buttonTop : 80}%`;
               cta.style.transform = 'translate(-50%, -50%)';
               cta.style.margin = '0';
-              cta.style.width = 'auto';
-              cta.style.paddingLeft = '1.5rem';
-              cta.style.paddingRight = '1.5rem';
+              cta.style.width = styling.buttonWidth && styling.buttonWidth !== 'auto' ? `${styling.buttonWidth}px` : 'auto';
+              cta.style.paddingLeft = styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1.5rem';
+              cta.style.paddingRight = styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1.5rem';
+              cta.style.paddingTop = styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem';
+              cta.style.paddingBottom = styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem';
+              cta.style.fontSize = styling.buttonFontSize !== undefined ? `${styling.buttonFontSize}px` : '0.75rem';
               cta.style.whiteSpace = 'nowrap';
               cta.style.zIndex = '20';
               
