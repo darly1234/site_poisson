@@ -93,10 +93,18 @@ export default function ChamadasAbertas() {
               <div className="flex-1">
                 <h2 className="serif text-2xl mt-2 mb-4 leading-tight">{selected.titulo}</h2>
                 {selected.descricao && (
-                  <p
-                    className="opacity-70 text-sm leading-relaxed mb-6 line-clamp-4"
-                    dangerouslySetInnerHTML={{ __html: selected.descricao }}
-                  />
+                  <div className="mb-6">
+                    <p
+                      className="opacity-70 text-sm leading-relaxed line-clamp-4"
+                      dangerouslySetInnerHTML={{ __html: selected.descricao }}
+                    />
+                    <a
+                      href="/chamadas-abertas"
+                      className="inline-block mt-2 text-xs font-semibold text-[#f97316] hover:underline"
+                    >
+                      Ver Mais →
+                    </a>
+                  </div>
                 )}
                 <div className="space-y-3">
                   {selected.prazo && (
