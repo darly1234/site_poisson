@@ -130,7 +130,7 @@ function PostModal({ post, onClose }: { post: Post; onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9000] flex items-start justify-center bg-black/80 backdrop-blur-sm overflow-y-auto p-4 md:p-10"
+      className="fixed inset-0 z-[9000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-10"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <motion.div
@@ -138,26 +138,24 @@ function PostModal({ post, onClose }: { post: Post; onClose: () => void }) {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative bg-white w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl my-auto"
+        className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]"
       >
-        {/* Top accent */}
-        <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
+        {/* Non-scrolling header: accent + cover + X button */}
+        <div className="relative flex-shrink-0">
+          <div className="h-1 w-full rounded-t-2xl" style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
+          {post.cover_image && (
+            <img src={post.cover_image.startsWith('/') ? `https://individual.poisson.com.br${post.cover_image}` : post.cover_image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
+          )}
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-neutral-800 transition-colors text-white shadow-lg"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="fixed top-4 right-4 z-[9100] w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-neutral-800 transition-colors text-white shadow-lg"
-        >
-          <X size={18} />
-        </button>
-
-        {/* Cover */}
-        {post.cover_image && (
-          <img src={post.cover_image.startsWith('/') ? `https://individual.poisson.com.br${post.cover_image}` : post.cover_image} alt={post.title} className="w-full h-56 md:h-72 object-cover" />
-        )}
-
-        {/* Content */}
-        <div className="px-8 md:px-12 py-10">
+        {/* Scrollable content */}
+        <div className="overflow-y-auto flex-1 px-8 md:px-12 py-10">
           <div className="flex items-center gap-3 mb-6">
             <span className="px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] rounded-full text-white" style={{ backgroundColor: color }}>
               {post.category}
