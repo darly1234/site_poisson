@@ -1256,7 +1256,7 @@ export default function ManuscriptJourney() {
                 {/* Action button */}
                 {activeStage.id < 5 ? (
                   <button
-                    onClick={() => { setActiveStage(STAGES[activeStage.id]); setMobileModalOpen(false); }}
+                    onClick={() => setActiveStage(STAGES[activeStage.id])}
                     className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[12px] font-mono tracking-widest uppercase font-semibold"
                     style={{
                       background: `rgba(${activeStage.colorRgb},0.1)`,
