@@ -149,6 +149,14 @@ export async function fetchLibrary(options?: FetchLibraryOptions): Promise<Fetch
     filtered = filtered.sort((a, b) => (a.titulo ?? "").localeCompare(b.titulo ?? ""));
   } else if (sort === "popular") {
     filtered = filtered.sort((a, b) => (hashId(b.id) % 30) - (hashId(a.id) % 30));
+  } else {
+    // "recent" — ano decrescente; empate desfeito por ID decrescente (mais recente no banco)
+    filtered = filtered.sort((a, b) => {
+      const ya = parseInt(a.ano ?? "0") || 0;
+      const yb = parseInt(b.ano ?? "0") || 0;
+      if (yb !== ya) return yb - ya;
+      return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
+    });
   }
 
   const limit = options?.limit ?? 15;
