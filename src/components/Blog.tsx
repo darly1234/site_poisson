@@ -196,6 +196,167 @@ export default function BlogPage() {
   const yParallax = useTransform(scrollYProgress, [0, 0.3], [0, -150]);
   const opacityFade = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let particles: Array<{
+      angle: number;
+      speed: number;
+      orbitIndex: number;
+      size: number;
+      brightness: number;
+    }> = [];
+    let animationFrameId: number;
+
+    const mouseState: { x: number | null; y: number | null; radius: number } = {
+      x: null,
+      y: null,
+      radius: 120
+    };
+
+    function initPhysics() {
+      particles = [];
+      const particleCount = 45;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          angle: Math.random() * Math.PI * 2,
+          speed: Math.random() * 0.007 + 0.002,
+          orbitIndex: Math.floor(Math.random() * 3),
+          size: Math.random() * 2.2 + 0.8,
+          brightness: Math.random() * 0.6 + 0.4
+        });
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      initPhysics();
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      mouseState.x = e.clientX - rect.left;
+      mouseState.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouseState.x = null;
+      mouseState.y = null;
+    };
+
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseleave', handleMouseLeave);
+
+    function animate() {
+      if (!canvas || !ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      // 1. Desenhar Núcleo Central Brilhante (Efeito de Sol/Conhecimento)
+      const gradientCore = ctx.createRadialGradient(cx, cy, 2, cx, cy, 35);
+      gradientCore.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      gradientCore.addColorStop(0.2, 'rgba(59, 130, 246, 0.5)');
+      gradientCore.addColorStop(1, 'rgba(3, 7, 18, 0)');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+      ctx.fillStyle = gradientCore;
+      ctx.fill();
+
+      // 2. Definição das 3 Elipses de Órbita
+      const orbits = [
+        { rx: 170, ry: 45, rotation: -Math.PI / 6 },   // Órbita inclinada para a esquerda
+        { rx: 145, ry: 55, rotation: Math.PI / 4 },    // Órbita central ascendente
+        { rx: 190, ry: 35, rotation: Math.PI / 1.8 }   // Órbita mais verticalizada
+      ];
+
+      // Desenhar os fios orbitais em background
+      orbits.forEach(orbit => {
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, orbit.rx, orbit.ry, orbit.rotation, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // 3. Atualizar e Desenhar as Partículas nas Órbitas
+      particles.forEach(p => {
+        const orbit = orbits[p.orbitIndex];
+
+        // Mapear posição orbital local usando seno/cosseno do ângulo corrente
+        const cosA = Math.cos(p.angle);
+        const sinA = Math.sin(p.angle);
+        const localX = orbit.rx * cosA;
+        const localY = orbit.ry * sinA;
+
+        // Aplicar matriz de rotação 2D baseada na inclinação do anel
+        let targetX = cx + localX * Math.cos(orbit.rotation) - localY * Math.sin(orbit.rotation);
+        let targetY = cy + localX * Math.sin(orbit.rotation) + localY * Math.cos(orbit.rotation);
+
+        // Incremento de velocidade padrão
+        let currentSpeed = p.speed;
+
+        // Subtil atração/aceleração gravitacional se o rato estiver perto da partícula
+        if (mouseState.x !== null && mouseState.y !== null) {
+          const dx = mouseState.x - targetX;
+          const dy = mouseState.y - targetY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < mouseState.radius) {
+            const pull = (mouseState.radius - dist) / mouseState.radius;
+            // Puxa ligeiramente a partícula na direção do cursor do rato
+            targetX += (dx / dist) * pull * 8;
+            targetY += (dy / dist) * pull * 8;
+            // Aumenta ligeiramente a velocidade para dar resposta interativa
+            currentSpeed *= (1 + pull * 1.5);
+          }
+        }
+
+        // Atualizar o ângulo para a próxima iteração
+        p.angle += currentSpeed;
+
+        // Desenhar a partícula com brilho/glow azulado
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(59, 130, 246, ${p.brightness})`;
+        ctx.shadowColor = "#3b82f6";
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset rápido para performance fluida a 60fps
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (canvas) {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
+      }
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   useEffect(() => {
     fetch(`${API_BASE}/blog`)
       .then(r => r.json())
@@ -240,33 +401,62 @@ export default function BlogPage() {
       {/* Hero Section */}
       <section className="relative flex flex-col justify-center pt-40 pb-20 px-6">
         <motion.div style={{ y: yParallax, opacity: opacityFade }} className="z-10 max-w-6xl mx-auto w-full">
-          <div className="mb-6 overflow-hidden">
-            <motion.span initial={{ y: 50 }} animate={{ y: 0 }} className="block text-[#ff5f1f] text-xs font-black uppercase tracking-[0.5em]">
-              Diálogo Editorial
-            </motion.span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* Lado Esquerdo: Texto */}
+            <div className="lg:col-span-6 flex flex-col justify-center space-y-5 select-none">
+              <div className="space-y-1">
+                <div className="overflow-hidden">
+                  <motion.span initial={{ y: 50 }} animate={{ y: 0 }} className="block text-[#ff5f1f] text-xs font-black uppercase tracking-[0.5em]">
+                    Diálogo Editorial
+                  </motion.span>
+                </div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-white text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
+                >
+                  PENSAMENTO
+                </motion.h1>
+                <motion.h2
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                  className="text-transparent stroke-text text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
+                  style={{ WebkitTextStroke: '2px white' } as React.CSSProperties}
+                >
+                  EM
+                </motion.h2>
+                <motion.h1
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                  className="text-[#2563eb] text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
+                >
+                  MOVIMENTO.
+                </motion.h1>
+              </div>
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 1 }}
+              >
+                <p className="text-neutral-500 max-w-sm text-sm font-medium leading-relaxed">
+                  Reflexões sobre a produção do conhecimento, inovação acadêmica e o impacto da ciência na sociedade moderna.
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Lado Direito: Animação das Órbitas Científicas */}
+            <div className="lg:col-span-6 flex items-center justify-center relative min-h-[350px] sm:min-h-[480px] w-full overflow-hidden">
+              <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain pointer-events-auto"></canvas>
+            </div>
+
           </div>
-          <motion.h1
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white text-[clamp(1.8rem,9vw,6.5rem)] font-black tracking-tighter leading-[0.8] mb-8"
-          >
-            PENSAMENTO<br />
-            <span className="text-transparent stroke-text" style={{ WebkitTextStroke: '2px white' } as React.CSSProperties}>EM</span><br />
-            <span className="text-[#2563eb]">MOVIMENTO.</span>
-          </motion.h1>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 1 }}
-            className="flex flex-col md:flex-row md:items-end gap-12"
-          >
-            <p className="text-neutral-500 max-w-sm text-sm font-medium leading-relaxed">
-              Reflexões sobre a produção do conhecimento, inovação acadêmica e o impacto da ciência na sociedade moderna.
-            </p>
-          </motion.div>
         </motion.div>
-        <div className="absolute top-1/2 right-[-10%] -translate-y-1/2 w-[60vw] h-[60vw] bg-blue-600/10 blur-[150px] rounded-full" />
+        <div className="absolute top-1/2 right-[-10%] -translate-y-1/2 w-[60vw] h-[60vw] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
       </section>
 
       {/* Main Content */}
