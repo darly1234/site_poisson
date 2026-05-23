@@ -495,21 +495,7 @@ export default function BlogPage() {
       <main className="relative bg-white rounded-t-[60px] md:rounded-t-[120px] pt-32 pb-48 px-6 -mt-20">
         <div className="max-w-6xl mx-auto">
 
-          {/* Title & Filters */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-32 gap-12">
-            <div className="max-w-2xl">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#ff5f1f] mb-4 block">
-                Publicações Recentes
-              </span>
-              <h2 className="text-6xl md:text-8xl font-black text-black tracking-tighter leading-none">
-                Artigos em Destaque
-              </h2>
-            </div>
 
-            <div className="flex flex-wrap gap-3">
-              {/* Categorias removidas a pedido */}
-            </div>
-          </div>
 
           {/* Posts Grid */}
           {loading ? (
