@@ -210,8 +210,11 @@ export default function BlogPage() {
       orbitIndex: number;
       size: number;
       brightness: number;
+      color: string;
+      shadowColor: string;
     }> = [];
     let animationFrameId: number;
+    let dpr = 1;
 
     const mouseState: { x: number | null; y: number | null; radius: number } = {
       x: null,
@@ -221,15 +224,29 @@ export default function BlogPage() {
 
     function initPhysics() {
       particles = [];
-      const particleCount = 45;
+      const particleCount = 65; // Mais partículas para maior riqueza visual
 
       for (let i = 0; i < particleCount; i++) {
+        const r = Math.random();
+        let color = 'rgba(96, 165, 250, '; // azul vibrante
+        let shadowColor = '#60a5fa';
+        
+        if (r < 0.25) {
+          color = 'rgba(255, 255, 255, '; // branco brilhante
+          shadowColor = '#ffffff';
+        } else if (r < 0.6) {
+          color = 'rgba(56, 189, 248, '; // ciano/sky-blue
+          shadowColor = '#38bdf8';
+        }
+
         particles.push({
           angle: Math.random() * Math.PI * 2,
-          speed: Math.random() * 0.007 + 0.002,
+          speed: Math.random() * 0.005 + 0.002, // Movimento mais elegante e cadenciado
           orbitIndex: Math.floor(Math.random() * 3),
-          size: Math.random() * 2.2 + 0.8,
-          brightness: Math.random() * 0.6 + 0.4
+          size: Math.random() * 2.0 + 0.8, // Tamanhos menores para maior delicadeza
+          brightness: Math.random() * 0.7 + 0.3,
+          color,
+          shadowColor
         });
       }
     }
@@ -237,8 +254,9 @@ export default function BlogPage() {
     function resizeCanvas() {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
       initPhysics();
     }
 
@@ -262,36 +280,44 @@ export default function BlogPage() {
 
     function animate() {
       if (!canvas || !ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Resetar transformação para o estado padrão baseado no DPR e limpar canvas
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-      const w = canvas.width;
-      const h = canvas.height;
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
       const cx = w / 2;
       const cy = h / 2;
 
-      // 1. Desenhar Núcleo Central Brilhante (Efeito de Sol/Conhecimento)
-      const gradientCore = ctx.createRadialGradient(cx, cy, 2, cx, cy, 35);
-      gradientCore.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      gradientCore.addColorStop(0.2, 'rgba(59, 130, 246, 0.5)');
-      gradientCore.addColorStop(1, 'rgba(3, 7, 18, 0)');
+      // 1. Desenhar Núcleo Central Brilhante (Estrela compacta e viva)
+      const gradientCore = ctx.createRadialGradient(cx, cy, 2, cx, cy, 28);
+      gradientCore.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradientCore.addColorStop(0.15, 'rgba(56, 189, 248, 0.9)'); // ciano brilhante
+      gradientCore.addColorStop(0.4, 'rgba(37, 99, 235, 0.4)');  // azul profundo
+      gradientCore.addColorStop(1, 'rgba(5, 5, 5, 0)');
 
+      ctx.shadowColor = "#38bdf8";
+      ctx.shadowBlur = 15;
       ctx.beginPath();
-      ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 28, 0, Math.PI * 2);
       ctx.fillStyle = gradientCore;
       ctx.fill();
+      ctx.shadowBlur = 0; // Reset de blur para performance
 
-      // 2. Definição das 3 Elipses de Órbita
+      // 2. Definição das 3 Elipses de Órbita dinâmicas
+      const baseScale = Math.min(w, h) / 440;
       const orbits = [
-        { rx: 170, ry: 45, rotation: -Math.PI / 6 },   // Órbita inclinada para a esquerda
-        { rx: 145, ry: 55, rotation: Math.PI / 4 },    // Órbita central ascendente
-        { rx: 190, ry: 35, rotation: Math.PI / 1.8 }   // Órbita mais verticalizada
+        { rx: 160 * baseScale, ry: 40 * baseScale, rotation: -Math.PI / 6 },
+        { rx: 135 * baseScale, ry: 50 * baseScale, rotation: Math.PI / 4 },
+        { rx: 180 * baseScale, ry: 30 * baseScale, rotation: Math.PI / 1.8 }
       ];
 
-      // Desenhar os fios orbitais em background
+      // Desenhar os fios orbitais em background com maior contraste
       orbits.forEach(orbit => {
         ctx.beginPath();
         ctx.ellipse(cx, cy, orbit.rx, orbit.ry, orbit.rotation, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.08)"; // Um pouco mais visível
         ctx.lineWidth = 1;
         ctx.stroke();
       });
@@ -332,12 +358,12 @@ export default function BlogPage() {
         // Atualizar o ângulo para a próxima iteração
         p.angle += currentSpeed;
 
-        // Desenhar a partícula com brilho/glow azulado
+        // Desenhar a partícula com brilho/glow correspondente
         ctx.beginPath();
         ctx.arc(targetX, targetY, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${p.brightness})`;
-        ctx.shadowColor = "#3b82f6";
-        ctx.shadowBlur = 6;
+        ctx.fillStyle = p.color + p.brightness + ')';
+        ctx.shadowColor = p.shadowColor;
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0; // Reset rápido para performance fluida a 60fps
       });
@@ -403,17 +429,17 @@ export default function BlogPage() {
         {/* Aura de luz azul no fundo */}
         <div className="glow-bg"></div>
 
-        <motion.div style={{ y: yParallax, opacity: opacityFade }} className="z-10 max-w-7xl mx-auto w-full">
+        <motion.div style={{ y: yParallax, opacity: opacityFade }} className="z-10 max-w-6xl mx-auto w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Lado Esquerdo: Texto (Fiel ao seu layout original) */}
-            <div className="lg:col-span-6 flex flex-col justify-center space-y-5 select-none font-inter">
+            <div className="lg:col-span-7 flex flex-col justify-center space-y-5 select-none font-inter">
               <div className="space-y-1">
                 <div className="overflow-hidden">
                   <motion.p
                     initial={{ y: 50 }}
                     animate={{ y: 0 }}
-                    className="text-[11px] font-bold text-orange-500 tracking-[0.35em] uppercase font-hero"
+                    className="text-[12px] font-bold text-orange-500 tracking-[0.35em] uppercase font-hero"
                   >
                     Diálogo Editorial
                   </motion.p>
@@ -422,7 +448,7 @@ export default function BlogPage() {
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] font-black tracking-tight uppercase font-hero text-white"
+                  className="text-5xl sm:text-7xl md:text-[80px] lg:text-[88px] leading-[0.85] font-black tracking-tighter uppercase font-hero text-white"
                 >
                   Pensamento
                 </motion.h1>
@@ -430,7 +456,7 @@ export default function BlogPage() {
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] text-outline uppercase"
+                  className="text-5xl sm:text-7xl md:text-[80px] lg:text-[88px] leading-[0.85] text-outline uppercase"
                 >
                   Em
                 </motion.h2>
@@ -438,7 +464,7 @@ export default function BlogPage() {
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] font-black text-blue-500 tracking-tight uppercase font-hero flex items-baseline"
+                  className="text-5xl sm:text-7xl md:text-[80px] lg:text-[88px] leading-[0.85] font-black text-blue-500 tracking-tighter uppercase font-hero flex items-baseline"
                 >
                   Movimento<span className="text-blue-500 ml-1">.</span>
                 </motion.h1>
@@ -456,7 +482,7 @@ export default function BlogPage() {
             </div>
 
             {/* Lado Direito: Animação das Órbitas Científicas (Sem bordas, totalmente transparente) */}
-            <div className="lg:col-span-6 flex items-center justify-center relative min-h-[350px] sm:min-h-[480px] w-full overflow-hidden">
+            <div className="lg:col-span-5 flex items-center justify-center relative min-h-[350px] sm:min-h-[480px] w-full overflow-hidden">
               {/* Canvas de renderização da simulação física */}
               <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain pointer-events-auto"></canvas>
             </div>
