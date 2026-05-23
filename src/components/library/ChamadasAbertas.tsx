@@ -55,7 +55,7 @@ export default function ChamadasAbertas() {
             {[...chamadas, ...chamadas, ...chamadas].map((c, i) => (
               <div key={i} className="book-item" onClick={() => setSelected(c)}>
                 {c.capa ? (
-                  <img src={c.capa} alt={c.titulo ?? ''} className="w-full h-full object-cover" />
+                  <img src={c.capa} alt={c.titulo ?? ''} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 ) : (
                   <div
                     className="w-full h-full flex items-end p-2"
@@ -84,7 +84,7 @@ export default function ChamadasAbertas() {
               <div className="w-full md:w-1/3">
                 <div className="book-item shadow-2xl mx-auto w-full h-[250px]">
                   {selected.capa ? (
-                    <img src={selected.capa} alt={selected.titulo ?? ''} className="w-full h-full object-cover" />
+                    <img src={selected.capa} alt={selected.titulo ?? ''} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   ) : (
                     <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }} />
                   )}

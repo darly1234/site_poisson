@@ -142,13 +142,18 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
                 filter: `blur(${blur}px)`,
                 opacity: dimOthers ? 0.15 : opacity,
                 zIndex: zIndex,
-                display: isSelected ? 'none' : 'block',
-                backgroundSize: 'cover',
-                backgroundImage: `url(${book.cover})`,
-                backgroundPosition: 'center'
+                display: isSelected ? 'none' : 'block'
               }}
               aria-label={book.title}
             >
+              <img
+                src={book.cover}
+                alt={book.title}
+                className="w-full h-full object-cover rounded-md"
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
               {isFront && (
                 <div className="absolute inset-0 bg-white/5 hover:bg-transparent transition-colors" />
               )}
@@ -214,6 +219,8 @@ const FlipCard: React.FC<{ book: Book; onClose: () => void }> = ({ book, onClose
             src={book.cover} 
             alt={book.title} 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
             draggable={false}
           />
         </div>
