@@ -400,41 +400,47 @@ export default function BlogPage() {
 
       {/* Hero Section */}
       <section className="relative flex flex-col justify-center pt-40 pb-20 px-6">
-        <motion.div style={{ y: yParallax, opacity: opacityFade }} className="z-10 max-w-6xl mx-auto w-full">
+        {/* Aura de luz azul no fundo */}
+        <div className="glow-bg"></div>
+
+        <motion.div style={{ y: yParallax, opacity: opacityFade }} className="z-10 max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Lado Esquerdo: Texto */}
-            <div className="lg:col-span-6 flex flex-col justify-center space-y-5 select-none">
+            {/* Lado Esquerdo: Texto (Fiel ao seu layout original) */}
+            <div className="lg:col-span-6 flex flex-col justify-center space-y-5 select-none font-inter">
               <div className="space-y-1">
                 <div className="overflow-hidden">
-                  <motion.span initial={{ y: 50 }} animate={{ y: 0 }} className="block text-[#ff5f1f] text-xs font-black uppercase tracking-[0.5em]">
+                  <motion.p
+                    initial={{ y: 50 }}
+                    animate={{ y: 0 }}
+                    className="text-[11px] font-bold text-orange-500 tracking-[0.35em] uppercase font-hero"
+                  >
                     Diálogo Editorial
-                  </motion.span>
+                  </motion.p>
                 </div>
                 <motion.h1
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-white text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
+                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] font-black tracking-tight uppercase font-hero text-white"
                 >
-                  PENSAMENTO
+                  Pensamento
                 </motion.h1>
                 <motion.h2
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                  className="text-transparent stroke-text text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
-                  style={{ WebkitTextStroke: '2px white' } as React.CSSProperties}
+                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] text-outline uppercase"
                 >
-                  EM
+                  Em
                 </motion.h2>
                 <motion.h1
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                  className="text-[#2563eb] text-[clamp(1.8rem,9vw,4.5rem)] font-black tracking-tighter leading-[0.9] uppercase"
+                  className="text-4xl sm:text-6xl md:text-[68px] leading-[0.9] font-black text-blue-500 tracking-tight uppercase font-hero flex items-baseline"
                 >
-                  MOVIMENTO.
+                  Movimento<span className="text-blue-500 ml-1">.</span>
                 </motion.h1>
               </div>
               
@@ -443,20 +449,20 @@ export default function BlogPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 1 }}
               >
-                <p className="text-neutral-500 max-w-sm text-sm font-medium leading-relaxed">
-                  Reflexões sobre a produção do conhecimento, inovação acadêmica e o impacto da ciência na sociedade moderna.
+                <p className="text-gray-400 text-sm sm:text-base max-w-md font-light leading-relaxed pt-2">
+                  Reflexões sobre a produção do conhecimento, inovação académica e o impacto da ciência na sociedade moderna.
                 </p>
               </motion.div>
             </div>
 
-            {/* Lado Direito: Animação das Órbitas Científicas */}
+            {/* Lado Direito: Animação das Órbitas Científicas (Sem bordas, totalmente transparente) */}
             <div className="lg:col-span-6 flex items-center justify-center relative min-h-[350px] sm:min-h-[480px] w-full overflow-hidden">
+              {/* Canvas de renderização da simulação física */}
               <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain pointer-events-auto"></canvas>
             </div>
 
           </div>
         </motion.div>
-        <div className="absolute top-1/2 right-[-10%] -translate-y-1/2 w-[60vw] h-[60vw] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
       </section>
 
       {/* Main Content */}
@@ -554,7 +560,31 @@ export default function BlogPage() {
         {activePost && <PostModal post={activePost} onClose={() => setActivePost(null)} />}
       </AnimatePresence>
 
-      <style>{`.stroke-text { -webkit-text-stroke: 2px white; color: transparent; }`}</style>
+      <style>{`
+        .font-hero {
+          font-family: 'Montserrat', sans-serif;
+        }
+        .text-outline {
+          color: transparent;
+          -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.95);
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 900;
+        }
+        .font-inter {
+          font-family: 'Inter', sans-serif;
+        }
+        .glow-bg {
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+          top: 50%;
+          left: 75%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          z-index: 1;
+        }
+      `}</style>
     </div>
   );
 }
