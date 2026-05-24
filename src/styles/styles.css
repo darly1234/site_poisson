@@ -332,22 +332,20 @@
   .book-depth-card::after {
     content: '';
     position: absolute;
-    top: 2%;
-    right: -4px;
-    width: 4px;
-    height: 96%;
-    background: #f0f0f0;
-    background-image: linear-gradient(
+    top: 1.5%;
+    right: 2px;
+    width: 8px;
+    height: 97%;
+    background: #f4f4f3;
+    background-image: repeating-linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(255, 255, 255, 0.6) 20%,
-      rgba(0, 0, 0, 0.08) 40%,
-      rgba(255, 255, 255, 0.6) 60%,
-      rgba(0, 0, 0, 0.15) 80%,
-      rgba(255, 255, 255, 0.6) 100%
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 1px,
+      transparent 1px,
+      transparent 3px
     );
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
-    transform: rotateY(90deg) translateZ(2px);
+    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.12) inset, 1px 1px 4px rgba(0, 0, 0, 0.25);
+    transform: rotateY(90deg);
     transform-origin: right center;
     border-radius: 0 2px 2px 0;
     z-index: -1;
@@ -370,6 +368,70 @@
       transparent 100%
     );
     border-radius: 4px 0 0 4px;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Static details page book tilt - realistic mockup */
+  .book-detail-cover {
+    transform: perspective(1500px) rotateY(-22deg) rotateX(4deg) rotateZ(-1deg);
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+    /* ambient shadow on the book container */
+    box-shadow: 
+      -10px 15px 30px rgba(0, 0, 0, 0.25),
+      -2px 5px 10px rgba(0, 0, 0, 0.15),
+      5px 5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .book-detail-cover:hover {
+    transform: perspective(1500px) rotateY(-12deg) rotateX(2deg) rotateZ(0deg);
+    box-shadow: 
+      -15px 20px 40px rgba(0, 0, 0, 0.3),
+      -4px 8px 15px rgba(0, 0, 0, 0.2),
+      5px 5px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Adjust page thickness for details page cover to make it thicker and more mockup-like */
+  .book-detail-cover::after {
+    width: 14px; /* thicker pages block for realistic mockup look */
+    right: 2px;
+    height: 98%;
+    top: 1%;
+    background: #fbfbf9;
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.07) 0px,
+      rgba(0, 0, 0, 0.07) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    box-shadow: 
+      2px 0 5px rgba(0, 0, 0, 0.08) inset,
+      1px 1px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* Add fold crease and spine highlight overlay */
+  .book-detail-cover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* crease shadow on the cover */
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(255, 255, 255, 0.08) 1.5%,
+      rgba(0, 0, 0, 0.05) 2.5%,
+      rgba(0, 0, 0, 0.15) 3.5%,
+      transparent 5%,
+      transparent 95%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
+    border-radius: 6px;
     z-index: 10;
     pointer-events: none;
   }
