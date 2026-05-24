@@ -84,10 +84,7 @@ function BibliotecaPage() {
           const urlId = new URLSearchParams(window.location.search).get("id");
           if (urlId) {
             deepLinkHandled.current = true;
-            fetchLibrary({ limit: 9999 }).then(all => {
-              const target = all.data.find(b => b.id === urlId);
-              if (target) setActive(target);
-            });
+            window.location.href = `/livro/${urlId}`;
           }
         }
       })
@@ -282,7 +279,7 @@ function BibliotecaPage() {
                   key={book.id}
                   book={book}
                   index={i}
-                  onOpen={setActive}
+                  onOpen={(book) => { window.location.href = `/livro/${book.id}`; }}
                   isFavorited={favorites.includes(String(book.id))}
                   onToggleFavorite={toggleFavorite}
                 />
