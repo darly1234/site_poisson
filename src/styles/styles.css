@@ -394,7 +394,7 @@
   .book-detail-cover:hover {
     transform: perspective(1500px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) !important;
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18) !important;
-    animation: none !important; /* Stop spin animation if hovering */
+    animation: none !important; /* Stop spin and float animations if hovering */
   }
 
   /* 3D Mockup Elements */
@@ -419,7 +419,7 @@
       transparent 3px
     );
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) inset, 1px 1px 4px rgba(0, 0, 0, 0.15);
-    transform: rotateY(90deg);
+    transform: rotateY(-90deg);
     transform-origin: right center;
     border-radius: 0 3px 3px 0;
     z-index: -1;
@@ -431,7 +431,7 @@
     bottom: 0;
     left: 2px;
     width: 42px; /* 3x thicker mockup */
-    transform: rotateY(-90deg);
+    transform: rotateY(90deg);
     transform-origin: left center;
     filter: brightness(0.72);
     box-shadow: -2px 0 6px rgba(0, 0, 0, 0.18) inset;
@@ -453,7 +453,19 @@
     }
   }
 
+  /* Continuous gentle float */
+  @keyframes book-float {
+    0%, 100% {
+      transform: perspective(1500px) rotateY(-22deg) rotateX(4deg) rotateZ(-1deg) translateY(0px);
+    }
+    50% {
+      transform: perspective(1500px) rotateY(-20deg) rotateX(5deg) rotateZ(-1.5deg) translateY(-8px);
+    }
+  }
+
   .animate-book-spin {
-    animation: book-intro-spin 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: 
+      book-intro-spin 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+      book-float 6s ease-in-out infinite 2.2s;
   }
 }

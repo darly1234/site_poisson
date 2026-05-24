@@ -60,6 +60,10 @@ interface ApiBookLight {
   edicao: string | null;
   tipo: string;
   capa: string | null;
+  descricao?: string | null;
+  url?: string | null;
+  chapters?: null | unknown[];
+  artigos?: unknown[];
 }
 
 interface ApiBookFull extends ApiBookLight {
@@ -88,6 +92,8 @@ function mapApiBook(raw: ApiBookLight): LibraryBook {
     doi: raw.doi ?? undefined,
     organizer: parseAutores(raw.autores),
     description: raw.resumo ?? undefined,
+    descHtml: raw.descricao ?? undefined,
+    chapters: (Array.isArray(raw.chapters) && raw.chapters.length > 0 ? raw.chapters : (Array.isArray(raw.artigos) ? raw.artigos : undefined)) as any,
     edition: raw.edicao ?? "1ª edição",
     language: "Português",
     format: "PDF · Acesso aberto",
