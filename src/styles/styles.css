@@ -459,13 +459,15 @@
       transform: perspective(1500px) rotateY(-22deg) rotateX(4deg) rotateZ(-1deg) translateY(0px);
     }
     50% {
-      transform: perspective(1500px) rotateY(-20deg) rotateX(5deg) rotateZ(-1.5deg) translateY(-8px);
+      transform: perspective(1500px) rotateY(-14deg) rotateX(9deg) rotateZ(-3deg) translateY(-25px);
     }
   }
 
   .animate-book-spin {
-    animation: 
-      book-intro-spin 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-      book-float 6s ease-in-out infinite 2.2s;
+    animation: book-intro-spin 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-book-float {
+    animation: book-float 2.8s ease-in-out infinite;
   }
 }
