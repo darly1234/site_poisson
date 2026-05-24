@@ -150,11 +150,22 @@ window.addEventListener('load', () => {
 
                 if (self.progress <= 0.002) {
                     hVine.style.visibility = 'hidden';
+                    if (hVineReverse) hVineReverse.style.display = 'none';
+                } else if (dir === -1) {
+                    // VOLTA: esconde fio da ida, mostra fio reverso
+                    hVine.style.visibility = 'hidden';
+                    if (hVineReverse) {
+                        hVineReverse.style.display = 'block';
+                        const dashLen = hPathLength - hCurrentLen;
+                        hVineReverse.style.strokeDasharray = `${dashLen} ${Math.max(hCurrentLen, 0.001)}`;
+                        hVineReverse.style.strokeDashoffset = `${dashLen}`;
+                    }
                 } else {
+                    // IDA: fio normal
                     hVine.style.visibility = 'visible';
                     hVine.style.strokeDashoffset = hPathLength * (1 - self.progress);
+                    if (hVineReverse) hVineReverse.style.display = 'none';
                 }
-                if (hVineReverse) hVineReverse.style.display = 'none';
 
                 // Posiciona a seta na ponta atual do fio
                 const hArrowTip = document.getElementById('h-arrow-tip');
@@ -358,10 +369,22 @@ window.addEventListener('load', () => {
                     forceHorizontalDirection(1);
                 }
 
-                // Fio sempre visível e sincronizado — some junto com a seta nos últimos 5%
-                if (vVine) {
+                if (dir === -1) {
+                    // VOLTA: esconder vVine; mostrar vVineReverse
+                    gsap.killTweensOf(vVine, 'opacity');
+                    gsap.set(vVine, { opacity: 0 });
+                    if (vVineReverse) {
+                        vVineReverse.style.display = 'block';
+                        vVineReverse.style.opacity = '1';
+                        const dashLen = totalLen - currentLen;
+                        vVineReverse.style.strokeDasharray = `${dashLen} ${Math.max(currentLen, 0.001)}`;
+                        vVineReverse.style.strokeDashoffset = `${dashLen}`;
+                    }
+                } else {
+                    // IDA: fio sempre visível — some junto com a seta nos últimos 5%
                     vVine.style.strokeDasharray = `${totalLen} ${totalLen}`;
                     vVine.style.strokeDashoffset = totalLen * (1 - self.progress);
+                    if (vVineReverse) vVineReverse.style.display = 'none';
 
                     if (self.progress > 0.95) {
                         // Fade out sincronizado com a seta
@@ -373,7 +396,6 @@ window.addEventListener('load', () => {
                         gsap.set(vVine, { opacity: 1 });
                     }
                 }
-                if (vVineReverse) vVineReverse.style.display = 'none';
 
                 if (vArrowTip && self.progress > 0.001) {
                     const p  = vVine.getPointAtLength(currentLen);
