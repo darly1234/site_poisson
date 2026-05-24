@@ -79,7 +79,7 @@ export function BookCover({ book, index, onOpen, isFavorited, onToggleFavorite }
         transformPerspective: 1000,
         transformStyle: "preserve-3d",
       }}
-      className="group relative aspect-[2/3] w-full text-left rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+      className="group relative aspect-[2/3] w-full text-left rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 book-depth-card"
       aria-label={`${book.title} — ${book.author}`}
     >
       {/* glow halo */}

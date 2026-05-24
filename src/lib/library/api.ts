@@ -94,7 +94,29 @@ function mapApiBook(raw: ApiBookLight): LibraryBook {
   };
 }
 
-// ─── Module-level cache ────────────────────────────────────────────────────
+// ─── Module-level cache & Retry Utility ────────────────────────────────────────────────────
+
+async function fetchWithRetry(url: string, retries = 5, delay = 1000): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return res;
+      if (res.status === 429 || res.status >= 500) {
+        console.warn(`[API] Rate limit/Error ${res.status} on ${url}. Retrying in ${delay}ms (attempt ${i + 1}/${retries})...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // exponential backoff
+        continue;
+      }
+      return res;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      console.warn(`[API] Network error on ${url}. Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      delay *= 2;
+    }
+  }
+  throw new Error(`Failed to fetch ${url} after ${retries} retries.`);
+}
 
 let _cache: ApiBookLight[] | null = null;
 let _cacheTime = 0;
@@ -103,7 +125,7 @@ const CACHE_TTL = 30 * 60 * 1000; // 30 min
 async function loadAll(): Promise<ApiBookLight[]> {
   const now = Date.now();
   if (_cache && now - _cacheTime < CACHE_TTL) return _cache;
-  const res = await fetch(`${API_BASE}/livros/all`);
+  const res = await fetchWithRetry(`${API_BASE}/livros/all`);
   if (!res.ok) throw new Error(`API error ${res.status}`);
   _cache = await res.json();
   _cacheTime = now;
@@ -177,7 +199,7 @@ export async function fetchLibrary(options?: FetchLibraryOptions): Promise<Fetch
 
 export async function fetchBook(id: string): Promise<{ descHtml?: string; chapters?: unknown[]; url?: string } | null> {
   try {
-    const res = await fetch(`${API_BASE}/livros/${encodeURIComponent(id)}`);
+    const res = await fetchWithRetry(`${API_BASE}/livros/${encodeURIComponent(id)}`);
     if (!res.ok) return null;
     const raw: ApiBookFull = await res.json();
     return {
