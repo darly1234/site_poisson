@@ -77,17 +77,7 @@ window.addEventListener('load', () => {
             return stableHDirection;
         }
         const diff = currentProgress - lastHProgress;
-        if (Math.abs(diff) > 0.0005) {
-            const instantDir = diff > 0 ? 1 : -1;
-            hDirectionHistory.push(instantDir);
-            if (hDirectionHistory.length > 5) {
-                hDirectionHistory.shift();
-            }
-            const recent = hDirectionHistory.slice(-3);
-            if (recent.length >= 3 && recent.every(d => d === recent[0])) {
-                stableHDirection = recent[0];
-            }
-        }
+        stableHDirection = diff > 0 ? 1 : -1;
         lastHProgress = currentProgress;
         return stableHDirection;
     }
@@ -106,17 +96,7 @@ window.addEventListener('load', () => {
             return stableVDirection;
         }
         const diff = currentProgress - lastVProgress;
-        if (Math.abs(diff) > 0.0005) {
-            const instantDir = diff > 0 ? 1 : -1;
-            vDirectionHistory.push(instantDir);
-            if (vDirectionHistory.length > 5) {
-                vDirectionHistory.shift();
-            }
-            const recent = vDirectionHistory.slice(-3);
-            if (recent.length >= 3 && recent.every(d => d === recent[0])) {
-                stableVDirection = recent[0];
-            }
-        }
+        stableVDirection = diff > 0 ? 1 : -1;
         lastVProgress = currentProgress;
         return stableVDirection;
     }
