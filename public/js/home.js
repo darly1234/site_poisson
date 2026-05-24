@@ -150,22 +150,11 @@ window.addEventListener('load', () => {
 
                 if (self.progress <= 0.002) {
                     hVine.style.visibility = 'hidden';
-                    if (hVineReverse) hVineReverse.style.display = 'none';
-                } else if (dir === -1) {
-                    // VOLTA: esconde fio da ida, mostra fio reverso
-                    hVine.style.visibility = 'hidden';
-                    if (hVineReverse) {
-                        hVineReverse.style.display = 'block';
-                        const dashLen = hPathLength - hCurrentLen;
-                        hVineReverse.style.strokeDasharray = `${dashLen} ${Math.max(hCurrentLen, 0.001)}`;
-                        hVineReverse.style.strokeDashoffset = `${dashLen}`;
-                    }
                 } else {
-                    // IDA: fio normal
                     hVine.style.visibility = 'visible';
                     hVine.style.strokeDashoffset = hPathLength * (1 - self.progress);
-                    if (hVineReverse) hVineReverse.style.display = 'none';
                 }
+                if (hVineReverse) hVineReverse.style.display = 'none';
 
                 // Posiciona a seta na ponta atual do fio
                 const hArrowTip = document.getElementById('h-arrow-tip');
@@ -175,10 +164,13 @@ window.addEventListener('load', () => {
                         const p  = hVine.getPointAtLength(hCurrentLen);
                         const p0 = hVine.getPointAtLength(Math.max(0, hCurrentLen - 8));
 
-                        const screenX = (p.x / 4800) * hContainer.scrollWidth;
-                        const screenY = (p.y / 1000) * window.innerHeight;
-                        const screenX0 = (p0.x / 4800) * hContainer.scrollWidth;
-                        const screenY0 = (p0.y / 1000) * window.innerHeight;
+                        const svgEl = document.getElementById('horizontal-vine-svg');
+                        const rect = svgEl ? svgEl.getBoundingClientRect() : { width: hContainer.scrollWidth, height: window.innerHeight };
+
+                        const screenX = (p.x / 4800) * rect.width;
+                        const screenY = (p.y / 1000) * rect.height;
+                        const screenX0 = (p0.x / 4800) * rect.width;
+                        const screenY0 = (p0.y / 1000) * rect.height;
                         let angle = Math.atan2(screenY - screenY0, screenX - screenX0) * 180 / Math.PI;
                         if (dir === -1) angle += 180;
 
@@ -366,22 +358,10 @@ window.addEventListener('load', () => {
                     forceHorizontalDirection(1);
                 }
 
-                if (dir === -1) {
-                    // VOLTA: esconder vVine; mostrar vVineReverse
-                    gsap.killTweensOf(vVine, 'opacity');
-                    gsap.set(vVine, { opacity: 0 });
-                    if (vVineReverse) {
-                        vVineReverse.style.display = 'block';
-                        vVineReverse.style.opacity = '1';
-                        const dashLen = totalLen - currentLen;
-                        vVineReverse.style.strokeDasharray = `${dashLen} ${Math.max(currentLen, 0.001)}`;
-                        vVineReverse.style.strokeDashoffset = `${dashLen}`;
-                    }
-                } else {
-                    // IDA: fio sempre visível — some junto com a seta nos últimos 5%
+                // Fio sempre visível e sincronizado — some junto com a seta nos últimos 5%
+                if (vVine) {
                     vVine.style.strokeDasharray = `${totalLen} ${totalLen}`;
                     vVine.style.strokeDashoffset = totalLen * (1 - self.progress);
-                    if (vVineReverse) vVineReverse.style.display = 'none';
 
                     if (self.progress > 0.95) {
                         // Fade out sincronizado com a seta
@@ -393,6 +373,7 @@ window.addEventListener('load', () => {
                         gsap.set(vVine, { opacity: 1 });
                     }
                 }
+                if (vVineReverse) vVineReverse.style.display = 'none';
 
                 if (vArrowTip && self.progress > 0.001) {
                     const p  = vVine.getPointAtLength(currentLen);
@@ -1070,6 +1051,43 @@ window.addEventListener('load', () => {
             toggleActions: "play none none reverse"
         }
     });
+
+    // --- SUPORTE A SWIPE HORIZONTAL NO CELULAR ---
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (hasTouch) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let initialScrollY = 0;
+        let isHorizontalSwipe = false;
+
+        const horizWrapper = document.querySelector('.horizontal-wrapper');
+        if (horizWrapper) {
+            horizWrapper.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                initialScrollY = window.scrollY;
+                isHorizontalSwipe = false;
+            }, { passive: true });
+
+            horizWrapper.addEventListener('touchmove', (e) => {
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const deltaX = touchStartX - touchX;
+                const deltaY = touchStartY - touchY;
+
+                // Determina se o gesto principal é horizontal
+                if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+                    isHorizontalSwipe = true;
+                }
+
+                if (isHorizontalSwipe) {
+                    if (e.cancelable) e.preventDefault();
+                    // Multiplicador 1.35x para dar sensação de resposta rápida e natural
+                    window.scrollTo(0, initialScrollY + deltaX * 1.35);
+                }
+            }, { passive: false });
+        }
+    }
 
     /* 
     // --- ORBITAL CAROUSEL (DESATIVADO - SUBSTITUÍDO POR REACT) ---

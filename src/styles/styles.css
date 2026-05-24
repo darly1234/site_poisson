@@ -439,7 +439,7 @@
   }
 
   .book-front-cover {
-    transform: translateZ(0px);
+    transform: translateZ(1px);
     z-index: 2;
   }
 
