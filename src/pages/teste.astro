@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+import '../styles/styles.css';
+import Header from '../components/Header.astro';
+import HeroPoisson from '../components/HeroPoisson';
+import Biblioteca from '../components/Biblioteca';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-fixed-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca | Editora Poisson</title>
+    <meta name="description" content="Explore a Biblioteca Virtual da Editora Poisson. Mais de 1.200 títulos acadêmicos gratuitos em ciências exatas, humanas, saúde, engenharias e mais.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet"></noscript>
+    <style is:global>
+        body, html {
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+        }
+    </style>
+</head>
+<body>
+    <Header />
+
+    <HeroPoisson client:load />
+
+    <main class="pt-32">
+        <Biblioteca client:load />
+    </main>
+
+    <SiteFooter />
+</body>
+</html>

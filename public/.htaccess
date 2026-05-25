@@ -1,0 +1,27 @@
+# SPA fallback handled by vhost — this file adds cache headers
+<IfModule mod_headers.c>
+    # Hashed _astro assets: cache 1 year (immutable)
+    <FilesMatch "\.(js|css|woff2?|ttf|otf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Images and other static assets
+    <FilesMatch "\.(png|jpg|jpeg|webp|avif|gif|ico|svg)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # HTML: revalidate on every visit
+    <FilesMatch "\.html$">
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </FilesMatch>
+
+    # robots.txt: no cache
+    <Files "robots.txt">
+        Header set Cache-Control "no-cache, no-store"
+    </Files>
+</IfModule>
+
+# Gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

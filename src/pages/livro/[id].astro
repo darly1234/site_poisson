@@ -1,0 +1,73 @@
+---
+import '../../styles/global.css';
+import '../../styles/styles.css';
+import Header from '../../components/Header.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { fetchLibrary, fetchBook } from '../../lib/library/api';
+import { enrichBook, relatedBooks } from '../../lib/library/data';
+import { BookPageDetails } from '../../components/library/BookPageDetails';
+import { ChevronLeft } from 'lucide-react';
+
+export async function getStaticPaths() {
+  const { fetchLibrary } = await import('../../lib/library/api');
+  const res = await fetchLibrary({ limit: 9999 });
+  const allBooks = res.data;
+  return res.data.map((book) => ({
+    params: { id: book.id },
+    props: { book, allBooks },
+  }));
+}
+
+const { id } = Astro.params;
+const { book, allBooks } = Astro.props;
+
+// Rich details (description, chapters, url) are now mapped directly in loadAll cache!
+const enriched = enrichBook(book);
+const related = relatedBooks(book, 10, allBooks);
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-fixed-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{enriched.title} | Editora Poisson</title>
+    <meta name="description" content={`Leia '${enriched.title}' por ${enriched.author}. Disponível gratuitamente na Biblioteca da Editora Poisson.`}>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet"></noscript>
+    <style is:global>
+        body, html {
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body style="
+  --background: oklch(0.98 0.005 95);
+  --foreground: oklch(0.16 0.012 250);
+  --muted-foreground: oklch(0.42 0.014 250);
+  --muted: oklch(0.92 0.012 95);
+  --border: oklch(0.16 0.012 250 / 12%);
+  --card: oklch(0.97 0.008 95);
+  --card-foreground: oklch(0.16 0.012 250);
+">
+    <Header />
+
+    <main class="pt-40 pb-20 px-6 max-w-6xl mx-auto">
+        <!-- Botão Voltar (Fixed / Always on Top) -->
+        <div class="h-12 mb-6">
+            <a href="/biblioteca" class="inline-flex items-center gap-2 text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground bg-white/95 hover:bg-white border border-border/60 hover:border-border/80 px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-x-1 fixed top-24 md:top-36 left-6 min-[1200px]:left-[calc((100vw-1152px)/2+24px)] z-[150] backdrop-blur-md">
+                <ChevronLeft size={14} /> Voltar para Biblioteca
+            </a>
+        </div>
+
+        <!-- Conteúdo do Livro -->
+        <BookPageDetails client:load initialBook={enriched} relatedBooks={related} />
+    </main>
+
+    <SiteFooter />
+</body>
+</html>
