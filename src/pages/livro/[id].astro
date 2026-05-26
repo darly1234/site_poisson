@@ -12,7 +12,30 @@ export async function getStaticPaths() {
   const { fetchLibrary } = await import('../../lib/library/api');
   const res = await fetchLibrary({ limit: 9999 });
   const allBooks = res.data;
-  return res.data.map((book) => ({
+  
+  // Filtro de build parcial para otimizar velocidade
+  let filterBookId = null;
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const filterPath = path.join(process.cwd(), 'build-filter.json');
+    if (fs.existsSync(filterPath)) {
+      const filterData = JSON.parse(fs.readFileSync(filterPath, 'utf8'));
+      if (filterData && filterData.onlyBookId) {
+        filterBookId = filterData.onlyBookId;
+      }
+    }
+  } catch (e) {
+    console.error('Erro ao ler build-filter.json:', e);
+  }
+
+  let booksToBuild = res.data;
+  if (filterBookId) {
+    booksToBuild = res.data.filter(book => book.id === filterBookId);
+    console.log(`\x1b[33m[Partial Build]\x1b[0m Gerando apenas o livro: ${filterBookId}`);
+  }
+
+  return booksToBuild.map((book) => ({
     params: { id: book.id },
     props: { book, allBooks },
   }));
