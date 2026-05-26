@@ -17,6 +17,39 @@ try {
     if (p?.enabled && p?.content?.imageUrl) popupImageUrl = p.content.imageUrl;
   }
 } catch {}
+
+// Pré-busca livros para o OrbitalCarousel — elimina fetch client-side e resolve LCP
+function parseAutoresSSG(raw: string | null | undefined): string {
+  if (!raw) return 'Editora Poisson';
+  try {
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr) && arr.length > 0) {
+      const first = arr[0];
+      const name = typeof first === 'string' ? first : (first?.nome ?? first?.name ?? first?.autor ?? String(first));
+      return arr.length === 1 ? name : `${name} et al.`;
+    }
+  } catch { /* not JSON */ }
+  return String(raw).split(',')[0].trim();
+}
+let carouselBooks: any[] = [];
+try {
+  const r2 = await fetch('https://individual.poisson.com.br/api/public/livros/all');
+  if (r2.ok) {
+    const data: any[] = await r2.json();
+    carouselBooks = data
+      .filter((b: any) => b.capa)
+      .slice(0, 9)
+      .map((b: any) => ({
+        id: b.id,
+        title: b.titulo ?? 'Sem título',
+        author: parseAutoresSSG(b.autores),
+        cover: b.capa,
+        excerpt: (b.resumo ?? '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 200),
+        href: `https://editorapoisson.com.br/biblioteca/?id=${encodeURIComponent(b.id)}`,
+      }));
+  }
+} catch {}
+const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
 ---
 
 <!DOCTYPE html>
@@ -36,6 +69,7 @@ try {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {popupImageUrl && <link rel="preload" as="image" href={popupImageUrl} fetchpriority="high" />}
+    {firstCoverUrl && <link rel="preload" as="image" href={firstCoverUrl} fetchpriority="high" />}
 
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></noscript>
@@ -127,7 +161,7 @@ try {
                         
                         <!-- Componente React Injetado Aqui -->
                         <div class="w-full">
-                            <OrbitalCarousel client:load />
+                            <OrbitalCarousel client:load books={carouselBooks} />
                         </div>
                         
                     </div>
