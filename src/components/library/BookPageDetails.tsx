@@ -156,10 +156,10 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
             <div
               className="book-back-cover absolute inset-0 rounded-md shadow-deep"
               style={{
-                background: "#fafafa",
+                background: "#000000",
               }}
             />
-            
+
             {/* Pages (Right Side) */}
             <div className="book-pages-side" />
 
@@ -167,7 +167,7 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
             <div
               className="book-spine-side"
               style={{
-                background: "#f0f0f0",
+                background: "#111111",
               }}
             />
 
