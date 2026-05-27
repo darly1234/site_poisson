@@ -8,6 +8,7 @@ import versionData from '../data/version.json';
 
 const version = versionData.version;
 
+// Pré-carrega imagem do popup para evitar LCP tardio
 let popupImageUrl: string | null = null;
 try {
   const r = await fetch('https://individual.poisson.com.br/api/public/popup');
@@ -17,6 +18,7 @@ try {
   }
 } catch {}
 
+// Pré-busca livros para o OrbitalCarousel — elimina fetch client-side e resolve LCP
 function parseAutoresSSG(raw: string | null | undefined): string {
   if (!raw) return 'Editora Poisson';
   try {
@@ -60,19 +62,6 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     </script>
     <style is:global>
       #theme-toggle-btn, #theme-toggle-btn-mobile { display: none !important; }
-      .page-content .v-panel {
-        width: 100%;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5vh 4vw;
-        position: relative;
-        overflow: hidden;
-      }
-      @media (min-width: 768px) {
-        .page-content .v-panel { padding: 5vw; }
-      }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editora Poisson | O Fio do Conhecimento</title>
@@ -81,6 +70,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {popupImageUrl && <link rel="preload" as="image" href={popupImageUrl} fetchpriority="high" />}
     {firstCoverUrl && <link rel="preload" as="image" href={firstCoverUrl} fetchpriority="high" />}
+
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -88,10 +78,189 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
 
     <Header />
 
-    <!-- WRAPPER ÚNICO: vine SVG + todas as seções em scroll vertical -->
-    <div class="page-content" style="position: relative; overflow-x: hidden;">
+    <!-- PARTE 1: SCROLL HORIZONTAL -->
+    <div class="horizontal-wrapper">
+        <div class="horizontal-container" id="master-scroll">
+            
+            <!-- SVG Dinmico Horizontal Reajustado para 480vw -->
+            <svg id="horizontal-vine-svg" viewBox="0 0 4800 1000" preserveAspectRatio="none" class="opacity-0">
+                <defs>
+                    <filter id="hand-drawn-h" x="-5%" y="-5%" width="110%" height="110%">
+                        <feTurbulence type="turbulence" baseFrequency="0.012 0.008" numOctaves="4" seed="7" result="noise"/>
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+                    </filter>
+                </defs>
+                <path id="h-vine" class="thread-path" d="M 50,500 C 350,250 650,750 1000,500 S 1700,200 2400,500 S 3100,800 3800,500 C 4050,200 4300,400 4300,1000"
+                    style="filter: url(#hand-drawn-h);" />
+                <path id="h-vine-reverse" class="thread-path" d="M 50,500 C 350,250 650,750 1000,500 S 1700,200 2400,500 S 3100,800 3800,500 C 4050,200 4300,400 4300,1000"
+                    style="filter: url(#hand-drawn-h); display:none;" />
+                <circle class="node" cx="3800" cy="500" r="10" />
+                <circle class="node" cx="4300" cy="1000" r="10" />
+            </svg>
+            
+            <!-- SVG para a Seta (sem esticamento) -->
+            <svg id="h-arrow-svg" style="position:absolute; top:0; left:0; width:480vw; height:100vh; overflow:visible; pointer-events:none; z-index: 200;">
+                <g id="h-arrow-tip" style="display:none;">
+                    <path d="M -55,-13 L 0,0 L -55,13" fill="none" stroke="#ff3c00" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" id="h-arrow-path"/>
+                </g>
+            </svg>
 
-        <!-- FIO DE OURO — SVG vertical cobrindo a página toda -->
+            <!-- PAINEL 01 -->
+            <section class="panel">
+
+                <div class="w-full relative z-10">
+                    <h1 class="text-5xl md:text-[10vw] serif-extra leading-none mb-4 mt-[14vh] md:mt-[16vh] xl:mt-[10vh] 2xl:mt-[8vh]" id="premium-title">
+                        <div class="line-wrap"><span class="kinetic-text">A</span></div>
+                        <div class="line-wrap"><span class="kinetic-text">CIÊNCIA</span></div>
+                        <br>
+                        <div class="heartbeat-pulse mt-2">
+                            <div class="line-wrap">
+                                <span class="kinetic-text italic text-zinc-400/50">
+                                    É VIVA
+                                </span>
+                            </div>
+                        </div>
+                    </h1>
+                    
+                    <div class="max-w-lg md:ml-auto mt-8 md:mt-10 xl:mt-6 2xl:mt-4 relative pl-6">
+                        <div class="absolute left-0 top-1 bottom-0 w-[1px] bg-gradient-to-b from-[#ff3c00] to-transparent opacity-50 hero-text opacity-0 scale-y-0 origin-top line-anim"></div>
+                        
+                        <p class="text-[#ff3c00] uppercase text-[10px] md:text-xs tracking-widest font-bold mb-5 hero-text opacity-0">
+                            A linha do conhecimento começa aqui e guia a sua jornada.
+                        </p>
+                        <p class="text-zinc-400 text-[1rem] md:text-[1.1rem] leading-relaxed font-light hero-text opacity-0">
+                            Fundada em 2017, a <strong class="text-white font-normal">Editora Poisson</strong> publica livros acadêmicos e coletâneas multidisciplinares, distribuídos integralmente em acesso aberto. Cada título passa por curadoria editorial rigorosa, registro de <strong class="text-white font-normal">ISBN</strong>, <strong class="text-white font-normal">DOI</strong> e <strong class="text-white font-normal">ficha catalográfica</strong> — e fica disponível, sem barreiras, para qualquer leitor em qualquer lugar.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAINEL 02 -->
+            <section class="panel panel-wide bg-white text-black">
+                
+                <div class="flex flex-col md:flex-row items-stretch justify-start gap-10 md:gap-[10vw] w-full h-full relative z-10 px-6 md:pl-[8vw]">
+                    
+                    <div class="flex flex-col h-auto md:h-full py-10 md:py-[12vh] w-full md:w-[50vw]">
+                        <div class="flex-grow flex flex-col justify-center">
+                            <h2 class="text-4xl md:text-5xl lg:text-[4.5vw] serif-extra leading-[1.1] tracking-tight text-black">
+                                Volumes que <br> 
+                                <span class="whitespace-nowrap"><span class="italic text-black transition-colors duration-500" id="text-reunem">reúnem</span> vozes</span> <br> 
+                                em torno de <br> 
+                                um tema.
+                            </h2>
+                        </div>
+                        <div class="mt-8 md:mt-auto md:mb-[2vh]">
+                            <p class="text-zinc-600 max-w-lg text-[0.95rem] md:text-[1.1rem] leading-relaxed">
+                                Organizamos coletâneas científicas que agregam capítulos de autores diferentes em torno de uma área. Ideais para grupos de pesquisa, programas de pós-graduação, anais de eventos e dossiês temáticos.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-center justify-center w-full md:w-[40vw] pb-10 md:pb-0">
+                        <h3 class="text-2xl md:text-4xl serif-extra italic mb-6 text-center text-black">Últimos Lançamentos</h3>
+                        
+                        <!-- Componente React Injetado Aqui -->
+                        <div class="w-full">
+                            <OrbitalCarousel client:load books={carouselBooks} />
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- PAINEL 03 -->
+            <section class="panel panel-wide" id="panel-areas">
+                
+                <div class="flex flex-col md:flex-row items-center justify-start gap-12 md:gap-[6vw] w-full h-full relative z-10 px-6 md:px-[6vw]">
+                    
+                    <!-- Coluna 1: Ttulo -->
+                    <div class="w-full md:w-[35vw] flex flex-col justify-center shrink-0">
+                        <h2 class="text-4xl md:text-5xl lg:text-[4.5vw] serif-extra leading-[1.1] tracking-tight text-white">
+                            <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">Publicamos</div></div>
+                            <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">das exatas às</div></div>
+                            <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">humanas,</div></div>
+                            <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0"><span class="italic text-white transition-colors duration-200" id="text-todas-grandes">todas as grandes</span></div></div>
+                            <div class="overflow-hidden" style="padding-bottom: 15px; margin-bottom: -15px;"><div class="area-title-line opacity-0">áreas.</div></div>
+                        </h2>
+                    </div>
+                    
+                    <!-- Coluna 2: Lista de reas -->
+                    <div class="w-full md:w-[35vw] relative pl-6 md:pl-10 shrink-0">
+                        <div class="absolute left-0 top-2 bottom-2 w-[1px] bg-zinc-800"></div>
+                        <div class="absolute left-[-1px] top-2 w-[3px] h-16 bg-[#ff3c00] shadow-[0_0_12px_rgba(255,60,0,0.8)] rounded-full area-neon opacity-0"></div>
+
+                        <div class="text-[0.9rem] md:text-[1.2rem] leading-[2.2] md:leading-[2.4] tracking-wide areas-blur-container" id="areas-list">
+                            <span class="item" style="--i: 0">Ciências Exatas e da Terra</span>
+                            <span class="separator" style="--i: 0">/</span>
+                            <span class="item" style="--i: 1">Ciências Biológicas</span>
+                            <span class="separator" style="--i: 1">/</span>
+                            <span class="item" style="--i: 2">Engenharias</span>
+                            <span class="separator" style="--i: 2">/</span>
+                            <span class="item" style="--i: 3">Ciências da Saúde</span>
+                            <span class="separator" style="--i: 3">/</span>
+                            <span class="item" style="--i: 4">Ciências Agrárias</span>
+                            <span class="separator" style="--i: 4">/</span>
+                            <span class="item" style="--i: 5">Ciências Sociais Aplicadas</span>
+                            <span class="separator" style="--i: 5">/</span>
+                            <span class="item" style="--i: 6">Ciências Humanas</span>
+                            <span class="separator" style="--i: 6">/</span>
+                            <span class="item" style="--i: 7">Linguística, Letras e Artes</span>
+                            <span class="separator" style="--i: 7">/</span>
+                            <span class="item" style="--i: 8">Ciências e Humanidades para a Educação</span>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 3: Estatsticas -->
+                    <div class="w-full md:w-[30vw] flex flex-col justify-center border-t md:border-t-0 md:border-l border-zinc-800/50 pt-10 md:pt-0 md:pl-[4vw] shrink-0">
+                        <h3 class="text-2xl md:text-3xl serif-extra mb-8 md:mb-10 text-white stats-reveal opacity-0">Em números</h3>
+                        
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-6 md:gap-10">
+                            <div class="stats-reveal opacity-0">
+                                <div class="text-[8vw] md:text-[4vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="1.200+">0</div>
+                                <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Títulos Publicados</div>
+                            </div>
+                            <div class="stats-reveal opacity-0">
+                                <div class="text-[8vw] md:text-[4vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="30.000+">0</div>
+                                <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Autores Ativos</div>
+                            </div>
+                            <div class="stats-reveal opacity-0">
+                                <div class="text-[8vw] md:text-[4vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="15">0</div>
+                                <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Países Atendidos</div>
+                            </div>
+                            <div class="stats-reveal opacity-0">
+                                <div class="text-[8vw] md:text-[4vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="10">0</div>
+                                <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Anos de História</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- PAINEL 04 -->
+            <section class="panel bg-orange-600 text-white overflow-hidden" id="panel-transition">
+                <div class="text-center relative z-10 w-full max-w-[90vw] md:max-w-[70vw]">
+                    <h2 class="font-bold tracking-tighter leading-[0.8] mb-8 flex flex-col items-center uppercase">
+                        <div class="w-full flex justify-between text-[15vw] md:text-[12vw]" id="line-mergulhe">
+                            <span>M</span><span>E</span><span>R</span><span>G</span><span>U</span><span>L</span><span>H</span><span>E</span>
+                        </div>
+                        <div class="w-full flex justify-between text-[10vw] md:text-[8vw] mt-2" id="line-dna">
+                            <span>N</span><span>O</span>
+                            <span class="nosso-text">N</span><span class="nosso-text">O</span><span class="nosso-text">S</span><span class="nosso-text">S</span><span class="nosso-text">O</span>
+                            <span class="dna-text">D</span><span class="dna-text">N</span><span class="dna-text">A</span>
+                        </div>
+                    </h2>
+                    <p class="uppercase tracking-[0.4em] text-[20px] md:text-[32px] font-bold opacity-70 mt-12 wave-text">Publicações que conectam saberes</p>
+                </div>
+                <div class="absolute top-1/2 left-1/2 -mt-[10vw] -ml-[10vw] w-[20vw] h-[20vw] bg-black rounded-full scale-0" id="transition-circle"></div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- PARTE 2: SCROLL VERTICAL -->
+    <div class="vertical-content">
         <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" id="vertical-vine-svg" style="overflow:visible; z-index:200;">
             <defs>
                 <linearGradient id="v-vine-grad" x1="0" y1="0" x2="0" y2="1">
@@ -112,164 +281,47 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 <path d="M -55,-13 L 0,0 L -55,13" fill="none" stroke="#ff3c00" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" id="vine-arrow-path"/>
             </g>
         </svg>
-
-        <!-- SEÇÃO 01: HERO -->
-        <section class="v-panel bg-black text-white">
-            <div class="w-full relative z-10">
-                <h1 class="text-5xl md:text-[10vw] serif-extra leading-none mb-4 mt-[14vh] md:mt-[16vh] xl:mt-[10vh] 2xl:mt-[8vh]" id="premium-title">
-                    <div class="line-wrap"><span class="kinetic-text">A</span></div>
-                    <div class="line-wrap"><span class="kinetic-text">CIÊNCIA</span></div>
-                    <br>
-                    <div class="heartbeat-pulse mt-2">
-                        <div class="line-wrap">
-                            <span class="kinetic-text italic text-zinc-400/50">É VIVA</span>
-                        </div>
-                    </div>
-                </h1>
-                <div class="max-w-lg md:ml-auto mt-8 md:mt-10 xl:mt-6 2xl:mt-4 relative pl-6">
-                    <div class="absolute left-0 top-1 bottom-0 w-[1px] bg-gradient-to-b from-[#ff3c00] to-transparent opacity-50 hero-text opacity-0 scale-y-0 origin-top line-anim"></div>
-                    <p class="text-[#ff3c00] uppercase text-[10px] md:text-xs tracking-widest font-bold mb-5 hero-text opacity-0">
-                        A linha do conhecimento começa aqui e guia a sua jornada.
-                    </p>
-                    <p class="text-zinc-400 text-[1rem] md:text-[1.1rem] leading-relaxed font-light hero-text opacity-0">
-                        Fundada em 2017, a <strong class="text-white font-normal">Editora Poisson</strong> publica livros acadêmicos e coletâneas multidisciplinares, distribuídos integralmente em acesso aberto. Cada título passa por curadoria editorial rigorosa, registro de <strong class="text-white font-normal">ISBN</strong>, <strong class="text-white font-normal">DOI</strong> e <strong class="text-white font-normal">ficha catalográfica</strong> — e fica disponível, sem barreiras, para qualquer leitor em qualquer lugar.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO 02: VOLUMES / CAROUSEL -->
-        <section class="v-panel bg-white text-black">
-            <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 w-full relative z-10">
-                <div class="flex flex-col justify-between py-10 w-full md:w-[45%]">
-                    <h2 class="text-4xl md:text-5xl lg:text-[4.5vw] serif-extra leading-[1.1] tracking-tight text-black">
-                        Volumes que <br>
-                        <span class="whitespace-nowrap"><span class="italic text-black transition-colors duration-500" id="text-reunem">reúnem</span> vozes</span> <br>
-                        em torno de <br>
-                        um tema.
-                    </h2>
-                    <div class="mt-8 md:mt-12">
-                        <p class="text-zinc-600 max-w-lg text-[0.95rem] md:text-[1.1rem] leading-relaxed">
-                            Organizamos coletâneas científicas que agregam capítulos de autores diferentes em torno de uma área. Ideais para grupos de pesquisa, programas de pós-graduação, anais de eventos e dossiês temáticos.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col items-center justify-center w-full md:w-[45%]">
-                    <h3 class="text-2xl md:text-4xl serif-extra italic mb-6 text-center text-black">Últimos Lançamentos</h3>
-                    <div class="w-full">
-                        <OrbitalCarousel client:load books={carouselBooks} />
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO 03: ÁREAS DO CONHECIMENTO -->
-        <section class="v-panel bg-black text-white" id="panel-areas">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-center gap-12 md:gap-10 w-full relative z-10">
-
-                <!-- Coluna 1: Título -->
-                <div class="w-full md:w-[30%] flex flex-col justify-center shrink-0">
-                    <h2 class="text-4xl md:text-5xl lg:text-[4vw] serif-extra leading-[1.1] tracking-tight text-white">
-                        <div class="overflow-hidden" style="padding-bottom:15px;margin-bottom:-15px;"><div class="area-title-line opacity-0">Publicamos</div></div>
-                        <div class="overflow-hidden" style="padding-bottom:15px;margin-bottom:-15px;"><div class="area-title-line opacity-0">das exatas às</div></div>
-                        <div class="overflow-hidden" style="padding-bottom:15px;margin-bottom:-15px;"><div class="area-title-line opacity-0">humanas,</div></div>
-                        <div class="overflow-hidden" style="padding-bottom:15px;margin-bottom:-15px;"><div class="area-title-line opacity-0"><span class="italic text-white transition-colors duration-200" id="text-todas-grandes">todas as grandes</span></div></div>
-                        <div class="overflow-hidden" style="padding-bottom:15px;margin-bottom:-15px;"><div class="area-title-line opacity-0">áreas.</div></div>
-                    </h2>
-                </div>
-
-                <!-- Coluna 2: Lista de Áreas -->
-                <div class="w-full md:w-[38%] relative pl-6 md:pl-10 shrink-0">
-                    <div class="absolute left-0 top-2 bottom-2 w-[1px] bg-zinc-800"></div>
-                    <div class="absolute left-[-1px] top-2 w-[3px] h-16 bg-[#ff3c00] shadow-[0_0_12px_rgba(255,60,0,0.8)] rounded-full area-neon opacity-0"></div>
-                    <div class="text-[0.9rem] md:text-[1.2rem] leading-[2.2] md:leading-[2.4] tracking-wide areas-blur-container" id="areas-list">
-                        <span class="item" style="--i: 0">Ciências Exatas e da Terra</span>
-                        <span class="separator" style="--i: 0">/</span>
-                        <span class="item" style="--i: 1">Ciências Biológicas</span>
-                        <span class="separator" style="--i: 1">/</span>
-                        <span class="item" style="--i: 2">Engenharias</span>
-                        <span class="separator" style="--i: 2">/</span>
-                        <span class="item" style="--i: 3">Ciências da Saúde</span>
-                        <span class="separator" style="--i: 3">/</span>
-                        <span class="item" style="--i: 4">Ciências Agrárias</span>
-                        <span class="separator" style="--i: 4">/</span>
-                        <span class="item" style="--i: 5">Ciências Sociais Aplicadas</span>
-                        <span class="separator" style="--i: 5">/</span>
-                        <span class="item" style="--i: 6">Ciências Humanas</span>
-                        <span class="separator" style="--i: 6">/</span>
-                        <span class="item" style="--i: 7">Linguística, Letras e Artes</span>
-                        <span class="separator" style="--i: 7">/</span>
-                        <span class="item" style="--i: 8">Ciências e Humanidades para a Educação</span>
-                    </div>
-                </div>
-
-                <!-- Coluna 3: Estatísticas -->
-                <div class="w-full md:w-[28%] flex flex-col justify-center border-t md:border-t-0 md:border-l border-zinc-800/50 pt-10 md:pt-0 md:pl-8 shrink-0">
-                    <h3 class="text-2xl md:text-3xl serif-extra mb-8 md:mb-10 text-white stats-reveal opacity-0">Em números</h3>
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-6 md:gap-10">
-                        <div class="stats-reveal opacity-0">
-                            <div class="text-[8vw] md:text-[3.5vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="1.200+">0</div>
-                            <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Títulos Publicados</div>
-                        </div>
-                        <div class="stats-reveal opacity-0">
-                            <div class="text-[8vw] md:text-[3.5vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="30.000+">0</div>
-                            <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Autores Ativos</div>
-                        </div>
-                        <div class="stats-reveal opacity-0">
-                            <div class="text-[8vw] md:text-[3.5vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="15">0</div>
-                            <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Países Atendidos</div>
-                        </div>
-                        <div class="stats-reveal opacity-0">
-                            <div class="text-[8vw] md:text-[3.5vw] leading-none serif-extra bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 font-bold mb-2 count-number" data-target="10">0</div>
-                            <div class="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Anos de História</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SEÇÃO 04: MERGULHE NO NOSSO DNA -->
-        <section class="v-panel bg-orange-600 text-white" id="panel-transition">
-            <div class="text-center relative z-10 w-full max-w-[90vw] md:max-w-[70vw]">
-                <h2 class="font-bold tracking-tighter leading-[0.8] mb-8 flex flex-col items-center uppercase">
-                    <div class="w-full flex justify-between text-[15vw] md:text-[12vw]" id="line-mergulhe">
-                        <span>M</span><span>E</span><span>R</span><span>G</span><span>U</span><span>L</span><span>H</span><span>E</span>
-                    </div>
-                    <div class="w-full flex justify-between text-[10vw] md:text-[8vw] mt-2" id="line-dna">
-                        <span>N</span><span>O</span>
-                        <span class="nosso-text">N</span><span class="nosso-text">O</span><span class="nosso-text">S</span><span class="nosso-text">S</span><span class="nosso-text">O</span>
-                        <span class="dna-text">D</span><span class="dna-text">N</span><span class="dna-text">A</span>
-                    </div>
-                </h2>
-                <p class="uppercase tracking-[0.4em] text-[20px] md:text-[32px] font-bold opacity-70 mt-12 wave-text">Publicações que conectam saberes</p>
-            </div>
-            <div class="absolute top-1/2 left-1/2 -mt-[10vw] -ml-[10vw] w-[20vw] h-[20vw] bg-black rounded-full scale-0" id="transition-circle"></div>
-        </section>
-
+        
         <!-- SEÇÃO DNA DA EDITORA -->
-        <section class="min-h-screen py-10 md:py-40 px-6 md:px-10 bg-black text-white relative z-10 overflow-hidden" id="section-dna-details">
+        <section class="min-h-screen py-20 md:py-40 px-6 md:px-10 bg-black text-white relative z-10 overflow-hidden" id="section-dna-details">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row gap-12 md:gap-20 items-start justify-between">
+                    
+                    <!-- Coluna da Esquerda: Efeito Particle Assemble -->
                     <div class="w-full md:w-5/12" id="sticky-canvas-container">
                         <canvas id="particleCanvas" width="700" height="400" class="w-full h-auto max-w-full"></canvas>
                     </div>
+
+                    <!-- Coluna da Direita: Blocos de Conteúdo -->
                     <div class="w-full md:w-6/12 space-y-24 md:mt-10">
+                        
+                        <!-- Bloco 1 -->
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out">
                             <span class="text-[#00b0ff] font-mono text-sm">01 / ACERVO LIVRE</span>
                             <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Conhecimento sem Barreiras</h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Todo o nosso acervo é disponibilizado <strong class="text-white font-normal">gratuitamente</strong>. Acreditamos que a ciência não deve ter barreiras. Ao publicar conosco, sua pesquisa fica disponível para milhões de leitores, pesquisadores e estudantes em todo o mundo, ampliando o impacto real do seu trabalho.</p>
+                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">
+                                Todo o nosso acervo é disponibilizado <strong class="text-white font-normal">gratuitamente</strong>. Acreditamos que a ciência não deve ter barreiras. Ao publicar conosco, sua pesquisa fica disponível para milhões de leitores, pesquisadores e estudantes em todo o mundo, ampliando o impacto real do seu trabalho.
+                            </p>
                         </div>
+
+                        <!-- Bloco 2 -->
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out" id="block-curriculo">
                             <span class="text-[#ff3c00] font-mono text-sm">02 / VALORIZAÇÃO</span>
                             <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Destaque no Currículo</h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Uma publicação na Editora Poisson agrega valor imediato ao seu <strong class="text-white font-normal">Curriculum Lattes</strong>. Nossas obras contam com conselho editorial rigoroso, registro de <strong class="text-white font-normal">ISBN</strong> e <strong class="text-white font-normal">DOI</strong>, garantindo a pontuação e o prestígio necessários para sua progressão acadêmica.</p>
+                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">
+                                Uma publicação na Editora Poisson agrega valor imediato ao seu <strong class="text-white font-normal">Curriculum Lattes</strong>. Nossas obras contam com conselho editorial rigoroso, registro de <strong class="text-white font-normal">ISBN</strong> e <strong class="text-white font-normal">DOI</strong>, garantindo a pontuação e o prestígio necessários para sua progressão acadêmica.
+                            </p>
                         </div>
+
+                        <!-- Bloco 3 -->
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out" id="block-mercado">
                             <span class="text-[#00b0ff] font-mono text-sm">03 / MERCADO</span>
                             <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Autoridade e Prestígio</h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Além do meio acadêmico, o mercado valoriza profissionais que produzem conhecimento. Tornar-se autor de um livro ou capítulo consolida sua autoridade, abrindo portas para consultorias, palestras e liderança em sua área de atuação.</p>
+                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">
+                                Além do meio acadêmico, o mercado valoriza profissionais que produzem conhecimento. Tornar-se autor de um livro ou capítulo consolida sua autoridade, abrindo portas para consultorias, palestras e liderança em sua área de atuação.
+                            </p>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -277,15 +329,20 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
 
         <!-- SEÇÃO: BUSCA INTELIGENTE COM IA -->
         <section class="min-h-screen py-20 md:py-40 px-6 md:px-10 bg-black text-white relative z-10 overflow-hidden" id="section-ai-search">
+            
             <div class="max-w-6xl mx-auto relative z-10">
                 <div class="flex flex-col md:flex-row-reverse gap-16 md:gap-24 items-center justify-between">
+                    
+                    <!-- Coluna da Direita (Originalmente Esquerda): Conteúdo Editorial -->
                     <div class="w-full md:w-5/12">
                         <span class="uppercase tracking-widest text-[10px] md:text-xs font-bold" id="ai-subtitle" style="color: #ffffff;">Tecnologia & Descoberta</span>
                         <h2 class="text-5xl md:text-[5vw] serif-extra italic mt-4 leading-none text-white">A busca que entende você.</h2>
                         <p class="text-zinc-400 mt-8 text-lg leading-relaxed font-light">
                             Nosso ecossistema utiliza <span id="ai-highlight-1" style="color:#7c3aed;" class="font-normal">inteligência artificial</span> para mapear relações semânticas profundas entre as obras. Não buscamos apenas termos; compreendemos o contexto da sua pesquisa.
                         </p>
+                        
                         <div class="mt-12 space-y-12">
+                            <!-- Item 1 -->
                             <div class="flex gap-6 items-start">
                                 <div class="w-1 bg-[#7c3aed] h-12 flex-shrink-0"></div>
                                 <div>
@@ -293,6 +350,8 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                                     <p class="text-zinc-500 text-lg mt-2 leading-relaxed font-light">Esqueça as palavras-chave rígidas. Nossa IA entende sinônimos, contextos e conceitos complexos, conectando você a referências que outros sistemas ignoram.</p>
                                 </div>
                             </div>
+
+                            <!-- Item 2 -->
                             <div class="flex gap-6 items-start">
                                 <div class="w-1 bg-[#7c3aed] h-12 flex-shrink-0"></div>
                                 <div>
@@ -302,13 +361,25 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             </div>
                         </div>
                     </div>
+
+                    <!-- Coluna da Esquerda: A Lupa Investigativa -->
                     <div class="w-full md:w-6/12 flex justify-center items-center relative h-[400px]" id="magnifier-container">
+                        
+                        <!-- Texto de Fundo (Normal/Pequeno) -->
                         <div class="absolute inset-0 flex items-center justify-center p-8">
-                            <p class="text-zinc-700 text-sm md:text-base leading-relaxed font-light text-justify opacity-30">A busca por conhecimento exige precisão. Cada verbete, cada citação e cada referência cruzada formam uma teia invisível de saberes. Nossa inteligência artificial vasculha essa malha, identificando padrões que olhos humanos poderiam ignorar, revelando a verdadeira relevância de cada pesquisa acadêmica publicada em nosso catálogo.</p>
+                            <p class="text-zinc-700 text-sm md:text-base leading-relaxed font-light text-justify opacity-30">
+                                A busca por conhecimento exige precisão. Cada verbete, cada citação e cada referência cruzada formam uma teia invisível de saberes. Nossa inteligência artificial vasculha essa malha, identificando padrões que olhos humanos poderiam ignorar, revelando a verdadeira relevância de cada pesquisa acadêmica publicada em nosso catálogo.
+                            </p>
                         </div>
+
+                        <!-- Texto Ampliado (Revelado pela Lupa) -->
                         <div class="absolute inset-0 flex items-center justify-center p-8 pointer-events-none" id="magnifier-lens" style="clip-path: circle(54px at 50% 50%);">
-                            <p class="text-[#7c3aed] text-xl md:text-2xl leading-relaxed font-bold text-justify">A busca por conhecimento exige precisão. Cada verbete, cada citação e cada referência cruzada formam uma teia invisível de saberes. Nossa inteligência artificial vasculha essa malha, identificando padrões que olhos humanos poderiam ignorar, revelando a verdadeira relevância de cada pesquisa acadêmica publicada em nosso catálogo.</p>
+                            <p class="text-[#7c3aed] text-xl md:text-2xl leading-relaxed font-bold text-justify">
+                                A busca por conhecimento exige precisão. Cada verbete, cada citação e cada referência cruzada formam uma teia invisível de saberes. Nossa inteligência artificial vasculha essa malha, identificando padrões que olhos humanos poderiam ignorar, revelando a verdadeira relevância de cada pesquisa acadêmica publicada em nosso catálogo.
+                            </p>
                         </div>
+
+                        <!-- cone da Lupa (Perfeitamente Centrado e Desenhado em SVG) -->
                         <div class="absolute w-[180px] h-[180px] pointer-events-none" id="magnifier-glass" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
                             <svg viewBox="0 0 100 100" fill="none" stroke="#7c3aed" stroke-linecap="round" class="w-full h-full filter drop-shadow-[0_0_15px_rgba(124,58,237,0.4)]">
                                 <circle cx="50" cy="50" r="30" stroke-width="3" />
@@ -317,12 +388,14 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                                 <line x1="78.28" y1="78.28" x2="88.89" y2="88.89" stroke="#0a0a0a" stroke-width="2" />
                             </svg>
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <!-- SEÇÃO: PROCESSO DE SUBMISSÃO -->
+        <!-- SEO: PROCESSO DE SUBMISSO -->
         <section class="min-h-screen py-24 md:py-40 px-6 md:px-16 bg-black text-white relative z-10 overflow-hidden" id="section-submission">
             <div class="absolute left-[10%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#ff3c00]/20 to-transparent pointer-events-none"></div>
             <div class="max-w-5xl mx-auto">
@@ -331,8 +404,11 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     <h2 class="text-5xl md:text-[6vw] serif-extra italic mt-4 leading-none">Como <span id="word-publicar" style="color: inherit; transition: color 0.6s ease;">publicar</span> <br><span class="text-zinc-600">conosco.</span></h2>
                     <p class="text-white mt-6 text-lg font-light max-w-xl">Um processo transparente, rigoroso e desenhado para valorizar o seu trabalho acadêmico do início ao fim.</p>
                 </div>
+
                 <div class="relative" id="submission-steps">
                     <div class="absolute left-[28px] md:left-[36px] top-4 bottom-4 w-px bg-gradient-to-b from-[#facc15]/60 via-[#facc15]/30 to-transparent pointer-events-none"></div>
+
+                    <!-- Etapa 1 -->
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
                         <div class="flex-shrink-0 w-14 h-14 md:w-[72px] md:h-[72px] rounded-full border border-[#facc15]/40 flex items-center justify-center bg-black relative z-10">
                             <span class="text-[#facc15] font-mono font-bold text-lg md:text-2xl">01</span>
@@ -342,6 +418,8 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Submeta seu manuscrito pelo nosso portal. Aceitamos livros acadêmicos, coletâneas e capítulos individuais em <strong class="text-white font-normal">qualquer área do conhecimento</strong>. O processo é 100% online e sem burocracia.</p>
                         </div>
                     </div>
+
+                    <!-- Etapa 2 -->
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
                         <div class="flex-shrink-0 w-14 h-14 md:w-[72px] md:h-[72px] rounded-full border border-[#facc15]/40 flex items-center justify-center bg-black relative z-10">
                             <span class="text-[#facc15] font-mono font-bold text-lg md:text-2xl">02</span>
@@ -351,6 +429,8 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Nossa equipe realiza uma análise criteriosa de adequação temática, originalidade e qualidade científica. Você recebe um retorno detalhado em até <strong class="text-white font-normal">5 dias úteis</strong>.</p>
                         </div>
                     </div>
+
+                    <!-- Etapa 3 -->
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
                         <div class="flex-shrink-0 w-14 h-14 md:w-[72px] md:h-[72px] rounded-full border border-[#facc15]/40 flex items-center justify-center bg-black relative z-10">
                             <span class="text-[#facc15] font-mono font-bold text-lg md:text-2xl">03</span>
@@ -360,6 +440,8 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Após aprovação, seu texto passa por revisão técnica e diagramação profissional. Garantimos um produto editorial de <strong class="text-white font-normal">alto padrão visual e tipográfico</strong>, alinhado às normas ABNT e internacionais.</p>
                         </div>
                     </div>
+
+                    <!-- Etapa 4 -->
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
                         <div class="flex-shrink-0 w-14 h-14 md:w-[72px] md:h-[72px] rounded-full border border-[#facc15]/40 flex items-center justify-center bg-black relative z-10">
                             <span class="text-[#facc15] font-mono font-bold text-lg md:text-2xl">04</span>
@@ -369,6 +451,8 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Sua obra recebe <strong class="text-white font-normal">ISBN, DOI e ficha catalográfica</strong> oficiais, garantindo rastreabilidade científica global e pontuação no Currículo Lattes. Etapa indispensável para sua carreira acadêmica.</p>
                         </div>
                     </div>
+
+                    <!-- Etapa 5 -->
                     <div class="submission-step flex gap-8 md:gap-14 items-start opacity-0 translate-y-8">
                         <div class="flex-shrink-0 w-14 h-14 md:w-[72px] md:h-[72px] rounded-full border border-[#facc15] flex items-center justify-center bg-black relative z-10" style="box-shadow: 0 0 20px rgba(250,204,21,0.3);">
                             <span class="text-[#facc15] font-mono font-bold text-lg md:text-2xl">05</span>
@@ -378,86 +462,161 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                             <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Sua obra é publicada em <strong class="text-white font-normal">acesso aberto</strong>, indexada em bases como Google Scholar e disponibilizada globalmente. A partir daqui, o conhecimento viaja sozinho — e o seu nome vai junto.</p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <!-- FOOTER CTA -->
         <footer class="py-40 px-10 text-center bg-white relative z-20" id="footer-cta">
             <style is:inline>
-            @keyframes target-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            .target-spinning { animation: target-spin 12s linear infinite; }
-            @keyframes target-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.8); opacity: 0.4; } }
-            </style>
-            <h2 class="text-4xl md:text-[5vw] serif-extra italic leading-none mb-12 text-black" id="footer-title">
-                <span id="footer-title-1" style="display:inline-block;">O conhecimento</span>
-                <span id="footer-title-2" style="display:inline-block;">não para.</span>
-            </h2>
+            @keyframes target-spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            .target-spinning {
+                animation: target-spin 12s linear infinite;
+            }
+            @keyframes target-pulse {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.8); opacity: 0.4; }
+            }
+        </style>
+            <h2 class="text-4xl md:text-[5vw] serif-extra italic leading-none mb-12 text-black" id="footer-title"><span id="footer-title-1" style="display:inline-block;">O conhecimento</span> <span id="footer-title-2" style="display:inline-block;">não para.</span></h2>
+            
             <div class="relative flex items-center justify-center my-12" id="cta-wrapper" style="min-height: 90px;">
+                <!-- O Alvo (Bullseye) — onde o fio de ouro termina -->
                 <div id="cta-target" class="absolute flex items-center justify-center" style="width: 80px; height: 80px;">
+                    <!-- Anel externo girando (dashed) -->
                     <div class="absolute w-full h-full rounded-full target-spinning" style="border: 2px dashed rgba(255,60,0,0.35);"></div>
+                    <!-- SVG Bullseye: anéis concêntricos laranja e preto -->
                     <svg viewBox="0 0 100 100" class="absolute w-[85%] h-[85%]" style="filter: drop-shadow(0 0 10px rgba(255,60,0,0.5));">
+                        <!-- Anel 1: laranja externo -->
                         <circle cx="50" cy="50" r="49" fill="#ff3c00"/>
+                        <!-- Anel 2: branco -->
                         <circle cx="50" cy="50" r="39" fill="#ffffff"/>
+                        <!-- Anel 3: laranja -->
                         <circle cx="50" cy="50" r="29" fill="#ff3c00"/>
+                        <!-- Anel 4: preto -->
                         <circle cx="50" cy="50" r="19" fill="#111"/>
+                        <!-- Anel 5: laranja -->
                         <circle cx="50" cy="50" r="9" fill="#ff3c00"/>
+                        <!-- Centro: preto -->
                         <circle cx="50" cy="50" r="3" fill="#111"/>
                     </svg>
+                    <!-- Glow central pulsante -->
                     <div class="absolute rounded-full" style="width:7px;height:7px;background:#ff3c00;box-shadow:0 0 10px 4px rgba(255,60,0,0.8);animation:target-pulse 1.2s ease-in-out infinite;"></div>
                 </div>
+
+                <!-- O Botão (inicialmente oculto com zoom zero) -->
                 <a href="https://individual.poisson.com.br" id="cta-submeter" class="absolute bg-white text-black border-2 border-zinc-200 px-8 md:px-20 py-4 md:py-8 rounded-full text-sm font-bold uppercase tracking-[0.4em]" style="opacity: 0; transform: scale(0); pointer-events: none;">
                     Login / Submissão
                 </a>
             </div>
-            <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
+                            <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
         </footer>
+    </div>
 
-    </div><!-- /page-content -->
-
+    <!-- Scripts legados carregados de forma assncrona após o carregamento da página -->
     <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script is:inline defer src={`/js/teste.js?v=${version}`}></script>
+    <script is:inline defer src={`/js/home.js?v=${version}`}></script>
 
-    <!-- Popup -->
+    <!-- Script do PopUp do Site -->
     <script is:inline>
       (function() {
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? 'http://localhost:3001/api/public' : 'https://individual.poisson.com.br/api/public';
-        const popupPromise = fetch(`${API_BASE}/popup`).then(res => res.ok ? res.json() : null).catch(() => null);
+
+        // Disparar o fetch imediatamente em paralelo com o carregamento do restante do HTML
+        const popupPromise = fetch(`${API_BASE}/popup`)
+          .then(res => res.ok ? res.json() : null)
+          .catch(err => {
+            console.warn('[Popup fetch failed]', err);
+            return null;
+          });
 
         async function initPopup() {
           try {
             const config = await popupPromise;
             if (!config || !config.enabled) return;
+
+            // Validar agendamento
             const now = new Date();
             if (config.scheduling) {
-              if (config.scheduling.startDateTime && now < new Date(config.scheduling.startDateTime)) return;
-              if (config.scheduling.endDateTime && now > new Date(config.scheduling.endDateTime)) return;
+              if (config.scheduling.startDateTime) {
+                const start = new Date(config.scheduling.startDateTime);
+                if (now < start) return;
+              }
+              if (config.scheduling.endDateTime) {
+                const end = new Date(config.scheduling.endDateTime);
+                if (now > end) return;
+              }
             }
+
+            // Validar regras de capping (sessão e frequência temporal)
             const triggers = config.triggers || {};
             if (!triggers.alwaysShow) {
-              const sc = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
-              if (sc >= (triggers.maxDisplayCount || 1)) return;
-              const du = localStorage.getItem('poisson_popup_dismissed_until');
-              if (du && now.getTime() < parseInt(du, 10)) return;
+              const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+              if (sessionCount >= (triggers.maxDisplayCount || 1)) {
+                return;
+              }
+
+              const dismissedUntil = localStorage.getItem('poisson_popup_dismissed_until');
+              if (dismissedUntil && now.getTime() < parseInt(dismissedUntil, 10)) {
+                return;
+              }
             }
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setupTriggers(config));
-            else setupTriggers(config);
-          } catch {}
+
+            // Executar triggers
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', () => setupTriggers(config));
+            } else {
+              setupTriggers(config);
+            }
+          } catch (err) {
+            console.warn('[Popup init failed]', err);
+          }
         }
 
-        let popupTriggered = false, timerId = null;
+        let popupTriggered = false;
+        let timerId = null;
 
         function setupTriggers(config) {
           const triggers = config.triggers || {};
+
+          // Handler para scroll depth
           function handleScroll() {
-            const dh = document.documentElement.scrollHeight - window.innerHeight;
-            if (dh > 0 && (window.scrollY / dh) * 100 >= (triggers.scrollDepth || 30)) triggerPopup(config);
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (docHeight <= 0) return;
+            const scrollPct = (window.scrollY / docHeight) * 100;
+            if (scrollPct >= (triggers.scrollDepth || 30)) {
+              triggerPopup(config);
+            }
           }
-          function handleMouseLeave(e) { if (e.clientY <= 0) triggerPopup(config); }
-          timerId = setTimeout(() => triggerPopup(config), (typeof triggers.delay === 'number' ? triggers.delay : 5) * 1000);
-          if (typeof triggers.scrollDepth === 'number') window.addEventListener('scroll', handleScroll, { passive: true });
-          if (triggers.exitIntent) document.addEventListener('mouseleave', handleMouseLeave);
+
+          // Handler para exit intent
+          function handleMouseLeave(e) {
+            if (e.clientY <= 0) {
+              triggerPopup(config);
+            }
+          }
+
+          // 1. Temporizador (Delay)
+          const delaySec = typeof triggers.delay === 'number' ? triggers.delay : 5;
+          timerId = setTimeout(() => {
+            triggerPopup(config);
+          }, delaySec * 1000);
+
+          // 2. Rolagem da Página
+          if (typeof triggers.scrollDepth === 'number') {
+            window.addEventListener('scroll', handleScroll, { passive: true });
+          }
+
+          // 3. Intenção de Saída (Exit Intent)
+          if (triggers.exitIntent) {
+            document.addEventListener('mouseleave', handleMouseLeave);
+          }
+
+          // Função de limpeza dos listeners
           window._poissonPopupCleanup = function() {
             window.removeEventListener('scroll', handleScroll);
             document.removeEventListener('mouseleave', handleMouseLeave);
@@ -468,48 +627,308 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
         function triggerPopup(config) {
           if (popupTriggered) return;
           popupTriggered = true;
-          if (window._poissonPopupCleanup) window._poissonPopupCleanup();
+
+          if (window._poissonPopupCleanup) {
+            window._poissonPopupCleanup();
+          }
+
           renderPopup(config);
         }
 
         function renderPopup(config) {
-          const s = config.styling || {}, c = config.content || {};
-          const st = document.createElement('style');
-          st.innerHTML = `#pp-bd{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,${s.overlayOpacity||0.65});backdrop-filter:blur(4px);transition:opacity .3s;opacity:0}#pp-md{background:${s.backgroundColor||'#1e293b'};color:${s.textColor||'#fff'};border-radius:${s.borderRadius||16}px;max-width:${s.width||520}px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,.5);display:flex;flex-direction:column;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;transform:scale(.95);opacity:0}#pp-cl{position:absolute;top:.75rem;right:.75rem;z-index:10;border:none;background:rgba(0,0,0,.2);color:${s.textColor||'#fff'};width:1.75rem;height:1.75rem;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;line-height:1}#pp-ic{width:100%;aspect-ratio:2/1;overflow:hidden;background:#0f172a}#pp-ic img{width:100%;height:100%;object-fit:cover}#pp-cn{padding:1.5rem;display:flex;flex-direction:column;flex-grow:1}#pp-ti{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.25rem;font-weight:800;margin:0 0 .75rem}#pp-bo{font-size:.875rem;line-height:1.5;opacity:.9;margin-bottom:1.5rem;font-weight:300}#pp-ct{display:block;width:100%;padding:.875rem 1rem;background:${s.buttonBgColor||'#ff3c00'};color:${s.buttonTextColor||'#fff'};text-align:center;text-transform:uppercase;font-weight:800;font-size:.75rem;letter-spacing:.1em;border-radius:${Math.min(s.borderRadius||16,12)}px;text-decoration:none}@media(max-width:640px){#pp-md{max-width:100%;max-height:85vh}}`;
-          document.head.appendChild(st);
+          const styling = config.styling || {};
+          const content = config.content || {};
 
-          const bd = document.createElement('div'); bd.id = 'pp-bd';
-          const md = document.createElement('div'); md.id = 'pp-md';
+          const overlayBg = `rgba(0, 0, 0, ${styling.overlayOpacity || 0.65})`;
+          const modalBg = styling.backgroundColor || '#1e293b';
+          const textColor = styling.textColor || '#ffffff';
+          const btnBg = styling.buttonBgColor || '#ff3c00';
+          const btnTextColor = styling.buttonTextColor || '#ffffff';
+          const borderRadius = `${styling.borderRadius || 16}px`;
+          const maxWidth = `${styling.width || 520}px`;
 
-          function close() {
-            const t = config.triggers || {};
-            if (!t.alwaysShow) {
-              const n = parseInt(sessionStorage.getItem('poisson_popup_session_count')||'0',10);
-              sessionStorage.setItem('poisson_popup_session_count',(n+1).toString());
-              if (typeof t.frequencyCapDays==='number'&&t.frequencyCapDays>0)
-                localStorage.setItem('poisson_popup_dismissed_until',(Date.now()+t.frequencyCapDays*86400000).toString());
+          const styleTag = document.createElement('style');
+          styleTag.innerHTML = `
+            #poisson-popup-backdrop {
+              position: fixed;
+              inset: 0;
+              z-index: 99999;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 1rem;
+              background-color: ${overlayBg};
+              backdrop-filter: blur(4px);
+              transition: opacity 0.3s ease;
+              opacity: 0;
             }
-            bd.style.opacity='0'; md.style.transform='scale(.95)'; md.style.opacity='0';
-            setTimeout(()=>{bd.remove();st.remove();},300);
+            #poisson-popup-modal {
+              background-color: ${modalBg};
+              color: ${textColor};
+              border-radius: ${borderRadius};
+              max-width: ${maxWidth};
+              width: 100%;
+              max-height: 90vh;
+              overflow-y: auto;
+              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+              display: flex;
+              flex-direction: column;
+              position: relative;
+              transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+              transform: scale(0.95);
+              opacity: 0;
+            }
+            #poisson-popup-close {
+              position: absolute;
+              top: 0.75rem;
+              right: 0.75rem;
+              z-index: 10;
+              border: none;
+              background: rgba(0, 0, 0, 0.2);
+              color: ${textColor};
+              width: 1.75rem;
+              height: 1.75rem;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              font-size: 1.1rem;
+              line-height: 1;
+              transition: background 0.2s;
+            }
+            #poisson-popup-close:hover {
+              background: rgba(0, 0, 0, 0.45);
+            }
+            #poisson-popup-image-container {
+              width: 100%;
+              aspect-ratio: 2/1;
+              overflow: hidden;
+              background-color: #0f172a;
+              flex-shrink: 0;
+            }
+            #poisson-popup-image {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            #poisson-popup-content {
+              padding: 1.5rem;
+              display: flex;
+              flex-direction: column;
+              flex-grow: 1;
+            }
+            #poisson-popup-title {
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              font-size: 1.25rem;
+              font-weight: 800;
+              margin: 0 0 0.75rem 0;
+              line-height: 1.25;
+            }
+            #poisson-popup-body {
+              font-size: 0.875rem;
+              line-height: 1.5;
+              opacity: 0.9;
+              margin-bottom: 1.5rem;
+              font-weight: 300;
+            }
+            #poisson-popup-body p {
+              margin-bottom: 0.75rem;
+            }
+            #poisson-popup-body p:last-child {
+              margin-bottom: 0;
+            }
+            #poisson-popup-cta {
+              display: block;
+              width: ${styling.buttonWidth && styling.buttonWidth !== 'auto' ? `${styling.buttonWidth}px` : '100%'};
+              margin: ${styling.buttonWidth && styling.buttonWidth !== 'auto' ? '0 auto' : '0'};
+              padding: ${styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem'} ${styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1rem'};
+              background-color: ${btnBg};
+              color: ${btnTextColor};
+              text-align: center;
+              text-transform: uppercase;
+              font-weight: 800;
+              font-size: ${styling.buttonFontSize !== undefined ? `${styling.buttonFontSize}px` : '0.75rem'};
+              letter-spacing: 0.1em;
+              border-radius: ${Math.min(styling.borderRadius || 16, 12)}px;
+              text-decoration: none;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+              transition: filter 0.2s, transform 0.1s;
+            }
+            #poisson-popup-cta:hover {
+              filter: brightness(1.1);
+            }
+            #poisson-popup-cta:active {
+              transform: scale(0.98);
+            }
+            @media (max-width: 640px) {
+              #poisson-popup-modal {
+                max-width: 100%;
+                max-height: 85vh;
+              }
+            }
+          `;
+          document.head.appendChild(styleTag);
+
+          const backdrop = document.createElement('div');
+          backdrop.id = 'poisson-popup-backdrop';
+
+          const modal = document.createElement('div');
+          modal.id = 'poisson-popup-modal';
+
+          // Fechar popup
+          function closePopup() {
+            const triggers = config.triggers || {};
+            if (!triggers.alwaysShow) {
+              // Incrementar exibições por sessão
+              const sessionCount = parseInt(sessionStorage.getItem('poisson_popup_session_count') || '0', 10);
+              sessionStorage.setItem('poisson_popup_session_count', (sessionCount + 1).toString());
+
+              // Definir tempo de expiração temporal de capping
+              const freqDays = config.triggers.frequencyCapDays;
+              if (typeof freqDays === 'number' && freqDays > 0) {
+                const until = new Date().getTime() + (freqDays * 24 * 60 * 60 * 1000);
+                localStorage.setItem('poisson_popup_dismissed_until', until.toString());
+              }
+            }
+
+            backdrop.style.opacity = '0';
+            modal.style.transform = 'scale(0.95)';
+            modal.style.opacity = '0';
+            setTimeout(() => {
+              backdrop.remove();
+              styleTag.remove();
+            }, 300);
           }
 
-          if (s.closeOnEsc) { const h=(e)=>{if(e.key==='Escape'){document.removeEventListener('keydown',h);close();}}; document.addEventListener('keydown',h); }
-          bd.addEventListener('click',(e)=>{ if(e.target===bd) close(); });
-          if (s.showCloseButton) { const b=document.createElement('button');b.id='pp-cl';b.innerHTML='&times;';b.onclick=close;md.appendChild(b); }
+          // Esc para fechar
+          if (styling.closeOnEsc) {
+            const handleEsc = (e) => {
+              if (e.key === 'Escape') {
+                document.removeEventListener('keydown', handleEsc);
+                closePopup();
+              }
+            };
+            document.addEventListener('keydown', handleEsc);
+          }
 
-          if (c.imageUrl) { const ic=document.createElement('div');ic.id='pp-ic';const img=document.createElement('img');img.src=c.imageUrl;img.alt=c.title||'';ic.appendChild(img);md.appendChild(ic); }
-          const cn=document.createElement('div');cn.id='pp-cn';
-          const ti=document.createElement('h3');ti.id='pp-ti';ti.innerText=c.title||'';cn.appendChild(ti);
-          const bo=document.createElement('div');bo.id='pp-bo';bo.innerHTML=c.body||'';cn.appendChild(bo);
-          if(c.buttonText){const ct=document.createElement('a');ct.id='pp-ct';ct.href=c.buttonUrl||'#';ct.innerText=c.buttonText;ct.onclick=close;cn.appendChild(ct);}
-          md.appendChild(cn); bd.appendChild(md); document.body.appendChild(bd);
-          requestAnimationFrame(()=>{ bd.style.opacity='1'; md.style.transform='scale(1)'; md.style.opacity='1'; });
+          // Click na máscara fecha
+          backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) {
+              closePopup();
+            }
+          });
+
+          // Botão fechar (X)
+          if (styling.showCloseButton) {
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'poisson-popup-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.addEventListener('click', closePopup);
+            modal.appendChild(closeBtn);
+          }
+
+          // Condicional de Render de Acordo com a Configuração de Fundo
+          if (styling.useImageAsBackground) {
+            const bgContainer = document.createElement('div');
+            bgContainer.id = 'poisson-popup-bg-container';
+            bgContainer.style.position = 'relative';
+            bgContainer.style.width = '100%';
+            bgContainer.style.overflow = 'hidden';
+            bgContainer.style.borderRadius = `${styling.borderRadius || 16}px`;
+
+            const img = document.createElement('img');
+            img.src = content.imageUrl || '';
+            img.alt = content.title || 'Popup Background';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            img.style.userSelect = 'none';
+            img.style.pointerEvents = 'none';
+            bgContainer.appendChild(img);
+
+            if (content.buttonText) {
+              const cta = document.createElement('a');
+              cta.id = 'poisson-popup-cta';
+              cta.href = content.buttonUrl || '#';
+              cta.innerText = content.buttonText;
+              cta.addEventListener('click', closePopup);
+              
+              // Absolute positioning styling for CTA on top of background image
+              cta.style.position = 'absolute';
+              cta.style.left = `${styling.buttonLeft !== undefined ? styling.buttonLeft : 50}%`;
+              cta.style.top = `${styling.buttonTop !== undefined ? styling.buttonTop : 80}%`;
+              cta.style.transform = 'translate(-50%, -50%)';
+              cta.style.margin = '0';
+              cta.style.width = styling.buttonWidth && styling.buttonWidth !== 'auto' ? `${styling.buttonWidth}px` : 'auto';
+              cta.style.paddingLeft = styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1.5rem';
+              cta.style.paddingRight = styling.buttonPaddingX !== undefined ? `${styling.buttonPaddingX}px` : '1.5rem';
+              cta.style.paddingTop = styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem';
+              cta.style.paddingBottom = styling.buttonPaddingY !== undefined ? `${styling.buttonPaddingY}px` : '0.875rem';
+              cta.style.fontSize = styling.buttonFontSize !== undefined ? `${styling.buttonFontSize}px` : '0.75rem';
+              cta.style.whiteSpace = 'nowrap';
+              cta.style.zIndex = '20';
+              
+              bgContainer.appendChild(cta);
+            }
+
+            modal.appendChild(bgContainer);
+          } else {
+            // Layout Clássico
+            // Imagem
+            if (content.imageUrl) {
+              const imgContainer = document.createElement('div');
+              imgContainer.id = 'poisson-popup-image-container';
+              const img = document.createElement('img');
+              img.id = 'poisson-popup-image';
+              img.src = content.imageUrl;
+              img.alt = content.title || 'Popup Banner';
+              imgContainer.appendChild(img);
+              modal.appendChild(imgContainer);
+            }
+
+            // Conteúdo
+            const contentDiv = document.createElement('div');
+            contentDiv.id = 'poisson-popup-content';
+
+            // Título
+            const title = document.createElement('h3');
+            title.id = 'poisson-popup-title';
+            title.innerText = content.title || '';
+            contentDiv.appendChild(title);
+
+            // Corpo
+            const body = document.createElement('div');
+            body.id = 'poisson-popup-body';
+            body.innerHTML = content.body || '';
+            contentDiv.appendChild(body);
+
+            // CTA
+            if (content.buttonText) {
+              const cta = document.createElement('a');
+              cta.id = 'poisson-popup-cta';
+              cta.href = content.buttonUrl || '#';
+              cta.innerText = content.buttonText;
+              cta.addEventListener('click', closePopup);
+              contentDiv.appendChild(cta);
+            }
+
+            modal.appendChild(contentDiv);
+          }
+          backdrop.appendChild(modal);
+          document.body.appendChild(backdrop);
+
+          // Transição suave de entrada
+          requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+            modal.style.transform = 'scale(1)';
+            modal.style.opacity = '1';
+          });
         }
 
         initPopup();
       })();
     </script>
-
     <SiteFooter />
 </body>
 </html>
