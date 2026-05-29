@@ -73,13 +73,100 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
       @media (min-width: 768px) {
         .page-content .v-panel { padding: 5vw; }
       }
+      .carousel-container {
+        transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .video-card {
+        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      /* Sliders Customizados de Vídeo */
+      .video-controls input[type="range"].timeline-slider {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: 0;
+      }
+      .video-controls input[type="range"].timeline-slider::-webkit-slider-runnable-track {
+        background: #3f3f46; /* zinc-700 */
+        height: 4px;
+        border-radius: 9999px;
+      }
+      .video-controls input[type="range"].timeline-slider::-webkit-slider-thumb {
+        background: #ff3c00;
+        height: 10px;
+        width: 10px;
+        border-radius: 9999px;
+        margin-top: -3px;
+        cursor: pointer;
+        appearance: none;
+      }
+      .video-controls input[type="range"].timeline-slider::-moz-range-track {
+        background: #3f3f46;
+        height: 4px;
+        border-radius: 9999px;
+      }
+      .video-controls input[type="range"].timeline-slider::-moz-range-thumb {
+        background: #ff3c00;
+        height: 10px;
+        width: 10px;
+        border-radius: 9999px;
+        border: none;
+        cursor: pointer;
+      }
+      /* Animação e Estilo do Slider de Volume Vertical */
+      .volume-capsule input[type="range"].volume-slider {
+        -webkit-appearance: slider-vertical;
+        writing-mode: bt-lr;
+        width: 6px;
+        height: 64px;
+        background: #27272a;
+        border-radius: 9999px;
+        outline: none;
+        cursor: pointer;
+      }
+      .volume-capsule input[type="range"].volume-slider::-webkit-slider-runnable-track {
+        background: #27272a;
+        width: 6px;
+        border-radius: 9999px;
+      }
+      .volume-capsule input[type="range"].volume-slider::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        background: #ff3c00;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        margin-left: -3px;
+        border: none;
+        box-shadow: 0 0 8px rgba(255, 60, 0, 0.6);
+      }
+      .volume-capsule input[type="range"].volume-slider::-moz-range-track {
+        background: #27272a;
+        width: 6px;
+        border-radius: 9999px;
+      }
+      .volume-capsule input[type="range"].volume-slider::-moz-range-thumb {
+        background: #ff3c00;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 0 8px rgba(255, 60, 0, 0.6);
+      }
+      @keyframes horiz-bounce {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(4px); }
+      }
+      .animate-horizontal-bounce {
+        display: inline-block;
+        animation: horiz-bounce 1s infinite;
+      }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editora Poisson | O Conhecimento em Movimento</title>
     <meta name="description" content="Editora Poisson — mais de 1.200 títulos científicos em acesso aberto, com ISBN, DOI e ficha catalográfica. Publique sua pesquisa com a gente.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/dmserifdisplay/v16/-nFuOG829Oofr2wohFbTp9i9kwMvDQg.woff2">
     {popupImageUrl && <link rel="preload" as="image" href={popupImageUrl} fetchpriority="high" />}
     {firstCoverUrl && <link rel="preload" as="image" href={firstCoverUrl} fetchpriority="high" />}
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -90,7 +177,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <Header />
 
     <!-- WRAPPER ÚNICO: vine SVG + todas as seções em scroll vertical -->
-    <main class="page-content" style="position: relative; overflow-x: hidden;">
+    <div class="page-content" style="position: relative; overflow-x: hidden;">
 
         <!-- FIO DE OURO — SVG vertical cobrindo a página toda -->
         <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" id="vertical-vine-svg" style="overflow:visible; z-index:200;">
@@ -121,7 +208,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     <div class="line-wrap"><span class="kinetic-text">A</span></div>
                     <div class="line-wrap"><span class="kinetic-text">CIÊNCIA</span></div>
                     <br>
-                    <div class="heartbeat-pulse mt-2" aria-hidden="true">
+                    <div class="heartbeat-pulse mt-2">
                         <div class="line-wrap">
                             <span class="kinetic-text italic text-zinc-400/50">É VIVA</span>
                         </div>
@@ -249,7 +336,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
         </section>
 
         <!-- SEÇÃO DNA DA EDITORA -->
-        <section class="min-h-screen py-10 md:py-40 px-6 md:px-10 bg-black text-white relative z-10 overflow-hidden" id="section-dna-details">
+        <section class="min-h-screen py-10 md:py-40 px-6 md:px-10 bg-white text-zinc-900 relative z-10 overflow-hidden" id="section-dna-details">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row gap-12 md:gap-20 items-start justify-between">
                     <div class="w-full md:w-5/12" id="sticky-canvas-container">
@@ -257,20 +344,120 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     </div>
                     <div class="w-full md:w-6/12 space-y-24 md:mt-10">
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out">
-                            <span class="text-[#00b0ff] font-mono text-sm">01 / ACERVO LIVRE</span>
-                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Conhecimento sem <span class="orange-word" style="transition:color 0.3s">Barreiras</span></h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Todo o nosso acervo é disponibilizado <strong class="text-white font-normal">gratuitamente</strong>. Acreditamos que a ciência não deve ter barreiras. Ao publicar conosco, sua pesquisa fica disponível para milhões de leitores, pesquisadores e estudantes em todo o mundo, ampliando o impacto real do seu trabalho.</p>
+                            <span class="text-[#0066cc] font-mono text-sm">01 / ACERVO LIVRE</span>
+                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-zinc-900">Conhecimento sem <span class="orange-word" style="transition:color 0.3s">Barreiras</span></h3>
+                            <p class="text-zinc-600 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Todo o nosso acervo é disponibilizado <strong class="text-zinc-900 font-semibold">gratuitamente</strong>. Acreditamos que a ciência não deve ter barreiras. Ao publicar conosco, sua pesquisa fica disponível para millions de leitores, pesquisadores e estudantes em todo o mundo, ampliando o impacto real do seu trabalho.</p>
                         </div>
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out" id="block-curriculo">
                             <span class="text-[#ff3c00] font-mono text-sm">02 / VALORIZAÇÃO</span>
-                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Destaque no Currículo</h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Uma publicação na Editora Poisson agrega valor imediato ao seu <strong class="text-white font-normal">Curriculum Lattes</strong>. Nossas obras contam com conselho editorial rigoroso, registro de <strong class="text-white font-normal">ISBN</strong> e <strong class="text-white font-normal">DOI</strong>, garantindo a pontuação e o prestígio necessários para sua progressão acadêmica.</p>
+                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-zinc-900">Destaque no Currículo</h3>
+                            <p class="text-zinc-600 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Uma publicação na Editora Poisson agrega valor imediato ao seu <strong class="text-zinc-900 font-semibold">Curriculum Lattes</strong>. Nossas obras contam com conselho editorial rigoroso, registro de <strong class="text-zinc-900 font-semibold">ISBN</strong> e <strong class="text-zinc-900 font-semibold">DOI</strong>, garantindo a pontuação e o prestígio necessários para sua progressão acadêmica.</p>
                         </div>
                         <div class="dna-block opacity-0 translate-y-10 transition-all duration-700 ease-out" id="block-mercado">
-                            <span class="text-[#00b0ff] font-mono text-sm">03 / MERCADO</span>
-                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-white">Autoridade e Prestígio</h3>
-                            <p class="text-zinc-400 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Além do meio acadêmico, o mercado valoriza profissionais que produzem conhecimento. Tornar-se autor de um livro ou capítulo consolida sua autoridade, abrindo portas para consultorias, palestras e liderança em sua área de atuação.</p>
+                            <span class="text-[#0066cc] font-mono text-sm">03 / MERCADO</span>
+                            <h3 class="text-2xl md:text-3xl font-bold mt-2 mb-4 text-zinc-900">Autoridade e Prestígio</h3>
+                            <p class="text-zinc-600 text-[0.95rem] md:text-[1.1rem] leading-relaxed font-light">Além do meio acadêmico, o mercado valoriza profissionais que produzem conhecimento. Tornar-se autor de um livro ou capítulo consolida sua autoridade, abrindo portas para consultorias, palestras e liderança em sua área de atuação.</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: DEPOIMENTOS -->
+        <section class="v-panel bg-black text-white py-12 px-6 md:px-10 relative z-10 overflow-hidden flex flex-col items-center justify-center" id="section-testimonials">
+            <!-- Glow background effects -->
+            <div class="absolute -top-40 -left-40 w-96 h-96 bg-[#ff3c00]/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-[#7c3aed]/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-4xl w-full flex flex-col items-center mb-8">
+                <span class="text-[#ff3c00] uppercase tracking-widest text-[10px] md:text-xs font-bold mb-3 text-center">Relatos de quem publica</span>
+                <h2 class="text-6xl md:text-8xl serif-extra italic font-bold mt-4 leading-none text-white text-center">Depoimentos</h2>
+            </div>
+
+            <!-- Área do Carrossel de Vídeo (Diretamente na seção, com margem para evitar corte) -->
+            <div class="relative w-[320px] h-[320px] md:w-[500px] md:h-[500px] flex items-center justify-center mt-20 md:mt-32 z-10">
+                
+                <!-- Vídeos posicionados circularmente -->
+                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container">
+                    <!-- Internal concentric circle for a premium double-line track effect -->
+                    <div class="absolute inset-[5px] rounded-full border border-zinc-500/15 pointer-events-none"></div>
+                    
+                    <!-- Video 1 (Topo) - Gilmar (Horizontal) -->
+                    <div id="card-gilmar" class="video-card absolute top-[-40px] md:top-[-60px] left-1/2 -translate-x-1/2 w-56 h-32 md:w-80 md:h-48 bg-zinc-900 rounded-2xl border-2 border-[#ff3c00] shadow-[0_0_30px_rgba(255,60,0,0.3)] p-1 group/card z-20">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden">
+                            <video id="video-gilmar" src="/depoimentos/Depoimento_Gilmar.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
+                        </div>
+                        
+                        <!-- Custom elegant control overlay (Timeline only) -->
+                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2.5 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto">
+                            <!-- Play/Pause Button -->
+                            <button class="btn-play-pause text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Reproduzir/Pausar">
+                                <svg class="icon-play w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            
+                            <!-- Timeline / Progress Bar -->
+                            <input type="range" min="0" max="100" value="0" class="timeline-slider flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                        </div>
+
+                        <!-- Capsule de volume vertical externa (do lado de fora) -->
+                        <div class="volume-capsule absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl">
+                            <!-- Volume slider (Meter vertical) -->
+                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="volume-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance: slider-vertical;" />
+                            
+                            <!-- Mute Button -->
+                            <button class="btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Mudar som">
+                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video 2 (Baixo) - Angela (Vertical) -->
+                    <div id="card-angela" class="video-card absolute bottom-[-100px] md:bottom-[-130px] left-1/2 -translate-x-1/2 w-32 h-56 md:w-48 md:h-80 bg-zinc-900 rounded-2xl border-2 border-zinc-800 p-1 group/card z-20">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden">
+                            <video id="video-angela" src="/depoimentos/Depoimento_Angela.mp4" loop playsinline class="w-full h-full object-cover object-top cursor-pointer"></video>
+                        </div>
+                        
+                        <!-- Custom elegant control overlay (Timeline only) -->
+                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2.5 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto">
+                            <!-- Play/Pause Button -->
+                            <button class="btn-play-pause text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Reproduzir/Pausar">
+                                <svg class="icon-play w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            
+                            <!-- Timeline / Progress Bar -->
+                            <input type="range" min="0" max="100" value="0" class="timeline-slider flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                        </div>
+
+                        <!-- Capsule de volume vertical externa (do lado de fora) -->
+                        <div class="volume-capsule absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl">
+                            <!-- Volume slider (Meter vertical) -->
+                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="volume-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance: slider-vertical;" />
+                            
+                            <!-- Mute Button -->
+                            <button class="btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Mudar som">
+                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Central (Girar) -->
+                <button id="btnRotateVideos" class="z-10 w-20 h-20 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <!-- Indicador Lateral de Clique (sem sobrescrever o vídeo) -->
+                <div class="absolute right-[calc(50%+48px)] md:right-[calc(50%+68px)] top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-30 pointer-events-none whitespace-nowrap bg-zinc-950/75 py-1 px-2.5 rounded-full border border-zinc-800/50 backdrop-blur-sm">
+                    <span class="text-zinc-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Clique</span>
+                    <div class="animate-horizontal-bounce">
+                        <svg class="w-3.5 h-3.5 text-[#ff3c00] transform rotate-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -358,7 +545,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                         </div>
                         <div class="pt-3">
                             <h3 class="text-2xl md:text-3xl font-bold text-white mb-3 scramble-title" data-text="Revisão & Diagramação">Revisão & Diagramação</h3>
-                            <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Após aprovação, seu text passa por revisão técnica e diagramação profissional. Garantimos um produto editorial de <strong class="text-white font-normal">alto padrão visual e tipográfico</strong>, alinhado às normas ABNT e internacionais.</p>
+                            <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Após aprovação, seu texto passa por revisão técnica e diagramação profissional. Garantimos um produto editorial de <strong class="text-white font-normal">alto padrão visual e tipográfico</strong>, alinhado às normas ABNT e internacionais.</p>
                         </div>
                     </div>
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
@@ -414,10 +601,267 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
             <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
         </footer>
 
-    </main><!-- /page-content -->
+    </div><!-- /page-content -->
 
     <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script is:inline defer src={`/js/teste.js?v=${version}`}></script>
+
+    <!-- Script Carrossel Circular de Vídeos -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('btnRotateVideos');
+        const carousel = document.getElementById('video-carousel');
+        const cardAngela = document.getElementById('card-angela');
+        const cardGilmar = document.getElementById('card-gilmar');
+        const videoAngela = document.getElementById('video-angela');
+        const videoGilmar = document.getElementById('video-gilmar');
+
+        let rotation = 0;
+        let activeVideo = videoGilmar; 
+        let userPaused = false;
+        let isIntersecting = false;
+
+        const videoCards = document.querySelectorAll('.video-card');
+        videoCards.forEach(card => {
+          card.style.transform = `translateX(-50%) rotate(0deg)`;
+        });
+
+        function updateVideosState() {
+          if (!isIntersecting) {
+            videoAngela.pause();
+            videoGilmar.pause();
+            return;
+          }
+
+          const active = activeVideo;
+          const inactive = activeVideo === videoAngela ? videoGilmar : videoAngela;
+
+          inactive.pause();
+          if (!userPaused) {
+            if (active.paused) {
+              active.play().catch(err => {
+                console.log('Unmuted autoplay blocked, trying muted...', err);
+                active.muted = true;
+                active.play().catch(err2 => console.log('Muted autoplay blocked:', err2));
+              });
+            }
+          } else {
+            active.pause();
+          }
+        }
+
+        function syncActiveCardStyles() {
+          const activeCard = activeVideo === videoAngela ? cardAngela : cardGilmar;
+          const inactiveCard = activeVideo === videoAngela ? cardGilmar : cardAngela;
+
+          activeCard.classList.add('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
+          activeCard.classList.remove('border-zinc-800');
+          
+          inactiveCard.classList.add('border-zinc-800');
+          inactiveCard.classList.remove('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
+
+          // Enable controls and set opacity for the active card
+          activeCard.querySelectorAll('.video-controls, .volume-capsule').forEach(el => {
+            el.style.display = 'flex';
+            // Force browser reflow to transition opacity smoothly
+            el.offsetHeight;
+            el.style.opacity = '1';
+            el.style.pointerEvents = 'auto';
+          });
+          inactiveCard.querySelectorAll('.video-controls, .volume-capsule').forEach(el => {
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
+            // Hide display after transition
+            setTimeout(() => {
+              if (el.style.opacity === '0') {
+                el.style.display = 'none';
+              }
+            }, 300);
+          });
+        }
+
+        btn.addEventListener('click', () => {
+          rotation += 180;
+          carousel.style.transform = `rotate(${rotation}deg)`;
+          
+          videoCards.forEach(card => {
+            card.style.transform = `translateX(-50%) rotate(${-rotation}deg)`;
+          });
+
+          // Toggle active video immediately in the synchronous gesture context
+          const prevVideo = activeVideo;
+          activeVideo = activeVideo === videoAngela ? videoGilmar : videoAngela;
+          
+          prevVideo.pause();
+          activeVideo.muted = false;
+          userPaused = false;
+
+          // Play immediately so the browser sees the user gesture
+          activeVideo.play().catch(err => {
+            console.log('Synchronous unmuted play failed on click, trying muted...', err);
+            activeVideo.muted = true;
+            activeVideo.play().catch(err2 => console.log('Muted play failed:', err2));
+          });
+
+          syncActiveCardStyles();
+        });
+
+        [videoAngela, videoGilmar].forEach(video => {
+          video.addEventListener('click', (e) => {
+            if (video !== activeVideo) {
+              btn.click();
+              return;
+            }
+
+            video.muted = false; // Unmute on click!
+            if (video.paused) {
+              userPaused = false;
+              video.play().catch(err => console.log(err));
+            } else {
+              userPaused = true;
+              video.pause();
+            }
+            syncActiveCardStyles();
+          });
+        });
+
+        // Setup custom video controls for both videos
+        const setupControls = (video, card) => {
+          const controls = card.querySelector('.video-controls');
+          if (!controls) return;
+
+          const playPauseBtn = controls.querySelector('.btn-play-pause');
+          const iconPlay = playPauseBtn.querySelector('.icon-play');
+          const iconPause = playPauseBtn.querySelector('.icon-pause');
+          const timelineSlider = controls.querySelector('.timeline-slider');
+          
+          const muteBtn = card.querySelector('.btn-mute');
+          const iconVolume = muteBtn.querySelector('.icon-volume');
+          const iconMute = muteBtn.querySelector('.icon-mute');
+          const volumeSlider = card.querySelector('.volume-slider');
+          const volumeCapsule = card.querySelector('.volume-capsule');
+
+          // Sync timeline slider with video progress
+          video.addEventListener('timeupdate', () => {
+            if (video.duration) {
+              const pct = (video.currentTime / video.duration) * 100;
+              timelineSlider.value = pct;
+            }
+          });
+
+          // Seek video when timeline slider changes
+          timelineSlider.addEventListener('input', (e) => {
+            e.stopPropagation();
+            if (video.duration) {
+              const time = (timelineSlider.value / 100) * video.duration;
+              video.currentTime = time;
+            }
+          });
+
+          // Prevent seek click/drag/touch from bubbling and rotating/pausing card
+          const stopBubble = e => e.stopPropagation();
+          ['click', 'mousedown', 'mouseup', 'mousemove', 'touchstart', 'touchend', 'touchmove'].forEach(evt => {
+            timelineSlider.addEventListener(evt, stopBubble);
+            if (volumeSlider) volumeSlider.addEventListener(evt, stopBubble);
+            if (volumeCapsule) volumeCapsule.addEventListener(evt, stopBubble);
+            if (muteBtn) muteBtn.addEventListener(evt, stopBubble);
+          });
+
+          // Play/Pause button
+          playPauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video !== activeVideo) {
+              btn.click();
+              return;
+            }
+            video.muted = false;
+            if (video.paused) {
+              userPaused = false;
+              video.play().catch(err => console.log(err));
+            } else {
+              userPaused = true;
+              video.pause();
+            }
+            syncActiveCardStyles();
+          });
+
+          // Mute/Unmute button
+          muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            video.muted = !video.muted;
+            if (video.muted) {
+              iconVolume.classList.add('hidden');
+              iconMute.classList.remove('hidden');
+              if (volumeSlider) volumeSlider.value = 0;
+            } else {
+              iconVolume.classList.remove('hidden');
+              iconMute.classList.add('hidden');
+              if (volumeSlider) volumeSlider.value = video.volume || 1;
+            }
+          });
+
+          // Volume slider
+          if (volumeSlider) {
+            volumeSlider.addEventListener('input', (e) => {
+              e.stopPropagation();
+              const vol = parseFloat(volumeSlider.value);
+              video.volume = vol;
+              video.muted = vol === 0;
+              if (video.muted) {
+                iconVolume.classList.add('hidden');
+                iconMute.classList.remove('hidden');
+              } else {
+                iconVolume.classList.remove('hidden');
+                iconMute.classList.add('hidden');
+              }
+            });
+          }
+
+          // Sync buttons on native play/pause/volume changes
+          video.addEventListener('play', () => {
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+          });
+          video.addEventListener('pause', () => {
+            iconPlay.classList.remove('hidden');
+            iconPause.classList.add('hidden');
+          });
+          video.addEventListener('volumechange', () => {
+            if (video.muted) {
+              iconVolume.classList.add('hidden');
+              iconMute.classList.remove('hidden');
+            } else {
+              iconVolume.classList.remove('hidden');
+              iconMute.classList.add('hidden');
+            }
+          });
+        };
+
+        setupControls(videoAngela, cardAngela);
+        setupControls(videoGilmar, cardGilmar);
+
+        // Fallback interaction listener to unmute when clicking inside the section
+        const section = document.getElementById('section-testimonials');
+        if (section) {
+          section.addEventListener('click', () => {
+            if (activeVideo && activeVideo.muted && !activeVideo.paused) {
+              activeVideo.muted = false;
+              console.log('Unmuted video via section interaction');
+            }
+          }, { passive: true });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            isIntersecting = entry.isIntersecting;
+            updateVideosState();
+          });
+        }, { threshold: 0.3 });
+
+        observer.observe(document.getElementById('section-testimonials'));
+        syncActiveCardStyles();
+      });
+    </script>
 
     <!-- Popup -->
     <script is:inline>
@@ -497,6 +941,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
           if (s.closeOnEsc) { const h=(e)=>{if(e.key==='Escape'){document.removeEventListener('keydown',h);close();}}; document.addEventListener('keydown',h); }
           bd.addEventListener('click',(e)=>{ if(e.target===bd) close(); });
           if (s.showCloseButton) { const b=document.createElement('button');b.id='pp-cl';b.innerHTML='&times;';b.onclick=close;md.appendChild(b); }
+
           if (c.imageUrl) { const ic=document.createElement('div');ic.id='pp-ic';const img=document.createElement('img');img.src=c.imageUrl;img.alt=c.title||'';ic.appendChild(img);md.appendChild(ic); }
           const cn=document.createElement('div');cn.id='pp-cn';
           const ti=document.createElement('h3');ti.id='pp-ti';ti.innerText=c.title||'';cn.appendChild(ti);
