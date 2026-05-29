@@ -89,7 +89,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <Header />
 
     <!-- WRAPPER ÚNICO: vine SVG + todas as seções em scroll vertical -->
-    <div class="page-content" style="position: relative; overflow-x: hidden;">
+    <main class="page-content" style="position: relative; overflow-x: hidden;">
 
         <!-- FIO DE OURO — SVG vertical cobrindo a página toda -->
         <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" id="vertical-vine-svg" style="overflow:visible; z-index:200;">
@@ -120,7 +120,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     <div class="line-wrap"><span class="kinetic-text">A</span></div>
                     <div class="line-wrap"><span class="kinetic-text">CIÊNCIA</span></div>
                     <br>
-                    <div class="heartbeat-pulse mt-2">
+                    <div class="heartbeat-pulse mt-2" aria-hidden="true">
                         <div class="line-wrap">
                             <span class="kinetic-text italic text-zinc-400/50">É VIVA</span>
                         </div>
@@ -413,7 +413,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
             <p class="mt-40 text-zinc-400 text-[10px] uppercase tracking-widest">Editora Poisson</p>
         </footer>
 
-    </div><!-- /page-content -->
+    </main><!-- /page-content -->
 
     <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script is:inline defer src={`/js/teste.js?v=${version}`}></script>

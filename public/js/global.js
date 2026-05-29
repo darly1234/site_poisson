@@ -12,9 +12,12 @@ function initGlobalInteractions() {
     if (menuToggle && mobileMenu) {
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('active');
-            
+            const isOpen = mobileMenu.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação');
+
             // Hamburger animation
-            if (mobileMenu.classList.contains('active') && menuSpans) {
+            if (isOpen && menuSpans) {
                 gsap.to(menuSpans[0], { rotate: 45, y: 8, duration: 0.3 });
                 gsap.to(menuSpans[1], { opacity: 0, duration: 0.3 });
                 gsap.to(menuSpans[2], { rotate: -45, y: -8, duration: 0.3 });
