@@ -79,9 +79,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <meta name="description" content="Editora Poisson — mais de 1.200 títulos científicos em acesso aberto, com ISBN, DOI e ficha catalográfica. Publique sua pesquisa com a gente.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Preload woff2 da DM Serif Display (fonte do hero title) para reduzir LCP -->
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="https://fonts.gstatic.com/s/dmserifdisplay/v16/-nFuOG829Oofr2wohFbTp9i9kwMvDQg.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/dmserifdisplay/v16/-nFuOG829Oofr2wohFbTp9i9kwMvDQg.woff2">
     {popupImageUrl && <link rel="preload" as="image" href={popupImageUrl} fetchpriority="high" />}
     {firstCoverUrl && <link rel="preload" as="image" href={firstCoverUrl} fetchpriority="high" />}
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;700&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Serif+Display:ital@0;1&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -160,7 +158,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 <div class="flex flex-col items-center justify-center w-full md:w-[45%]">
                     <h3 class="text-2xl md:text-4xl serif-extra italic mb-6 text-center text-black">Últimos Lançamentos</h3>
                     <div class="w-full">
-                        <OrbitalCarousel client:visible books={carouselBooks} />
+                        <OrbitalCarousel client:load books={carouselBooks} />
                     </div>
                 </div>
             </div>
@@ -360,7 +358,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                         </div>
                         <div class="pt-3">
                             <h3 class="text-2xl md:text-3xl font-bold text-white mb-3 scramble-title" data-text="Revisão & Diagramação">Revisão & Diagramação</h3>
-                            <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Após aprovação, seu texto passa por revisão técnica e diagramação profissional. Garantimos um produto editorial de <strong class="text-white font-normal">alto padrão visual e tipográfico</strong>, alinhado às normas ABNT e internacionais.</p>
+                            <p class="text-zinc-400 text-lg leading-relaxed font-light max-w-2xl">Após aprovação, seu text passa por revisão técnica e diagramação profissional. Garantimos um produto editorial de <strong class="text-white font-normal">alto padrão visual e tipográfico</strong>, alinhado às normas ABNT e internacionais.</p>
                         </div>
                     </div>
                     <div class="submission-step flex gap-8 md:gap-14 items-start mb-16 md:mb-20 opacity-0 translate-y-8">
@@ -418,15 +416,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
 
     </main><!-- /page-content -->
 
-    <script is:inline>
-      // Carrega ScrollTrigger só no desktop — no mobile é 15 KB de JS não utilizado
-      if (window.innerWidth >= 768) {
-        var _st = document.createElement('script');
-        _st.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
-        _st.defer = true;
-        document.head.appendChild(_st);
-      }
-    </script>
+    <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script is:inline defer src={`/js/teste.js?v=${version}`}></script>
 
     <!-- Popup -->
@@ -507,7 +497,6 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
           if (s.closeOnEsc) { const h=(e)=>{if(e.key==='Escape'){document.removeEventListener('keydown',h);close();}}; document.addEventListener('keydown',h); }
           bd.addEventListener('click',(e)=>{ if(e.target===bd) close(); });
           if (s.showCloseButton) { const b=document.createElement('button');b.id='pp-cl';b.innerHTML='&times;';b.onclick=close;md.appendChild(b); }
-
           if (c.imageUrl) { const ic=document.createElement('div');ic.id='pp-ic';const img=document.createElement('img');img.src=c.imageUrl;img.alt=c.title||'';ic.appendChild(img);md.appendChild(ic); }
           const cn=document.createElement('div');cn.id='pp-cn';
           const ti=document.createElement('h3');ti.id='pp-ti';ti.innerText=c.title||'';cn.appendChild(ti);
