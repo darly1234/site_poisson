@@ -33,8 +33,8 @@ export interface LibraryBook {
   chapters?: BookChapter[];
   edition?: string;
   language?: string;
-  format?: string;
   doi_registered_at?: string;
+  allAuthors?: string[];
 }
 
 /**

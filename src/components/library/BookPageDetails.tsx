@@ -53,12 +53,28 @@ function renderSumario(html: string): string {
 }
 
 // Helper functions for citation formatting
-function parseAuthors(authorStr: string) {
-  if (!authorStr) return [];
-  const parts = authorStr.split(/,|;|\b&\b|\band\b|\be\b/i);
-  return parts
-    .map(p => p.trim())
-    .filter(Boolean)
+function cleanAuthorName(name: string): string {
+  return name.replace(/\bet\s+al\.?\b/gi, "").replace(/\s*,\s*$/, "").trim();
+}
+
+function parseAuthors(authorSource: string | string[]) {
+  const list = Array.isArray(authorSource) ? authorSource : [authorSource];
+  const allNames: string[] = [];
+  for (const item of list) {
+    const cleaned = cleanAuthorName(item);
+    if (!cleaned) continue;
+    if (!Array.isArray(authorSource)) {
+      const parts = cleaned.split(/,|;|\b&\b|\band\b|\be\b/i);
+      for (const p of parts) {
+        const c = cleanAuthorName(p);
+        if (c) allNames.push(c);
+      }
+    } else {
+      allNames.push(cleaned);
+    }
+  }
+
+  return allNames
     .map(name => {
       const words = name.split(/\s+/).filter(Boolean);
       if (words.length === 0) return { first: "", last: "", full: "" };
@@ -108,7 +124,7 @@ function generateCitation(
   accessDate: string,
   currentUrl: string
 ): string {
-  const parsed = parseAuthors(book.author);
+  const parsed = parseAuthors(book.allAuthors && book.allAuthors.length > 0 ? book.allAuthors : book.author);
   const title = book.title.trim();
   const year = book.year;
   const doi = book.doi ? book.doi.trim() : "";

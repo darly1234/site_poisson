@@ -37,6 +37,27 @@ function parseAutores(raw: string | null | undefined): string {
   return String(raw).split(",")[0].trim();
 }
 
+function parseAllAutores(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) {
+      return arr.map(item => {
+        if (!item) return "";
+        if (typeof item === "string") return item.trim();
+        const val = item.nome ?? item.name ?? item.autor ?? item;
+        return typeof val === "string" ? val.trim() : String(val).trim();
+      }).filter(Boolean);
+    }
+  } catch {
+    // not JSON
+  }
+  return String(raw)
+    .split(/,|;/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
 function areaToCategory(area: string | null): string {
   if (!area) return "essay";
   const a = area.toLowerCase();
@@ -99,6 +120,7 @@ function mapApiBook(raw: ApiBookLight): LibraryBook {
     language: "Português",
     format: "PDF · Acesso aberto",
     doi_registered_at: raw.doi_registered_at ?? undefined,
+    allAuthors: parseAllAutores(raw.autores),
   };
 }
 
