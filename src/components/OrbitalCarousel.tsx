@@ -82,6 +82,10 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
 
   const handleBookClick = (index: number, z: number) => {
     if (z > 150) {
+      if (windowWidth < 768) {
+        window.location.href = books[index].href;
+        return;
+      }
       setPaused(true);
       setSelected(index);
     }
@@ -174,7 +178,7 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
       <div className="mt-12 h-10 flex items-center">
         {selected === null ? (
           <p className="text-[9px] font-mono uppercase tracking-[0.25em] text-muted-foreground animate-pulse text-center px-4">
-            Clique na capa frontal para ver detalhes
+            {windowWidth < 768 ? 'Toque na capa frontal para acessar o livro' : 'Clique na capa frontal para ver detalhes'}
           </p>
         ) : (
           <button

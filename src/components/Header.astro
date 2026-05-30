@@ -470,11 +470,29 @@ function isActive(href: string): boolean {
 
 </style>
 
-<!-- Umami Analytics Tracking -->
-<script
-  is:inline
-  defer
-  src="https://analytics.editorapoisson.com.br/script.js"
-  data-website-id="8f7d6886-60b9-448f-99b8-54395ea812c8"
-  data-host-url="https://analytics.editorapoisson.com.br"
-></script>
+<!-- Umami Analytics Tracking with IP detection and override -->
+<script is:inline>
+  (function() {
+    fetch('https://individual.poisson.com.br/api/analytics/my-ip')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var script = document.createElement('script');
+        script.defer = true;
+        script.src = 'https://analytics.editorapoisson.com.br/script.js';
+        script.setAttribute('data-website-id', '8f7d6886-60b9-448f-99b8-54395ea812c8');
+        script.setAttribute('data-host-url', 'https://analytics.editorapoisson.com.br');
+        script.setAttribute('data-host-name', data.ip);
+        script.setAttribute('data-hostname', data.ip);
+        document.head.appendChild(script);
+      })
+      .catch(function() {
+        // Fallback: load normally if API is down
+        var script = document.createElement('script');
+        script.defer = true;
+        script.src = 'https://analytics.editorapoisson.com.br/script.js';
+        script.setAttribute('data-website-id', '8f7d6886-60b9-448f-99b8-54395ea812c8');
+        script.setAttribute('data-host-url', 'https://analytics.editorapoisson.com.br');
+        document.head.appendChild(script);
+      });
+  })();
+</script>

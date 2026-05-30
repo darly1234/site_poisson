@@ -375,10 +375,10 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
             </div>
 
             <!-- Carrossel Circular — 3 Depoimentos -->
-            <div class="relative w-[320px] h-[390px] md:w-[500px] md:h-[560px] flex items-center justify-center mt-12 md:mt-20 z-10">
+            <div class="relative w-[340px] h-[420px] md:w-[700px] md:h-[780px] flex items-center justify-center mt-12 md:mt-20 z-10">
 
                 <!-- Trilha circular -->
-                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container">
+                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container" style="z-index:20">
                     <div class="absolute inset-[5px] rounded-full border border-zinc-500/15 pointer-events-none"></div>
 
                     <!-- Card 0: Gilmar (Horizontal) -->
@@ -446,12 +446,12 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 </div>
 
                 <!-- Botão Central (Girar) -->
-                <button id="btnRotateVideos" class="z-10 w-20 h-20 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="btnRotateVideos" class="z-[5] w-12 h-12 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
+                    <svg class="w-5 h-5 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                 </button>
-                <div class="absolute right-[calc(50%+48px)] md:right-[calc(50%+68px)] top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-30 pointer-events-none whitespace-nowrap bg-zinc-950/75 py-1 px-2.5 rounded-full border border-zinc-800/50 backdrop-blur-sm">
+                <div class="absolute right-[calc(50%+30px)] md:right-[calc(50%+68px)] top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-30 pointer-events-none whitespace-nowrap bg-zinc-950/75 py-1 px-2.5 rounded-full border border-zinc-800/50 backdrop-blur-sm">
                     <span class="text-zinc-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Clique</span>
                     <div class="animate-horizontal-bounce">
                         <svg class="w-3.5 h-3.5 text-[#ff3c00] transform rotate-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -610,9 +610,9 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
       document.addEventListener('DOMContentLoaded', () => {
         // Card dimensions [width, height] per breakpoint
         const CARD_SIZES = [
-          { sm: [224, 134], md: [320, 192] }, // Gilmar  — horizontal
-          { sm: [134, 224], md: [192, 320] }, // Angela  — vertical
-          { sm: [224, 134], md: [320, 192] }, // Antônio — horizontal
+          { sm: [280, 158], md: [460, 259] }, // Gilmar  — horizontal
+          { sm: [158, 280], md: [259, 460] }, // Angela  — vertical
+          { sm: [280, 158], md: [460, 259] }, // Antônio — horizontal
         ];
         const INACTIVE_SCALE = 0.38;
         const ANIM = 'transform 0.75s cubic-bezier(0.4,0,0.2,1), opacity 0.5s, border-color 0.5s, box-shadow 0.5s';
@@ -628,7 +628,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
         let isIntersecting = false;
 
         // ── Responsive: set card sizes and circle radius ──────────────────
-        function getRadius() { return window.innerWidth >= 768 ? 200 : 100; }
+        function getRadius() { return window.innerWidth >= 768 ? 300 : 140; }
 
         function setSizes() {
           const isMd = window.innerWidth >= 768;
