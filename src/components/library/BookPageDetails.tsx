@@ -485,11 +485,11 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
 
           <dl className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 max-w-xl">
             {meta.map((m) => (
-              <div key={m.label}>
+              <div key={m.label} className={m.label === 'DOI' ? 'col-span-full' : ''}>
                 <dt className="font-mono text-xs tracking-[0.25em] uppercase text-orange-500">
                   {m.label}
                 </dt>
-                <dd className={`mt-1 text-base text-foreground ${m.label === 'DOI' ? 'whitespace-nowrap' : 'break-words'}`}>
+                <dd className="mt-1 text-base text-foreground break-all">
                   {m.value}
                 </dd>
               </div>
