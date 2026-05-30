@@ -378,11 +378,11 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
             <div class="relative w-[340px] h-[420px] md:w-[700px] md:h-[780px] flex items-center justify-center mt-12 md:mt-20 z-10">
 
                 <!-- Trilha circular -->
-                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container" style="z-index:20">
+                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container" style="z-index:20;pointer-events:none">
                     <div class="absolute inset-[5px] rounded-full border border-zinc-500/15 pointer-events-none"></div>
 
                     <!-- Card 0: Gilmar (Horizontal) -->
-                    <div id="vc-card-0" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;">
+                    <div id="vc-card-0" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;pointer-events:auto">
                         <div class="w-full h-full rounded-[14px] overflow-hidden">
                             <video id="vc-video-0" src="/depoimentos/Depoimento_Gilmar.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
                         </div>
@@ -403,7 +403,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     </div>
 
                     <!-- Card 1: Angela (Vertical) -->
-                    <div id="vc-card-1" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:134px;height:224px;">
+                    <div id="vc-card-1" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:134px;height:224px;pointer-events:auto">
                         <div class="w-full h-full rounded-[14px] overflow-hidden">
                             <video id="vc-video-1" src="/depoimentos/Depoimento_Angela.mp4" loop playsinline class="w-full h-full object-cover object-top cursor-pointer"></video>
                         </div>
@@ -424,7 +424,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                     </div>
 
                     <!-- Card 2: Antônio (Horizontal) -->
-                    <div id="vc-card-2" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;">
+                    <div id="vc-card-2" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;pointer-events:auto">
                         <div class="w-full h-full rounded-[14px] overflow-hidden">
                             <video id="vc-video-2" src="/depoimentos/MSc. Antônio Izaías de Araújo.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
                         </div>
@@ -446,7 +446,7 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 </div>
 
                 <!-- Botão Central (Girar) -->
-                <button id="btnRotateVideos" class="z-[5] w-12 h-12 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
+                <button id="btnRotateVideos" class="z-10 w-12 h-12 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
                     <svg class="w-5 h-5 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
