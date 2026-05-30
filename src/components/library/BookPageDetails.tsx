@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { BookOpen, BookmarkPlus, Download, Link2, Check } from "lucide-react";
+import { BookOpen, BookmarkPlus, Download, Link2, Check, Copy } from "lucide-react";
 import { RelatedFan } from "./RelatedFan";
 import { enrichBook, relatedBooks, type LibraryBook } from "@/lib/library/data";
 import { fetchBook, API_BASE } from "@/lib/library/api";
@@ -52,6 +52,241 @@ function renderSumario(html: string): string {
     .join("");
 }
 
+// Helper functions for citation formatting
+function parseAuthors(authorStr: string) {
+  if (!authorStr) return [];
+  const parts = authorStr.split(/,|;|\b&\b|\band\b|\be\b/i);
+  return parts
+    .map(p => p.trim())
+    .filter(Boolean)
+    .map(name => {
+      const words = name.split(/\s+/).filter(Boolean);
+      if (words.length === 0) return { first: "", last: "", full: "" };
+      if (words.length === 1) return { first: "", last: words[0], full: words[0] };
+      const last = words[words.length - 1];
+      const first = words.slice(0, -1).join(" ");
+      return { first, last, full: name };
+    });
+}
+
+function getInitials(first: string) {
+  if (!first) return "";
+  return first
+    .split(/[\s-]+/)
+    .filter(Boolean)
+    .map(w => `${w[0].toUpperCase()}.`)
+    .join(" ");
+}
+
+function getInitialsNoSpace(first: string) {
+  if (!first) return "";
+  return first
+    .split(/[\s-]+/)
+    .filter(Boolean)
+    .map(w => w[0].toUpperCase())
+    .join("");
+}
+
+function getEditionText(edition: string | undefined, style: string) {
+  if (!edition) return "";
+  const clean = edition.trim();
+  const match = clean.match(/^(\d+)/);
+  if (match) {
+    const num = match[1];
+    if (style === "ABNT") {
+      return `${num}. ed.`;
+    } else {
+      return `${num}ª ed.`;
+    }
+  }
+  return clean;
+}
+
+function generateCitation(
+  book: LibraryBook,
+  style: "ABNT" | "APA" | "Harvard" | "MLA" | "Vancouver" | "Chicago" | "IEEE",
+  accessDate: string,
+  currentUrl: string
+): string {
+  const parsed = parseAuthors(book.author);
+  const title = book.title.trim();
+  const year = book.year;
+  const doi = book.doi ? book.doi.trim() : "";
+  const isbn = book.isbn ? book.isbn.trim() : "";
+
+  let authorsFormatted = "";
+
+  switch (style) {
+    case "ABNT": {
+      const formatABNT = (a: { first: string; last: string }) =>
+        a.first ? `${a.last.toUpperCase()}, ${a.first}` : a.last.toUpperCase();
+      if (parsed.length === 0) {
+        authorsFormatted = "EDITORA POISSON";
+      } else if (parsed.length <= 3) {
+        authorsFormatted = parsed.map(formatABNT).join("; ");
+      } else {
+        authorsFormatted = `${formatABNT(parsed[0])} et al.`;
+      }
+      break;
+    }
+    case "APA": {
+      const formatAPA = (a: { first: string; last: string }) => {
+        const initials = getInitials(a.first);
+        return initials ? `${a.last}, ${initials}` : a.last;
+      };
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length === 1) {
+        authorsFormatted = formatAPA(parsed[0]);
+      } else if (parsed.length === 2) {
+        authorsFormatted = `${formatAPA(parsed[0])}, & ${formatAPA(parsed[1])}`;
+      } else {
+        const allButLast = parsed.slice(0, -1).map(formatAPA).join(", ");
+        const last = formatAPA(parsed[parsed.length - 1]);
+        authorsFormatted = `${allButLast}, & ${last}`;
+      }
+      break;
+    }
+    case "MLA": {
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length === 1) {
+        authorsFormatted = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+      } else if (parsed.length === 2) {
+        const firstAuth = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+        const secondAuth = parsed[1].first ? `${parsed[1].first} ${parsed[1].last}` : parsed[1].last;
+        authorsFormatted = `${firstAuth}, and ${secondAuth}`;
+      } else {
+        const firstAuth = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+        authorsFormatted = `${firstAuth}, et al.`;
+      }
+      break;
+    }
+    case "Harvard": {
+      const formatHarvard = (a: { first: string; last: string }) => {
+        const initials = getInitialsNoSpace(a.first);
+        return initials ? `${a.last}, ${initials}.` : a.last;
+      };
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length === 1) {
+        authorsFormatted = formatHarvard(parsed[0]);
+      } else if (parsed.length === 2) {
+        authorsFormatted = `${formatHarvard(parsed[0])} & ${formatHarvard(parsed[1])}`;
+      } else {
+        authorsFormatted = `${formatHarvard(parsed[0])} et al.`;
+      }
+      break;
+    }
+    case "Vancouver": {
+      const formatVancouver = (a: { first: string; last: string }) => {
+        const initials = getInitialsNoSpace(a.first);
+        return initials ? `${a.last} ${initials}` : a.last;
+      };
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length <= 6) {
+        authorsFormatted = parsed.map(formatVancouver).join(", ");
+      } else {
+        authorsFormatted = `${formatVancouver(parsed[0])}, et al.`;
+      }
+      break;
+    }
+    case "Chicago": {
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length === 1) {
+        authorsFormatted = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+      } else if (parsed.length === 2) {
+        const firstAuth = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+        const secondAuth = parsed[1].first ? `${parsed[1].first} ${parsed[1].last}` : parsed[1].last;
+        authorsFormatted = `${firstAuth}, and ${secondAuth}`;
+      } else if (parsed.length === 3) {
+        const firstAuth = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+        const secondAuth = parsed[1].first ? `${parsed[1].first} ${parsed[1].last}` : parsed[1].last;
+        const thirdAuth = parsed[2].first ? `${parsed[2].first} ${parsed[2].last}` : parsed[2].last;
+        authorsFormatted = `${firstAuth}, ${secondAuth}, and ${thirdAuth}`;
+      } else {
+        const firstAuth = parsed[0].first ? `${parsed[0].last}, ${parsed[0].first}` : parsed[0].last;
+        authorsFormatted = `${firstAuth} et al.`;
+      }
+      break;
+    }
+    case "IEEE": {
+      const formatIEEE = (a: { first: string; last: string }) => {
+        const initials = getInitials(a.first);
+        return initials ? `${initials} ${a.last}` : a.last;
+      };
+      if (parsed.length === 0) {
+        authorsFormatted = "Editora Poisson";
+      } else if (parsed.length === 1) {
+        authorsFormatted = formatIEEE(parsed[0]);
+      } else if (parsed.length === 2) {
+        authorsFormatted = `${formatIEEE(parsed[0])} and ${formatIEEE(parsed[1])}`;
+      } else {
+        authorsFormatted = `${formatIEEE(parsed[0])} et al.`;
+      }
+      break;
+    }
+  }
+
+  const edText = getEditionText(book.edition, style);
+
+  switch (style) {
+    case "ABNT": {
+      let res = `${authorsFormatted}. ${title}. `;
+      if (edText) res += `${edText} `;
+      res += `Belo Horizonte: Editora Poisson, ${year}.`;
+      if (isbn) res += ` ISBN ${isbn}.`;
+      if (doi) res += ` DOI: ${doi}.`;
+      res += ` Disponível em: <${currentUrl}>. Acesso em: ${accessDate}.`;
+      return res;
+    }
+    case "APA": {
+      let res = `${authorsFormatted} (${year}). ${title}`;
+      if (edText) res += ` (${edText})`;
+      res += `. Editora Poisson.`;
+      if (doi) res += ` https://doi.org/${doi}`;
+      return res;
+    }
+    case "MLA": {
+      let res = `${authorsFormatted}. ${title}. `;
+      if (edText) res += `${edText}, `;
+      res += `Editora Poisson, ${year}.`;
+      if (doi) res += ` https://doi.org/${doi}`;
+      return res;
+    }
+    case "Harvard": {
+      let res = `${authorsFormatted} ${year}. ${title}. `;
+      if (edText) res += `${edText}. `;
+      res += `Belo Horizonte: Editora Poisson. `;
+      res += `Disponível em: <${currentUrl}> [Acesso em ${accessDate}].`;
+      return res;
+    }
+    case "Vancouver": {
+      let res = `${authorsFormatted}. ${title}. `;
+      if (edText) res += `${edText}. `;
+      res += `Belo Horizonte: Editora Poisson; ${year}. `;
+      res += `Disponível em: ${currentUrl}`;
+      return res;
+    }
+    case "Chicago": {
+      let res = `${authorsFormatted}. ${title}. `;
+      if (edText) res += `${edText}. `;
+      res += `Belo Horizonte: Editora Poisson, ${year}.`;
+      if (doi) res += ` https://doi.org/${doi}.`;
+      return res;
+    }
+    case "IEEE": {
+      let res = `${authorsFormatted}, "${title}", `;
+      if (edText) res += `${edText}. `;
+      res += `Belo Horizonte, Brasil: Editora Poisson, ${year}.`;
+      if (doi) res += ` doi: ${doi}.`;
+      return res;
+    }
+  }
+}
+
 interface BookPageDetailsProps {
   initialBook: LibraryBook;
   relatedBooks: LibraryBook[];
@@ -66,6 +301,22 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
   const [animationClass, setAnimationClass] = useState("animate-book-spin");
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [citationStyle, setCitationStyle] = useState<"ABNT" | "APA" | "Harvard" | "MLA" | "Vancouver" | "Chicago" | "IEEE">("ABNT");
+  const [copiedCitation, setCopiedCitation] = useState(false);
+
+  const accessDate = useMemo(() => {
+    const now = new Date();
+    const day = now.getDate();
+    const months = ["jan.", "fev.", "mar.", "abr.", "maio", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."];
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    return `${day} ${month} ${year}`;
+  }, []);
+
+  // Reset citation style to ABNT when book changes
+  useEffect(() => {
+    setCitationStyle("ABNT");
+  }, [currentBook.id]);
 
   // Initialize/reset states when active book changes (either from props or from related selection)
   useEffect(() => {
@@ -89,6 +340,15 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
   }, [currentBook.id]);
 
   const enriched = useMemo(() => enrichBook(currentBook), [currentBook]);
+
+  const citationText = useMemo(() => {
+    return generateCitation(
+      enriched,
+      citationStyle,
+      accessDate,
+      shareUrl || `https://editorapoisson.com.br/livro/${currentBook.id}`
+    );
+  }, [enriched, citationStyle, accessDate, shareUrl, currentBook.id]);
 
   const meta = [
     { label: "Páginas", value: enriched.pages > 0 ? String(enriched.pages) : "—" },
@@ -324,6 +584,55 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
                   <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-mono py-1.5 px-2.5 rounded shadow-lg whitespace-nowrap animate-bounce">
                     Copiado!
                   </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Citation Card */}
+          <div className="mt-8 p-5 rounded-2xl border border-border/50 bg-muted/30 backdrop-blur-[2px]">
+            <span className="font-mono text-xs tracking-[0.25em] uppercase text-orange-500 block mb-3">
+              Como citar esta obra
+            </span>
+            <div className="text-sm leading-relaxed text-foreground bg-white/60 p-4 rounded-xl border border-border/30 shadow-sm select-all">
+              {citationText}
+            </div>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Estilo:</span>
+                <select
+                  value={citationStyle}
+                  onChange={(e) => setCitationStyle(e.target.value as any)}
+                  className="bg-white/80 border border-border/60 hover:border-border text-foreground text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer font-sans transition-all"
+                >
+                  <option value="ABNT">ABNT (Padrão)</option>
+                  <option value="APA">APA</option>
+                  <option value="Harvard">Harvard</option>
+                  <option value="MLA">MLA</option>
+                  <option value="Vancouver">Vancouver</option>
+                  <option value="Chicago">Chicago</option>
+                  <option value="IEEE">IEEE</option>
+                </select>
+              </div>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(citationText);
+                  setCopiedCitation(true);
+                  setTimeout(() => setCopiedCitation(false), 2000);
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-medium border border-border/60 hover:border-border rounded-lg bg-white text-foreground hover:bg-muted transition-all duration-300 shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+              >
+                {copiedCitation ? (
+                  <>
+                    <Check size={14} className="text-emerald-500" />
+                    <span className="text-emerald-600">Copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} className="text-orange-500" />
+                    <span>Copiar Citação</span>
+                  </>
                 )}
               </button>
             </div>
