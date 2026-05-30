@@ -374,91 +374,68 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 <h2 class="text-6xl md:text-8xl serif-extra italic font-bold mt-4 leading-none text-white text-center">Depoimentos</h2>
             </div>
 
-            <!-- Área do Carrossel de Vídeo (Diretamente na seção, com margem para evitar corte) -->
-            <div class="relative w-[320px] h-[320px] md:w-[500px] md:h-[500px] flex items-center justify-center mt-20 md:mt-32 z-10">
-                
-                <!-- Vídeos posicionados circularmente -->
-                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container">
-                    <!-- Internal concentric circle for a premium double-line track effect -->
-                    <div class="absolute inset-[5px] rounded-full border border-zinc-500/15 pointer-events-none"></div>
-                    
-                    <!-- Video 1 (Topo) - Gilmar (Horizontal) -->
-                    <div id="card-gilmar" class="video-card absolute top-[-40px] md:top-[-60px] left-1/2 -translate-x-1/2 w-56 h-32 md:w-80 md:h-48 bg-zinc-900 rounded-2xl border-2 border-[#ff3c00] shadow-[0_0_30px_rgba(255,60,0,0.3)] p-1 group/card z-20">
-                        <div class="w-full h-full rounded-[14px] overflow-hidden">
-                            <video id="video-gilmar" src="/depoimentos/Depoimento_Gilmar.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
-                        </div>
-                        
-                        <!-- Custom elegant control overlay (Timeline only) -->
-                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2.5 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto">
-                            <!-- Play/Pause Button -->
-                            <button class="btn-play-pause text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Reproduzir/Pausar">
-                                <svg class="icon-play w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <svg class="icon-pause w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                            </button>
-                            
-                            <!-- Timeline / Progress Bar -->
-                            <input type="range" min="0" max="100" value="0" class="timeline-slider flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
-                        </div>
+            <!-- Galeria de 3 Vídeos de Depoimentos -->
+            <div class="relative w-full max-w-5xl flex flex-col items-center mt-8 md:mt-14 z-10 px-2">
 
-                        <!-- Capsule de volume vertical externa (do lado de fora) -->
-                        <div class="volume-capsule absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl">
-                            <!-- Volume slider (Meter vertical) -->
-                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="volume-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance: slider-vertical;" />
-                            
-                            <!-- Mute Button -->
-                            <button class="btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Mudar som">
-                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                <!-- Faixa de cards + navegação -->
+                <div class="flex items-center justify-center gap-2 md:gap-5 w-full">
+
+                    <!-- Botão Anterior -->
+                    <button id="btnPrevVideo" class="flex-shrink-0 w-9 h-9 md:w-11 md:h-11 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-2 border-zinc-700 hover:border-[#ff3c00] hover:shadow-[0_0_15px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 z-20 active:scale-95" aria-label="Vídeo anterior">
+                        <svg class="w-4 h-4 md:w-5 md:h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+
+                    <!-- Card Lateral Esquerdo -->
+                    <div id="card-gallery-left" class="flex-shrink-0 w-20 h-14 md:w-44 md:h-28 bg-zinc-900 rounded-xl border border-zinc-800/60 overflow-hidden opacity-40 cursor-pointer hover:opacity-60 transition-all duration-500 select-none">
+                        <video id="video-gallery-left" loop playsinline muted class="w-full h-full object-cover object-center pointer-events-none"></video>
+                    </div>
+
+                    <!-- Card Central (Destaque) -->
+                    <div id="card-gallery-center" class="relative flex-shrink-0 w-56 h-32 md:w-[460px] md:h-[259px] bg-zinc-900 rounded-2xl border-2 border-[#ff3c00] shadow-[0_0_30px_rgba(255,60,0,0.3)] p-1 group/main z-20">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden relative">
+                            <video id="video-gallery-center" loop playsinline class="w-full h-full object-cover object-center cursor-pointer"></video>
+                            <!-- Nome do Depoente -->
+                            <div class="absolute top-2 left-2">
+                                <div class="bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-[#ff3c00] animate-pulse"></div>
+                                    <span id="gallery-speaker-name" class="text-white text-[10px] md:text-xs font-semibold"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Controles -->
+                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2 md:p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2 opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 z-20 pointer-events-auto rounded-b-2xl">
+                            <button id="btn-gallery-playpause" class="text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0" aria-label="Reproduzir/Pausar">
+                                <svg class="icon-play w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4 h-4 md:w-5 md:h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <input id="gallery-timeline" type="range" min="0" max="100" value="0" class="flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                            <button id="btn-gallery-mute" class="text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0" aria-label="Mudar som">
+                                <svg class="icon-volume w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4 h-4 md:w-5 md:h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Video 2 (Baixo) - Angela (Vertical) -->
-                    <div id="card-angela" class="video-card absolute bottom-[-100px] md:bottom-[-130px] left-1/2 -translate-x-1/2 w-32 h-56 md:w-48 md:h-80 bg-zinc-900 rounded-2xl border-2 border-zinc-800 p-1 group/card z-20">
-                        <div class="w-full h-full rounded-[14px] overflow-hidden">
-                            <video id="video-angela" src="/depoimentos/Depoimento_Angela.mp4" loop playsinline class="w-full h-full object-cover object-top cursor-pointer"></video>
-                        </div>
-                        
-                        <!-- Custom elegant control overlay (Timeline only) -->
-                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2.5 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto">
-                            <!-- Play/Pause Button -->
-                            <button class="btn-play-pause text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Reproduzir/Pausar">
-                                <svg class="icon-play w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <svg class="icon-pause w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                            </button>
-                            
-                            <!-- Timeline / Progress Bar -->
-                            <input type="range" min="0" max="100" value="0" class="timeline-slider flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
-                        </div>
-
-                        <!-- Capsule de volume vertical externa (do lado de fora) -->
-                        <div class="volume-capsule absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl">
-                            <!-- Volume slider (Meter vertical) -->
-                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="volume-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance: slider-vertical;" />
-                            
-                            <!-- Mute Button -->
-                            <button class="btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer" aria-label="Mudar som">
-                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                            </button>
-                        </div>
+                    <!-- Card Lateral Direito -->
+                    <div id="card-gallery-right" class="flex-shrink-0 w-20 h-14 md:w-44 md:h-28 bg-zinc-900 rounded-xl border border-zinc-800/60 overflow-hidden opacity-40 cursor-pointer hover:opacity-60 transition-all duration-500 select-none">
+                        <video id="video-gallery-right" loop playsinline muted class="w-full h-full object-cover object-center pointer-events-none"></video>
                     </div>
+
+                    <!-- Botão Próximo -->
+                    <button id="btnNextVideo" class="flex-shrink-0 w-9 h-9 md:w-11 md:h-11 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-2 border-zinc-700 hover:border-[#ff3c00] hover:shadow-[0_0_15px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 z-20 active:scale-95" aria-label="Próximo vídeo">
+                        <svg class="w-4 h-4 md:w-5 md:h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
 
-                <!-- Botão Central (Girar) -->
-                <button id="btnRotateVideos" class="z-10 w-20 h-20 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                </button>
-                <!-- Indicador Lateral de Clique (sem sobrescrever o vídeo) -->
-                <div class="absolute right-[calc(50%+48px)] md:right-[calc(50%+68px)] top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-30 pointer-events-none whitespace-nowrap bg-zinc-950/75 py-1 px-2.5 rounded-full border border-zinc-800/50 backdrop-blur-sm">
-                    <span class="text-zinc-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Clique</span>
-                    <div class="animate-horizontal-bounce">
-                        <svg class="w-3.5 h-3.5 text-[#ff3c00] transform rotate-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"></path>
-                        </svg>
-                    </div>
+                <!-- Indicadores (Dots) -->
+                <div class="flex items-center gap-2 mt-5 md:mt-6">
+                    <button class="gallery-dot h-2 rounded-full bg-[#ff3c00] transition-all duration-300" style="width:16px" data-idx="0" aria-label="Vídeo 1"></button>
+                    <button class="gallery-dot h-2 w-2 rounded-full bg-zinc-700 transition-all duration-300" data-idx="1" aria-label="Vídeo 2"></button>
+                    <button class="gallery-dot h-2 w-2 rounded-full bg-zinc-700 transition-all duration-300" data-idx="2" aria-label="Vídeo 3"></button>
                 </div>
             </div>
         </section>
@@ -606,260 +583,145 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script is:inline defer src={`/js/teste.js?v=${version}`}></script>
 
-    <!-- Script Carrossel Circular de Vídeos -->
+    <!-- Script Galeria de Vídeos de Depoimentos -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.getElementById('btnRotateVideos');
-        const carousel = document.getElementById('video-carousel');
-        const cardAngela = document.getElementById('card-angela');
-        const cardGilmar = document.getElementById('card-gilmar');
-        const videoAngela = document.getElementById('video-angela');
-        const videoGilmar = document.getElementById('video-gilmar');
+        const GALLERY_VIDEOS = [
+          { src: '/depoimentos/Depoimento_Gilmar.mp4',              name: 'Gilmar Camargos' },
+          { src: '/depoimentos/Depoimento_Angela.mp4',              name: 'Angela' },
+          { src: '/depoimentos/MSc. Antônio Izaías de Araújo.mp4', name: 'MSc. Antônio Izaías' },
+        ];
 
-        let rotation = 0;
-        let activeVideo = videoGilmar; 
-        let userPaused = false;
+        const N = GALLERY_VIDEOS.length;
+        let currentIdx  = 0;
+        let userPaused  = false;
         let isIntersecting = false;
 
-        const videoCards = document.querySelectorAll('.video-card');
-        videoCards.forEach(card => {
-          card.style.transform = `translateX(-50%) rotate(0deg)`;
-        });
+        const cardLeft   = document.getElementById('card-gallery-left');
+        const cardRight  = document.getElementById('card-gallery-right');
+        const vLeft      = document.getElementById('video-gallery-left');
+        const vCenter    = document.getElementById('video-gallery-center');
+        const vRight     = document.getElementById('video-gallery-right');
+        const nameEl     = document.getElementById('gallery-speaker-name');
+        const dots       = document.querySelectorAll('.gallery-dot');
+        const btnPrev    = document.getElementById('btnPrevVideo');
+        const btnNext    = document.getElementById('btnNextVideo');
+        const btnPlay    = document.getElementById('btn-gallery-playpause');
+        const btnMute    = document.getElementById('btn-gallery-mute');
+        const timeline   = document.getElementById('gallery-timeline');
+        const iconPlay   = btnPlay.querySelector('.icon-play');
+        const iconPause  = btnPlay.querySelector('.icon-pause');
+        const iconVol    = btnMute.querySelector('.icon-volume');
+        const iconMuteEl = btnMute.querySelector('.icon-mute');
 
-        function updateVideosState() {
-          if (!isIntersecting) {
-            videoAngela.pause();
-            videoGilmar.pause();
-            return;
-          }
+        function wrap(i) { return (i + N) % N; }
 
-          const active = activeVideo;
-          const inactive = activeVideo === videoAngela ? videoGilmar : videoAngela;
+        function updateGallery(autoplay) {
+          vLeft.src   = GALLERY_VIDEOS[wrap(currentIdx - 1)].src;
+          vCenter.src = GALLERY_VIDEOS[currentIdx].src;
+          vRight.src  = GALLERY_VIDEOS[wrap(currentIdx + 1)].src;
+          nameEl.textContent = GALLERY_VIDEOS[currentIdx].name;
 
-          inactive.pause();
-          if (!userPaused) {
-            if (active.paused) {
-              active.play().catch(err => {
-                console.log('Unmuted autoplay blocked, trying muted...', err);
-                active.muted = true;
-                active.play().catch(err2 => console.log('Muted autoplay blocked:', err2));
-              });
+          vLeft.pause();
+          vRight.pause();
+
+          dots.forEach((d, i) => {
+            if (i === currentIdx) {
+              d.classList.remove('bg-zinc-700');
+              d.classList.add('bg-[#ff3c00]');
+              d.style.width = '16px';
+            } else {
+              d.classList.remove('bg-[#ff3c00]');
+              d.classList.add('bg-zinc-700');
+              d.style.width = '8px';
             }
-          } else {
-            active.pause();
+          });
+
+          if (autoplay && isIntersecting && !userPaused) {
+            vCenter.play().catch(() => { vCenter.muted = true; vCenter.play().catch(() => {}); });
           }
         }
 
-        function syncActiveCardStyles() {
-          const activeCard = activeVideo === videoAngela ? cardAngela : cardGilmar;
-          const inactiveCard = activeVideo === videoAngela ? cardGilmar : cardAngela;
-
-          activeCard.classList.add('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
-          activeCard.classList.remove('border-zinc-800');
-          
-          inactiveCard.classList.add('border-zinc-800');
-          inactiveCard.classList.remove('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
-
-          // Enable controls and set opacity for the active card
-          activeCard.querySelectorAll('.video-controls, .volume-capsule').forEach(el => {
-            el.style.display = 'flex';
-            // Force browser reflow to transition opacity smoothly
-            el.offsetHeight;
-            el.style.opacity = '1';
-            el.style.pointerEvents = 'auto';
-          });
-          inactiveCard.querySelectorAll('.video-controls, .volume-capsule').forEach(el => {
-            el.style.opacity = '0';
-            el.style.pointerEvents = 'none';
-            // Hide display after transition
-            setTimeout(() => {
-              if (el.style.opacity === '0') {
-                el.style.display = 'none';
-              }
-            }, 300);
-          });
-        }
-
-        btn.addEventListener('click', () => {
-          rotation += 180;
-          carousel.style.transform = `rotate(${rotation}deg)`;
-          
-          videoCards.forEach(card => {
-            card.style.transform = `translateX(-50%) rotate(${-rotation}deg)`;
-          });
-
-          // Toggle active video immediately in the synchronous gesture context
-          const prevVideo = activeVideo;
-          activeVideo = activeVideo === videoAngela ? videoGilmar : videoAngela;
-          
-          prevVideo.pause();
-          activeVideo.muted = false;
+        function navigate(dir) {
+          vCenter.pause();
+          currentIdx = wrap(currentIdx + dir);
           userPaused = false;
-
-          // Play immediately so the browser sees the user gesture
-          activeVideo.play().catch(err => {
-            console.log('Synchronous unmuted play failed on click, trying muted...', err);
-            activeVideo.muted = true;
-            activeVideo.play().catch(err2 => console.log('Muted play failed:', err2));
-          });
-
-          syncActiveCardStyles();
-        });
-
-        [videoAngela, videoGilmar].forEach(video => {
-          video.addEventListener('click', (e) => {
-            if (video !== activeVideo) {
-              btn.click();
-              return;
-            }
-
-            video.muted = false; // Unmute on click!
-            if (video.paused) {
-              userPaused = false;
-              video.play().catch(err => console.log(err));
-            } else {
-              userPaused = true;
-              video.pause();
-            }
-            syncActiveCardStyles();
-          });
-        });
-
-        // Setup custom video controls for both videos
-        const setupControls = (video, card) => {
-          const controls = card.querySelector('.video-controls');
-          if (!controls) return;
-
-          const playPauseBtn = controls.querySelector('.btn-play-pause');
-          const iconPlay = playPauseBtn.querySelector('.icon-play');
-          const iconPause = playPauseBtn.querySelector('.icon-pause');
-          const timelineSlider = controls.querySelector('.timeline-slider');
-          
-          const muteBtn = card.querySelector('.btn-mute');
-          const iconVolume = muteBtn.querySelector('.icon-volume');
-          const iconMute = muteBtn.querySelector('.icon-mute');
-          const volumeSlider = card.querySelector('.volume-slider');
-          const volumeCapsule = card.querySelector('.volume-capsule');
-
-          // Sync timeline slider with video progress
-          video.addEventListener('timeupdate', () => {
-            if (video.duration) {
-              const pct = (video.currentTime / video.duration) * 100;
-              timelineSlider.value = pct;
-            }
-          });
-
-          // Seek video when timeline slider changes
-          timelineSlider.addEventListener('input', (e) => {
-            e.stopPropagation();
-            if (video.duration) {
-              const time = (timelineSlider.value / 100) * video.duration;
-              video.currentTime = time;
-            }
-          });
-
-          // Prevent seek click/drag/touch from bubbling and rotating/pausing card
-          const stopBubble = e => e.stopPropagation();
-          ['click', 'mousedown', 'mouseup', 'mousemove', 'touchstart', 'touchend', 'touchmove'].forEach(evt => {
-            timelineSlider.addEventListener(evt, stopBubble);
-            if (volumeSlider) volumeSlider.addEventListener(evt, stopBubble);
-            if (volumeCapsule) volumeCapsule.addEventListener(evt, stopBubble);
-            if (muteBtn) muteBtn.addEventListener(evt, stopBubble);
-          });
-
-          // Play/Pause button
-          playPauseBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (video !== activeVideo) {
-              btn.click();
-              return;
-            }
-            video.muted = false;
-            if (video.paused) {
-              userPaused = false;
-              video.play().catch(err => console.log(err));
-            } else {
-              userPaused = true;
-              video.pause();
-            }
-            syncActiveCardStyles();
-          });
-
-          // Mute/Unmute button
-          muteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            video.muted = !video.muted;
-            if (video.muted) {
-              iconVolume.classList.add('hidden');
-              iconMute.classList.remove('hidden');
-              if (volumeSlider) volumeSlider.value = 0;
-            } else {
-              iconVolume.classList.remove('hidden');
-              iconMute.classList.add('hidden');
-              if (volumeSlider) volumeSlider.value = video.volume || 1;
-            }
-          });
-
-          // Volume slider
-          if (volumeSlider) {
-            volumeSlider.addEventListener('input', (e) => {
-              e.stopPropagation();
-              const vol = parseFloat(volumeSlider.value);
-              video.volume = vol;
-              video.muted = vol === 0;
-              if (video.muted) {
-                iconVolume.classList.add('hidden');
-                iconMute.classList.remove('hidden');
-              } else {
-                iconVolume.classList.remove('hidden');
-                iconMute.classList.add('hidden');
-              }
-            });
-          }
-
-          // Sync buttons on native play/pause/volume changes
-          video.addEventListener('play', () => {
-            iconPlay.classList.add('hidden');
-            iconPause.classList.remove('hidden');
-          });
-          video.addEventListener('pause', () => {
-            iconPlay.classList.remove('hidden');
-            iconPause.classList.add('hidden');
-          });
-          video.addEventListener('volumechange', () => {
-            if (video.muted) {
-              iconVolume.classList.add('hidden');
-              iconMute.classList.remove('hidden');
-            } else {
-              iconVolume.classList.remove('hidden');
-              iconMute.classList.add('hidden');
-            }
-          });
-        };
-
-        setupControls(videoAngela, cardAngela);
-        setupControls(videoGilmar, cardGilmar);
-
-        // Fallback interaction listener to unmute when clicking inside the section
-        const section = document.getElementById('section-testimonials');
-        if (section) {
-          section.addEventListener('click', () => {
-            if (activeVideo && activeVideo.muted && !activeVideo.paused) {
-              activeVideo.muted = false;
-              console.log('Unmuted video via section interaction');
-            }
-          }, { passive: true });
+          updateGallery(true);
         }
 
+        btnPrev.addEventListener('click', () => navigate(-1));
+        btnNext.addEventListener('click', () => navigate(1));
+        cardLeft.addEventListener('click',  () => navigate(-1));
+        cardRight.addEventListener('click', () => navigate(1));
+
+        dots.forEach(d => {
+          d.addEventListener('click', () => {
+            const i = parseInt(d.dataset.idx);
+            if (i === currentIdx) return;
+            vCenter.pause();
+            currentIdx = i;
+            userPaused = false;
+            updateGallery(true);
+          });
+        });
+
+        // Click on center video → play/pause
+        vCenter.addEventListener('click', () => {
+          vCenter.muted = false;
+          if (vCenter.paused) { userPaused = false; vCenter.play().catch(() => {}); }
+          else { userPaused = true; vCenter.pause(); }
+        });
+
+        // Timeline sync
+        vCenter.addEventListener('timeupdate', () => {
+          if (vCenter.duration) timeline.value = (vCenter.currentTime / vCenter.duration) * 100;
+        });
+        timeline.addEventListener('input', () => {
+          if (vCenter.duration) vCenter.currentTime = (timeline.value / 100) * vCenter.duration;
+        });
+
+        // Prevent controls from bubbling to video click handler
+        const stop = e => e.stopPropagation();
+        ['mousedown','mouseup','mousemove','touchstart','touchend','touchmove','click'].forEach(ev => {
+          timeline.addEventListener(ev, stop);
+        });
+        ['mousedown','mouseup','mousemove','touchstart','touchend','touchmove'].forEach(ev => {
+          btnMute.addEventListener(ev, stop);
+          btnPlay.addEventListener(ev, stop);
+        });
+
+        btnPlay.addEventListener('click', (e) => {
+          e.stopPropagation();
+          vCenter.muted = false;
+          if (vCenter.paused) { userPaused = false; vCenter.play().catch(() => {}); }
+          else { userPaused = true; vCenter.pause(); }
+        });
+
+        btnMute.addEventListener('click', (e) => {
+          e.stopPropagation();
+          vCenter.muted = !vCenter.muted;
+          iconVol.classList.toggle('hidden', vCenter.muted);
+          iconMuteEl.classList.toggle('hidden', !vCenter.muted);
+        });
+
+        vCenter.addEventListener('play',  () => { iconPlay.classList.add('hidden');    iconPause.classList.remove('hidden'); });
+        vCenter.addEventListener('pause', () => { iconPlay.classList.remove('hidden'); iconPause.classList.add('hidden'); });
+
+        // Intersection Observer — pause when section leaves viewport
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             isIntersecting = entry.isIntersecting;
-            updateVideosState();
+            if (!isIntersecting) {
+              vCenter.pause(); vLeft.pause(); vRight.pause();
+            } else if (!userPaused) {
+              vCenter.play().catch(() => { vCenter.muted = true; vCenter.play().catch(() => {}); });
+            }
           });
         }, { threshold: 0.3 });
 
         observer.observe(document.getElementById('section-testimonials'));
-        syncActiveCardStyles();
+
+        updateGallery(false);
       });
     </script>
 
