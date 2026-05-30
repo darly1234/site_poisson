@@ -372,6 +372,16 @@ export function BookPageDetails({ initialBook, relatedBooks }: BookPageDetailsPr
     { label: "Idioma", value: enriched.language },
     { label: "Formato", value: "apenas PDF" },
     { label: "ISBN", value: enriched.isbn },
+    { 
+      label: "Ano", 
+      value: (() => {
+        if (enriched.doi_registered_at) {
+          const date = new Date(enriched.doi_registered_at);
+          if (!isNaN(date.getTime())) return String(date.getFullYear());
+        }
+        return String(enriched.year);
+      })() 
+    },
     { label: "DOI", value: enriched.doi },
   ];
 
