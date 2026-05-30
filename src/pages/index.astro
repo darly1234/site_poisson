@@ -374,68 +374,90 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
                 <h2 class="text-6xl md:text-8xl serif-extra italic font-bold mt-4 leading-none text-white text-center">Depoimentos</h2>
             </div>
 
-            <!-- Galeria de 3 Vídeos de Depoimentos -->
-            <div class="relative w-full max-w-5xl flex flex-col items-center mt-8 md:mt-14 z-10 px-2">
+            <!-- Carrossel Circular — 3 Depoimentos -->
+            <div class="relative w-[320px] h-[390px] md:w-[500px] md:h-[560px] flex items-center justify-center mt-12 md:mt-20 z-10">
 
-                <!-- Faixa de cards + navegação -->
-                <div class="flex items-center justify-center gap-2 md:gap-5 w-full">
+                <!-- Trilha circular -->
+                <div id="video-carousel" class="absolute w-full h-full rounded-full border border-zinc-500/25 shadow-[0_0_15px_rgba(255,255,255,0.03),inset_0_0_15px_rgba(255,255,255,0.02)] carousel-container">
+                    <div class="absolute inset-[5px] rounded-full border border-zinc-500/15 pointer-events-none"></div>
 
-                    <!-- Botão Anterior -->
-                    <button id="btnPrevVideo" class="flex-shrink-0 w-9 h-9 md:w-11 md:h-11 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-2 border-zinc-700 hover:border-[#ff3c00] hover:shadow-[0_0_15px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 z-20 active:scale-95" aria-label="Vídeo anterior">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-
-                    <!-- Card Lateral Esquerdo -->
-                    <div id="card-gallery-left" class="flex-shrink-0 w-20 h-14 md:w-44 md:h-28 bg-zinc-900 rounded-xl border border-zinc-800/60 overflow-hidden opacity-40 cursor-pointer hover:opacity-60 transition-all duration-500 select-none">
-                        <video id="video-gallery-left" loop playsinline muted class="w-full h-full object-cover object-center pointer-events-none"></video>
-                    </div>
-
-                    <!-- Card Central (Destaque) -->
-                    <div id="card-gallery-center" class="relative flex-shrink-0 w-56 h-32 md:w-[460px] md:h-[259px] bg-zinc-900 rounded-2xl border-2 border-[#ff3c00] shadow-[0_0_30px_rgba(255,60,0,0.3)] p-1 group/main z-20">
-                        <div class="w-full h-full rounded-[14px] overflow-hidden relative">
-                            <video id="video-gallery-center" loop playsinline class="w-full h-full object-cover object-center cursor-pointer"></video>
-                            <!-- Nome do Depoente -->
-                            <div class="absolute top-2 left-2">
-                                <div class="bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-[#ff3c00] animate-pulse"></div>
-                                    <span id="gallery-speaker-name" class="text-white text-[10px] md:text-xs font-semibold"></span>
-                                </div>
-                            </div>
+                    <!-- Card 0: Gilmar (Horizontal) -->
+                    <div id="vc-card-0" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden">
+                            <video id="vc-video-0" src="/depoimentos/Depoimento_Gilmar.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
                         </div>
-                        <!-- Controles -->
-                        <div class="video-controls absolute bottom-0 left-0 right-0 p-2 md:p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2 opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 z-20 pointer-events-auto rounded-b-2xl">
-                            <button id="btn-gallery-playpause" class="text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0" aria-label="Reproduzir/Pausar">
-                                <svg class="icon-play w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <svg class="icon-pause w-4 h-4 md:w-5 md:h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        <div class="vc-controls absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto rounded-b-2xl">
+                            <button class="vc-btn-play text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0">
+                                <svg class="icon-play w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
-                            <input id="gallery-timeline" type="range" min="0" max="100" value="0" class="flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
-                            <button id="btn-gallery-mute" class="text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0" aria-label="Mudar som">
-                                <svg class="icon-volume w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                <svg class="icon-mute w-4 h-4 md:w-5 md:h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            <input type="range" min="0" max="100" value="0" class="vc-timeline flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                        </div>
+                        <div class="vc-volume-capsule absolute top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl" style="left:calc(100% + 12px);">
+                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="vc-vol-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance:slider-vertical;" />
+                            <button class="vc-btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer">
+                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Card Lateral Direito -->
-                    <div id="card-gallery-right" class="flex-shrink-0 w-20 h-14 md:w-44 md:h-28 bg-zinc-900 rounded-xl border border-zinc-800/60 overflow-hidden opacity-40 cursor-pointer hover:opacity-60 transition-all duration-500 select-none">
-                        <video id="video-gallery-right" loop playsinline muted class="w-full h-full object-cover object-center pointer-events-none"></video>
+                    <!-- Card 1: Angela (Vertical) -->
+                    <div id="vc-card-1" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:134px;height:224px;">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden">
+                            <video id="vc-video-1" src="/depoimentos/Depoimento_Angela.mp4" loop playsinline class="w-full h-full object-cover object-top cursor-pointer"></video>
+                        </div>
+                        <div class="vc-controls absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto rounded-b-2xl">
+                            <button class="vc-btn-play text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0">
+                                <svg class="icon-play w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <input type="range" min="0" max="100" value="0" class="vc-timeline flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                        </div>
+                        <div class="vc-volume-capsule absolute top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl" style="left:calc(100% + 12px);">
+                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="vc-vol-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance:slider-vertical;" />
+                            <button class="vc-btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer">
+                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Botão Próximo -->
-                    <button id="btnNextVideo" class="flex-shrink-0 w-9 h-9 md:w-11 md:h-11 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-2 border-zinc-700 hover:border-[#ff3c00] hover:shadow-[0_0_15px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 z-20 active:scale-95" aria-label="Próximo vídeo">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
+                    <!-- Card 2: Antônio (Horizontal) -->
+                    <div id="vc-card-2" class="video-card absolute bg-zinc-900 rounded-2xl border-2 p-1 group/card z-20" style="width:224px;height:134px;">
+                        <div class="w-full h-full rounded-[14px] overflow-hidden">
+                            <video id="vc-video-2" src="/depoimentos/MSc. Antônio Izaías de Araújo.mp4" loop playsinline class="w-full h-full object-cover cursor-pointer"></video>
+                        </div>
+                        <div class="vc-controls absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center gap-2 opacity-0 transition-opacity duration-300 z-20 pointer-events-auto rounded-b-2xl">
+                            <button class="vc-btn-play text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer flex-shrink-0">
+                                <svg class="icon-play w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg class="icon-pause w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <input type="range" min="0" max="100" value="0" class="vc-timeline flex-grow h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" />
+                        </div>
+                        <div class="vc-volume-capsule absolute top-1/2 -translate-y-1/2 flex flex-col items-center gap-2.5 z-30 opacity-0 transition-opacity duration-300 pointer-events-auto bg-zinc-950/95 border border-zinc-800/80 rounded-full py-3.5 px-2 w-9 shadow-2xl" style="left:calc(100% + 12px);">
+                            <input type="range" min="0" max="1" step="0.05" value="1" orient="vertical" class="vc-vol-slider w-1.5 h-16 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff3c00]" style="-webkit-appearance:slider-vertical;" />
+                            <button class="vc-btn-mute text-white hover:text-[#ff3c00] transition-colors focus:outline-none cursor-pointer">
+                                <svg class="icon-volume w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.25-2.5-4.06v8.11c1.48-.81 2.5-2.29 2.5-4.05zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg class="icon-mute w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.25-2.5-4.06v2.23l2.48 2.48c.01-.22.02-.43.02-.65zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Indicadores (Dots) -->
-                <div class="flex items-center gap-2 mt-5 md:mt-6">
-                    <button class="gallery-dot h-2 rounded-full bg-[#ff3c00] transition-all duration-300" style="width:16px" data-idx="0" aria-label="Vídeo 1"></button>
-                    <button class="gallery-dot h-2 w-2 rounded-full bg-zinc-700 transition-all duration-300" data-idx="1" aria-label="Vídeo 2"></button>
-                    <button class="gallery-dot h-2 w-2 rounded-full bg-zinc-700 transition-all duration-300" data-idx="2" aria-label="Vídeo 3"></button>
+                <!-- Botão Central (Girar) -->
+                <button id="btnRotateVideos" class="z-10 w-20 h-20 md:w-28 md:h-28 bg-zinc-900/90 hover:bg-zinc-950 rounded-full border-4 border-zinc-800 hover:border-[#ff3c00] hover:shadow-[0_0_20px_rgba(255,60,0,0.2)] flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 group" aria-label="Girar carrossel">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-[#ff3c00] group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <div class="absolute right-[calc(50%+48px)] md:right-[calc(50%+68px)] top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-30 pointer-events-none whitespace-nowrap bg-zinc-950/75 py-1 px-2.5 rounded-full border border-zinc-800/50 backdrop-blur-sm">
+                    <span class="text-zinc-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Clique</span>
+                    <div class="animate-horizontal-bounce">
+                        <svg class="w-3.5 h-3.5 text-[#ff3c00] transform rotate-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </section>
@@ -583,145 +605,217 @@ const firstCoverUrl: string | null = carouselBooks[0]?.cover ?? null;
     <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script is:inline defer src={`/js/teste.js?v=${version}`}></script>
 
-    <!-- Script Galeria de Vídeos de Depoimentos -->
+    <!-- Script Carrossel Circular — 3 Depoimentos -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
-        const GALLERY_VIDEOS = [
-          { src: '/depoimentos/Depoimento_Gilmar.mp4',              name: 'Gilmar Camargos' },
-          { src: '/depoimentos/Depoimento_Angela.mp4',              name: 'Angela' },
-          { src: '/depoimentos/MSc. Antônio Izaías de Araújo.mp4', name: 'MSc. Antônio Izaías' },
+        // Card dimensions [width, height] per breakpoint
+        const CARD_SIZES = [
+          { sm: [224, 134], md: [320, 192] }, // Gilmar  — horizontal
+          { sm: [134, 224], md: [192, 320] }, // Angela  — vertical
+          { sm: [224, 134], md: [320, 192] }, // Antônio — horizontal
         ];
+        const INACTIVE_SCALE = 0.38;
+        const ANIM = 'transform 0.75s cubic-bezier(0.4,0,0.2,1), opacity 0.5s, border-color 0.5s, box-shadow 0.5s';
 
-        const N = GALLERY_VIDEOS.length;
-        let currentIdx  = 0;
-        let userPaused  = false;
+        const carousel    = document.getElementById('video-carousel');
+        const btn         = document.getElementById('btnRotateVideos');
+        const cards       = [0,1,2].map(i => document.getElementById(`vc-card-${i}`));
+        const videos      = [0,1,2].map(i => document.getElementById(`vc-video-${i}`));
+
+        let rotation      = 0;
+        let activeIndex   = 0;
+        let userPaused    = false;
         let isIntersecting = false;
 
-        const cardLeft   = document.getElementById('card-gallery-left');
-        const cardRight  = document.getElementById('card-gallery-right');
-        const vLeft      = document.getElementById('video-gallery-left');
-        const vCenter    = document.getElementById('video-gallery-center');
-        const vRight     = document.getElementById('video-gallery-right');
-        const nameEl     = document.getElementById('gallery-speaker-name');
-        const dots       = document.querySelectorAll('.gallery-dot');
-        const btnPrev    = document.getElementById('btnPrevVideo');
-        const btnNext    = document.getElementById('btnNextVideo');
-        const btnPlay    = document.getElementById('btn-gallery-playpause');
-        const btnMute    = document.getElementById('btn-gallery-mute');
-        const timeline   = document.getElementById('gallery-timeline');
-        const iconPlay   = btnPlay.querySelector('.icon-play');
-        const iconPause  = btnPlay.querySelector('.icon-pause');
-        const iconVol    = btnMute.querySelector('.icon-volume');
-        const iconMuteEl = btnMute.querySelector('.icon-mute');
+        // ── Responsive: set card sizes and circle radius ──────────────────
+        function getRadius() { return window.innerWidth >= 768 ? 200 : 100; }
 
-        function wrap(i) { return (i + N) % N; }
+        function setSizes() {
+          const isMd = window.innerWidth >= 768;
+          cards.forEach((card, i) => {
+            const [w, h] = isMd ? CARD_SIZES[i].md : CARD_SIZES[i].sm;
+            card.style.width  = w + 'px';
+            card.style.height = h + 'px';
+          });
+        }
 
-        function updateGallery(autoplay) {
-          vLeft.src   = GALLERY_VIDEOS[wrap(currentIdx - 1)].src;
-          vCenter.src = GALLERY_VIDEOS[currentIdx].src;
-          vRight.src  = GALLERY_VIDEOS[wrap(currentIdx + 1)].src;
-          nameEl.textContent = GALLERY_VIDEOS[currentIdx].name;
+        // Place cards on circle (0°=top, 120°=bottom-right, 240°=bottom-left)
+        function placeCards() {
+          const R = getRadius();
+          cards.forEach((card, i) => {
+            const rad = (i * 120 - 90) * Math.PI / 180;
+            card.style.top  = `calc(50% + ${R * Math.sin(rad)}px)`;
+            card.style.left = `calc(50% + ${R * Math.cos(rad)}px)`;
+          });
+        }
 
-          vLeft.pause();
-          vRight.pause();
-
-          dots.forEach((d, i) => {
-            if (i === currentIdx) {
-              d.classList.remove('bg-zinc-700');
-              d.classList.add('bg-[#ff3c00]');
-              d.style.width = '16px';
+        // ── Visual state for each card ────────────────────────────────────
+        function applyCardStates(animated) {
+          cards.forEach((card, i) => {
+            const isActive = (i === activeIndex);
+            card.style.transition = animated ? ANIM : 'none';
+            card.style.transform  = `translate(-50%, -50%) rotate(${-rotation}deg) scale(${isActive ? 1 : INACTIVE_SCALE})`;
+            card.style.opacity    = isActive ? '1' : '0.55';
+            if (isActive) {
+              card.classList.add('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
+              card.classList.remove('border-zinc-800');
             } else {
-              d.classList.remove('bg-[#ff3c00]');
-              d.classList.add('bg-zinc-700');
-              d.style.width = '8px';
+              card.classList.add('border-zinc-800');
+              card.classList.remove('border-[#ff3c00]', 'shadow-[0_0_30px_rgba(255,60,0,0.3)]');
+            }
+            const controls = card.querySelector('.vc-controls');
+            const capsule  = card.querySelector('.vc-volume-capsule');
+            if (!isActive) {
+              if (controls) { controls.style.opacity = '0'; controls.style.display = 'none'; }
+              if (capsule)  { capsule.style.opacity  = '0'; capsule.style.display  = 'none'; }
+            } else {
+              if (controls) controls.style.display = '';
+              if (capsule)  capsule.style.display  = '';
             }
           });
-
-          if (autoplay && isIntersecting && !userPaused) {
-            vCenter.play().catch(() => { vCenter.muted = true; vCenter.play().catch(() => {}); });
-          }
         }
 
-        function navigate(dir) {
-          vCenter.pause();
-          currentIdx = wrap(currentIdx + dir);
+        // ── Rotate carousel ───────────────────────────────────────────────
+        function rotate() {
+          const prevVid = videos[activeIndex];
+          rotation    += 120;
+          activeIndex  = (activeIndex + 2) % 3; // card arriving at top
+
+          prevVid.pause();
+          carousel.style.transition = 'transform 0.75s cubic-bezier(0.4,0,0.2,1)';
+          carousel.style.transform  = `rotate(${rotation}deg)`;
+          applyCardStates(true);
           userPaused = false;
-          updateGallery(true);
+
+          const newVid = videos[activeIndex];
+          newVid.muted = false;
+          newVid.play().catch(() => { newVid.muted = true; newVid.play().catch(() => {}); });
         }
 
-        btnPrev.addEventListener('click', () => navigate(-1));
-        btnNext.addEventListener('click', () => navigate(1));
-        cardLeft.addEventListener('click',  () => navigate(-1));
-        cardRight.addEventListener('click', () => navigate(1));
+        btn.addEventListener('click', rotate);
+        // Clicking an inactive card also rotates
+        cards.forEach((card, i) => {
+          card.addEventListener('click', () => { if (i !== activeIndex) rotate(); });
+        });
 
-        dots.forEach(d => {
-          d.addEventListener('click', () => {
-            const i = parseInt(d.dataset.idx);
-            if (i === currentIdx) return;
-            vCenter.pause();
-            currentIdx = i;
-            userPaused = false;
-            updateGallery(true);
+        // ── Per-card controls ─────────────────────────────────────────────
+        cards.forEach((card, i) => {
+          const vid       = videos[i];
+          const controls  = card.querySelector('.vc-controls');
+          const capsule   = card.querySelector('.vc-volume-capsule');
+          const btnPlay   = card.querySelector('.vc-btn-play');
+          const iconPlay  = btnPlay.querySelector('.icon-play');
+          const iconPause = btnPlay.querySelector('.icon-pause');
+          const timeline  = card.querySelector('.vc-timeline');
+          const btnMute   = card.querySelector('.vc-btn-mute');
+          const iconVol   = btnMute.querySelector('.icon-volume');
+          const iconMute  = btnMute.querySelector('.icon-mute');
+          const volSlider = card.querySelector('.vc-vol-slider');
+
+          // Show controls only on active card hover
+          card.addEventListener('mouseenter', () => {
+            if (i !== activeIndex) return;
+            if (controls) controls.style.opacity = '1';
+            if (capsule)  capsule.style.opacity  = '1';
+          });
+          card.addEventListener('mouseleave', () => {
+            if (controls) controls.style.opacity = '0';
+            if (capsule)  capsule.style.opacity  = '0';
+          });
+
+          // Video click → play/pause (active card only)
+          vid.addEventListener('click', () => {
+            if (i !== activeIndex) return;
+            vid.muted = false;
+            if (vid.paused) { userPaused = false; vid.play().catch(() => {}); }
+            else            { userPaused = true;  vid.pause(); }
+          });
+
+          // Play/Pause button
+          btnPlay.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (i !== activeIndex) return;
+            vid.muted = false;
+            if (vid.paused) { userPaused = false; vid.play().catch(() => {}); }
+            else            { userPaused = true;  vid.pause(); }
+          });
+
+          // Timeline
+          vid.addEventListener('timeupdate', () => {
+            if (vid.duration) timeline.value = (vid.currentTime / vid.duration) * 100;
+          });
+          timeline.addEventListener('input', (e) => {
+            e.stopPropagation();
+            if (vid.duration) vid.currentTime = (timeline.value / 100) * vid.duration;
+          });
+
+          // Volume slider
+          if (volSlider) {
+            volSlider.addEventListener('input', (e) => {
+              e.stopPropagation();
+              const v = parseFloat(volSlider.value);
+              vid.volume = v; vid.muted = v === 0;
+              iconVol.classList.toggle('hidden', vid.muted);
+              iconMute.classList.toggle('hidden', !vid.muted);
+            });
+          }
+
+          // Mute button
+          btnMute.addEventListener('click', (e) => {
+            e.stopPropagation();
+            vid.muted = !vid.muted;
+            iconVol.classList.toggle('hidden', vid.muted);
+            iconMute.classList.toggle('hidden', !vid.muted);
+            if (volSlider) volSlider.value = vid.muted ? 0 : vid.volume;
+          });
+
+          // Stop bubbling from control elements
+          const stopBubble = e => e.stopPropagation();
+          [timeline, volSlider, capsule, btnPlay, btnMute].forEach(el => {
+            if (!el) return;
+            ['mousedown','mouseup','mousemove','touchstart','touchend','touchmove','click'].forEach(ev =>
+              el.addEventListener(ev, stopBubble));
+          });
+
+          // Sync icons
+          vid.addEventListener('play',  () => { iconPlay.classList.add('hidden');    iconPause.classList.remove('hidden'); });
+          vid.addEventListener('pause', () => { iconPlay.classList.remove('hidden'); iconPause.classList.add('hidden'); });
+          vid.addEventListener('volumechange', () => {
+            iconVol.classList.toggle('hidden', vid.muted);
+            iconMute.classList.toggle('hidden', !vid.muted);
           });
         });
 
-        // Click on center video → play/pause
-        vCenter.addEventListener('click', () => {
-          vCenter.muted = false;
-          if (vCenter.paused) { userPaused = false; vCenter.play().catch(() => {}); }
-          else { userPaused = true; vCenter.pause(); }
-        });
-
-        // Timeline sync
-        vCenter.addEventListener('timeupdate', () => {
-          if (vCenter.duration) timeline.value = (vCenter.currentTime / vCenter.duration) * 100;
-        });
-        timeline.addEventListener('input', () => {
-          if (vCenter.duration) vCenter.currentTime = (timeline.value / 100) * vCenter.duration;
-        });
-
-        // Prevent controls from bubbling to video click handler
-        const stop = e => e.stopPropagation();
-        ['mousedown','mouseup','mousemove','touchstart','touchend','touchmove','click'].forEach(ev => {
-          timeline.addEventListener(ev, stop);
-        });
-        ['mousedown','mouseup','mousemove','touchstart','touchend','touchmove'].forEach(ev => {
-          btnMute.addEventListener(ev, stop);
-          btnPlay.addEventListener(ev, stop);
-        });
-
-        btnPlay.addEventListener('click', (e) => {
-          e.stopPropagation();
-          vCenter.muted = false;
-          if (vCenter.paused) { userPaused = false; vCenter.play().catch(() => {}); }
-          else { userPaused = true; vCenter.pause(); }
-        });
-
-        btnMute.addEventListener('click', (e) => {
-          e.stopPropagation();
-          vCenter.muted = !vCenter.muted;
-          iconVol.classList.toggle('hidden', vCenter.muted);
-          iconMuteEl.classList.toggle('hidden', !vCenter.muted);
-        });
-
-        vCenter.addEventListener('play',  () => { iconPlay.classList.add('hidden');    iconPause.classList.remove('hidden'); });
-        vCenter.addEventListener('pause', () => { iconPlay.classList.remove('hidden'); iconPause.classList.add('hidden'); });
-
-        // Intersection Observer — pause when section leaves viewport
+        // ── Intersection Observer ─────────────────────────────────────────
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             isIntersecting = entry.isIntersecting;
             if (!isIntersecting) {
-              vCenter.pause(); vLeft.pause(); vRight.pause();
+              videos.forEach(v => v.pause());
             } else if (!userPaused) {
-              vCenter.play().catch(() => { vCenter.muted = true; vCenter.play().catch(() => {}); });
+              const av = videos[activeIndex];
+              av.play().catch(() => { av.muted = true; av.play().catch(() => {}); });
             }
           });
         }, { threshold: 0.3 });
 
         observer.observe(document.getElementById('section-testimonials'));
 
-        updateGallery(false);
+        // Section click unmute fallback
+        const section = document.getElementById('section-testimonials');
+        if (section) {
+          section.addEventListener('click', () => {
+            const av = videos[activeIndex];
+            if (av && av.muted && !av.paused) av.muted = false;
+          }, { passive: true });
+        }
+
+        window.addEventListener('resize', () => { setSizes(); placeCards(); });
+
+        // ── Init ──────────────────────────────────────────────────────────
+        setSizes();
+        placeCards();
+        applyCardStates(false);
       });
     </script>
 
