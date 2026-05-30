@@ -38,7 +38,6 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
   const lastTimeRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    if (propBooks && propBooks.length > 0) return;
     fetch(`${API_BASE}/livros/all`)
       .then(r => r.json())
       .then((data: Array<{ id: string; titulo: string | null; autores: string | null; capa: string | null; resumo: string | null }>) => {
@@ -81,11 +80,11 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
   }, [paused]);
 
   const handleBookClick = (index: number, z: number) => {
+    if (windowWidth < 768) {
+      window.location.href = books[index].href;
+      return;
+    }
     if (z > 150) {
-      if (windowWidth < 768) {
-        window.location.href = books[index].href;
-        return;
-      }
       setPaused(true);
       setSelected(index);
     }
@@ -124,7 +123,7 @@ export const OrbitalCarousel: React.FC<OrbitalCarouselProps> = ({ books: propBoo
           const blur = z < -60 ? Math.min(4, (-z - 60) / 40) : 0;
           const zIndex = Math.round(z + 220);
 
-          const isFront = z > 150;
+          const isFront = z > 150 || windowWidth < 768;
           const isSelected = selected === i;
           const dimOthers = selected !== null && !isSelected;
 

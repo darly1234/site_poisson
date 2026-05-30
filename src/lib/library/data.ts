@@ -34,6 +34,7 @@ export interface LibraryBook {
   edition?: string;
   language?: string;
   format?: string;
+  doi_registered_at?: string;
 }
 
 /**

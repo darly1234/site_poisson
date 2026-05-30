@@ -46,7 +46,7 @@ function BibliotecaPage() {
   const [rawQuery, setRawQuery] = useState("");
   const [apiQuery, setApiQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
-  const [sort, setSort] = useState<"recent" | "az" | "popular">("recent");
+  const [sort, setSort] = useState<"recent" | "az" | "popular" | "recent_desc" | "recent_asc" | "za">("recent");
   const [active, setActive] = useState<LibraryBook | null>(null);
   const [books, setBooks] = useState<LibraryBook[]>([]);
   const [loading, setLoading] = useState(true);
@@ -231,16 +231,40 @@ function BibliotecaPage() {
               </span>
               
               <div className="flex items-center gap-4">
-                <div className="flex gap-3">
-                  {(["recent", "az", "popular"] as const).map(s => (
-                    <button
-                      key={s}
-                      onClick={() => { setSort(s); setPage(1); }}
-                      className={`transition-colors ${sort === s ? "text-foreground" : "hover:text-foreground/60"}`}
-                    >
-                      {s === "recent" ? "Recente" : s === "az" ? "A–Z" : "Popular"}
-                    </button>
-                  ))}
+                <div className="flex gap-4">
+                  {/* Recente Button */}
+                  <button
+                    onClick={() => {
+                      setSort(prev => (prev === "recent" || prev === "recent_desc") ? "recent_asc" : "recent");
+                      setPage(1);
+                    }}
+                    className={`transition-colors flex items-center gap-1 cursor-pointer font-bold ${
+                      (sort === "recent" || sort === "recent_desc" || sort === "recent_asc")
+                        ? "text-foreground"
+                        : "hover:text-foreground/60 text-muted-foreground"
+                    }`}
+                  >
+                    <span>Recente</span>
+                    {(sort === "recent" || sort === "recent_desc") && <span className="text-[10px]">↓</span>}
+                    {sort === "recent_asc" && <span className="text-[10px]">↑</span>}
+                  </button>
+
+                  {/* A-Z Button */}
+                  <button
+                    onClick={() => {
+                      setSort(prev => prev === "az" ? "za" : "az");
+                      setPage(1);
+                    }}
+                    className={`transition-colors flex items-center gap-1 cursor-pointer font-bold ${
+                      (sort === "az" || sort === "za")
+                        ? "text-foreground"
+                        : "hover:text-foreground/60 text-muted-foreground"
+                    }`}
+                  >
+                    <span>{sort === "za" ? "Z–A" : "A–Z"}</span>
+                    {sort === "az" && <span className="text-[10px]">↓</span>}
+                    {sort === "za" && <span className="text-[10px]">↑</span>}
+                  </button>
                 </div>
               </div>
             </div>

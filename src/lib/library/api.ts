@@ -64,6 +64,7 @@ interface ApiBookLight {
   url?: string | null;
   chapters?: null | unknown[];
   artigos?: unknown[];
+  doi_registered_at: string | null;
 }
 
 interface ApiBookFull extends ApiBookLight {
@@ -97,6 +98,7 @@ function mapApiBook(raw: ApiBookLight): LibraryBook {
     edition: raw.edicao ?? "1ª edição",
     language: "Português",
     format: "PDF · Acesso aberto",
+    doi_registered_at: raw.doi_registered_at ?? undefined,
   };
 }
 
@@ -145,7 +147,7 @@ export interface FetchLibraryOptions {
   offset?: number;
   search?: string;
   category?: string;
-  sort?: "recent" | "az" | "popular";
+  sort?: "recent" | "az" | "popular" | "recent_desc" | "recent_asc" | "za";
 }
 
 export interface FetchLibraryResult {
@@ -175,14 +177,39 @@ export async function fetchLibrary(options?: FetchLibraryOptions): Promise<Fetch
 
   if (sort === "az") {
     filtered = filtered.sort((a, b) => (a.titulo ?? "").localeCompare(b.titulo ?? ""));
+  } else if (sort === "za") {
+    filtered = filtered.sort((a, b) => (b.titulo ?? "").localeCompare(a.titulo ?? ""));
   } else if (sort === "popular") {
     filtered = filtered.sort((a, b) => (hashId(b.id) % 30) - (hashId(a.id) % 30));
-  } else {
-    // "recent" — ano decrescente; anos futuros (erros de dados) vão para o fim;
-    // empate desfeito pela parte numérica do ID (ex: "I-0444" → 444)
-    const currentYear = new Date().getFullYear();
-    const numId = (id: string) => parseInt(id.replace(/\D/g, "")) || 0;
+  } else if (sort === "recent_asc") {
     filtered = filtered.sort((a, b) => {
+      const da = a.doi_registered_at ? new Date(a.doi_registered_at).getTime() : 0;
+      const db = b.doi_registered_at ? new Date(b.doi_registered_at).getTime() : 0;
+      
+      if (da === 0 && db > 0) return 1;
+      if (db === 0 && da > 0) return -1;
+      if (db === 0 && da === 0) {
+        const currentYear = new Date().getFullYear();
+        const numId = (id: string) => parseInt(id.replace(/\D/g, "")) || 0;
+        const ya = parseInt(a.ano ?? "0") || 0;
+        const yb = parseInt(b.ano ?? "0") || 0;
+        const ea = ya > currentYear ? -1 : ya;
+        const eb = yb > currentYear ? -1 : yb;
+        if (eb !== ea) return ea - eb;
+        return numId(a.id) - numId(b.id);
+      }
+      if (da !== db) return da - db;
+      return 0;
+    });
+  } else {
+    // "recent" or "recent_desc"
+    filtered = filtered.sort((a, b) => {
+      const da = a.doi_registered_at ? new Date(a.doi_registered_at).getTime() : 0;
+      const db = b.doi_registered_at ? new Date(b.doi_registered_at).getTime() : 0;
+      if (db !== da) return db - da;
+
+      const currentYear = new Date().getFullYear();
+      const numId = (id: string) => parseInt(id.replace(/\D/g, "")) || 0;
       const ya = parseInt(a.ano ?? "0") || 0;
       const yb = parseInt(b.ano ?? "0") || 0;
       const ea = ya > currentYear ? -1 : ya;

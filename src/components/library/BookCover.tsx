@@ -148,18 +148,22 @@ export function BookCover({ book, index, onOpen, isFavorited, onToggleFavorite }
           />
         )}
 
-        {/* spine label */}
-        <div className="absolute top-1 left-1 right-1 flex items-center justify-between font-mono text-[5px] tracking-[0.2em] uppercase text-white/80 z-[1]">
-          <span className="truncate">{book.spine}</span>
-          <span>{book.year}</span>
-        </div>
+        {/* spine label - fallback for when there is no cover image */}
+        {!book.cover && (
+          <div className="absolute top-1 left-1 right-1 flex items-center justify-between font-mono text-[5px] tracking-[0.2em] uppercase text-white/80 z-[1]">
+            <span className="truncate">{book.spine}</span>
+            <span>{book.year}</span>
+          </div>
+        )}
 
-        {/* title block */}
-        <div className="absolute inset-x-1 bottom-1 text-white z-[1]">
-          <p className="font-display text-[8px] leading-[1.05] text-balance drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] line-clamp-3">
-            {book.title}
-          </p>
-        </div>
+        {/* title block - fallback for when there is no cover image */}
+        {!book.cover && (
+          <div className="absolute inset-x-2 bottom-2 text-white z-[1]">
+            <p className="font-display text-[10px] leading-[1.05] text-balance drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] line-clamp-4">
+              {book.title}
+            </p>
+          </div>
+        )}
 
         {/* hairline grid overlay */}
         {!book.cover && <div
